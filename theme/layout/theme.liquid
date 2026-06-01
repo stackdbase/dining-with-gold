@@ -1,0 +1,239 @@
+<!doctype html>
+<html
+  {% if request.design_mode %}
+    class="shopify-design-mode"
+  {% endif %}
+  lang="{{ request.locale.iso_code }}"
+>
+  <head>
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        type="image/png"
+        href="{{ settings.favicon | image_url: width: 32, height: 32 }}"
+      >
+    {%- endif -%}
+
+    {% # theme-check-disable RemoteAsset %}
+    {% comment %} This a way to wait for main content to load when navigating to a new page so that the view transitions can work consistently {% endcomment %}
+    {% if settings.transition_to_main_product or settings.page_transition_enabled %}
+      <link
+        rel="expect"
+        href="#MainContent"
+        blocking="render"
+        id="view-transition-render-blocker"
+      >
+    {% endif %}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'stylesheets' -%}
+    {%- render 'fonts' -%}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-schemes' -%}
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    {{ content_for_header }}
+    {% # theme-check-enable RemoteAsset %}
+
+    {%- comment -%} DWG: brand styling for policy pages (Privacy / Refund / Shipping / Terms). Scoped to policy page type — remove this block to revert. {%- endcomment -%}
+    {%- if request.page_type == 'policy' -%}
+      <style>
+        /* Palette pulled from theme scheme-1: bg #faf7f2, ink #1c1c1c, gold #c9882a.
+           Hardcoded because the policy <main> carries no color-scheme class, so
+           --color-* vars don't resolve here. */
+        :root { --pol-pad: clamp(24px, 5vw, 56px); }
+
+        /* Level 1 — page wash behind the card: DWG brand cream */
+        #MainContent {
+          background: #FBF1E2;
+          padding: clamp(28px, 6vw, 72px) clamp(14px, 4vw, 28px) clamp(48px, 8vw, 100px);
+        }
+
+        /* Level 2 — elevated content card */
+        .shopify-policy__container {
+          max-width: 800px;
+          margin-inline: auto;
+          padding: 0;
+          background: #fffdf9;
+          border: 1px solid rgba(28, 28, 28, 0.10);
+          border-radius: 20px;
+          box-shadow: 0 28px 64px -34px rgba(28, 28, 28, 0.5), 0 4px 14px -10px rgba(28, 28, 28, 0.12);
+          overflow: hidden;
+        }
+
+        /* Level 3 — gold-tinted header band */
+        .shopify-policy__title {
+          text-align: center;
+          margin: 0;
+          padding: clamp(36px, 5.5vw, 64px) var(--pol-pad) clamp(26px, 4vw, 40px);
+          background: linear-gradient(180deg, #fbf1dd 0%, #f7e8cc 100%);
+          border-bottom: 1px solid rgba(201, 136, 42, 0.28);
+        }
+        .shopify-policy__title h1 {
+          font-family: var(--font-heading--family, inherit);
+          font-size: clamp(2rem, 4.5vw, 3rem);
+          line-height: 1.1;
+          margin: 0;
+          color: #1c1c1c;
+        }
+        .shopify-policy__title::after {
+          content: "";
+          display: block;
+          width: 64px;
+          height: 3px;
+          margin: 16px auto 0;
+          background: #c9882a;
+          border-radius: 2px;
+        }
+
+        /* Body */
+        .shopify-policy__body {
+          padding: clamp(28px, 4.5vw, 48px) var(--pol-pad) clamp(36px, 6vw, 64px);
+        }
+        .shopify-policy__body .rte {
+          font-size: clamp(0.98rem, 1.4vw, 1.05rem);
+          line-height: 1.75;
+          color: rgba(28, 28, 28, 0.85);
+        }
+        /* "Last updated" eyebrow (always the first line) */
+        .shopify-policy__body .rte > p:first-child {
+          font-size: 0.8rem;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: rgba(28, 28, 28, 0.45);
+          margin: 0 0 1.8em;
+        }
+        .shopify-policy__body .rte h2 {
+          font-family: var(--font-heading--family, inherit);
+          font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+          line-height: 1.25;
+          color: #1c1c1c;
+          margin: 2.2em 0 0.6em;
+          padding-bottom: 0.35em;
+          border-bottom: 1px solid rgba(201, 136, 42, 0.3);
+        }
+        .shopify-policy__body .rte h2:first-child { margin-top: 0; }
+        .shopify-policy__body .rte h3 {
+          font-family: var(--font-heading--family, inherit);
+          font-size: clamp(1rem, 1.8vw, 1.12rem);
+          color: #c9882a;
+          margin: 1.6em 0 0.4em;
+          font-weight: 700;
+        }
+        .shopify-policy__body .rte p { margin: 0 0 1.1em; }
+        .shopify-policy__body .rte ul { padding-left: 1.3em; margin: 0 0 1.2em; }
+        .shopify-policy__body .rte li { margin: 0.35em 0; }
+        .shopify-policy__body .rte li::marker { color: #c9882a; }
+        .shopify-policy__body .rte a {
+          color: #c9882a;
+          text-underline-offset: 2px;
+        }
+        .shopify-policy__body .rte a:hover { color: #a86f1f; }
+        .shopify-policy__body .rte strong { color: #1c1c1c; }
+      </style>
+    {%- endif -%}
+  </head>
+
+  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+    <div id="header-group">
+      {% sections 'header-group' %}
+    </div>
+
+    <script>
+      // Inline header height and menu style calculations to prevent layout shift
+      // Note: Updates in calculateHeaderGroupHeight(), updateTransparentHeaderOffset() and setHeaderMenuStyle() utilities.js should be kept in sync with this function
+      (function setHeaderHeighCustomProperties() {
+        /*
+         * Header calculation functions for maintaining CSS variables
+         * Mimic calculateHeaderGroupHeight() in utilities.js
+         */
+        const header = document.querySelector('header-component');
+        const headerGroup = document.querySelector('#header-group');
+        const hasHeaderSection = headerGroup?.querySelector('.header-section');
+
+        if (!header || !headerGroup) return;
+
+        const headerTopRow = header.querySelector('.header__row--top');
+        const headerHeight = header.offsetHeight;
+
+        // Calculate the total height of the header group
+        let headerGroupHeight = 0;
+        const children = headerGroup.children;
+        for (let i = 0; i < children.length; i++) {
+          const element = children[i];
+          if (element === header || !(element instanceof HTMLElement)) continue;
+          headerGroupHeight += element.offsetHeight;
+        }
+
+        // Check for transparent header special case
+        if (header.hasAttribute('transparent') && header.parentElement?.nextElementSibling) {
+          headerGroupHeight += headerHeight;
+        }
+
+        // Set CSS variables
+        document.body.style.setProperty('--header-height', `${headerHeight}px`);
+        document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
+
+        if (headerTopRow) {
+          window.requestAnimationFrame(function () {
+            document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
+          });
+        }
+
+        /**
+         * Updates CSS custom properties for transparent header offset calculation
+         * Mimic updateTransparentHeaderOffset() in utilities.js
+         */
+
+        if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
+          document.body.style.setProperty('--transparent-header-offset-boolean', '0');
+          return;
+        }
+
+        const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
+
+        const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
+        document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
+      })();
+
+      (function setHeaderMenuStyle() {
+        const headerComponent = document.querySelector('#header-component');
+        if (headerComponent) {
+          const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
+          const overflowList = headerComponent?.querySelector('overflow-list');
+          const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
+          headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
+        }
+      })();
+    </script>
+
+    <main
+      id="MainContent"
+      class="content-for-layout"
+      role="main"
+      data-page-transition-enabled="{{ settings.page_transition_enabled }}"
+      data-product-transition="{{ settings.transition_to_main_product }}"
+      data-template="{{ template }}"
+    >
+      {{ content_for_layout }}
+    </main>
+
+    <footer>
+      {% sections 'footer-group' %}
+    </footer>
+
+    {% render 'search-modal' %}
+
+    {% if settings.quick_add or settings.mobile_quick_add %}
+      {% render 'quick-add-modal' %}
+    {% endif %}
+
+    {% render 'dwg-floating-promo' %}
+    {% render 'dwg-welcome-banner' %}
+  </body>
+</html>

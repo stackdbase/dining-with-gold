@@ -1,0 +1,47 @@
+DWG REVIEW REQUEST — SEPARATE AUTOMATION (NOT part of the welcome flow)
+======================================================================
+TRIGGER:   Order fulfilled / delivered  (NOT signup)
+SEND TIME:  3 days after delivery confirmation
+            (fallback: 7-10 days after order date if delivery isn't tracked)
+
+SUBJECT LINE:
+So… how was it?
+
+PREVIEW TEXT:
+Tell me what your plate thinks.
+
+BODY (paste into the text block; keep paragraph breaks):
+---------------------------------------------------------
+Dear {{ first_name }}
+
+By now your bottle of DWG should be sitting in your kitchen or in your handbag, if
+you've already taken it somewhere.
+
+So I have to ask.
+
+How was it?
+
+Did it rescue a bland plate? Did you spray it on something you didn't expect? Did
+someone at the table try to steal the bottle?
+
+I genuinely want to know.
+
+Every review tells me what's landing and what to make next. It also helps the next
+person hovering over the website to make their decision.
+
+If you've got 30 seconds, I'd love to hear from you.
+
+[ BUTTON ]  Leave a quick review →   ->  https://diningwithgold.com/pages/reviews
+
+And if something wasn't right with your order, just hit reply. A real human reads
+every email, and we'll sort it.
+
+Thanks for dining with me.
+
+Come hungry,
+Wura
+Founder, Dining With Gold
+
+NOTE: This one uses a {{ first_name }} merge tag. In Shopify Email, insert it via
+"Insert" → "Customer first name" so it falls back gracefully when no name exists.
+Build it as its own automation with the "Order fulfilled" (or a delivery) trigger.

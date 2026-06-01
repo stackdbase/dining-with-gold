@@ -1,0 +1,130 @@
+{
+  "sections": {
+    "ugc_reviews": {
+      "type": "dwg-ugc-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "@diningwithgold",
+            "location": "London, UK",
+            "rating": 5,
+            "quote": "Honestly transformed my dinner. The flavour is unreal."
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "@thatchillilover",
+            "location": "Manchester, UK",
+            "rating": 5,
+            "quote": "A drizzle on my eggs and I'm never going back."
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "@kitchenlagos",
+            "location": "Lagos, NG",
+            "rating": 5,
+            "quote": "Jollof rice with DWG on top? Game changer."
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/2127cb2a23ae428b83f9adcbf16160c6.mov",
+            "customer_name": "@spicequeen",
+            "location": "Birmingham, UK",
+            "rating": 5,
+            "quote": "I carry it everywhere — small bottle, huge upgrade."
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/a3306f7e61c440f69f4e200b1be84348.mov",
+            "customer_name": "@chefonthego",
+            "location": "Bristol, UK",
+            "rating": 5,
+            "quote": "Hands down the best chilli oil I've ever tasted."
+          }
+        },
+        "review_6": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/9f52da1ba51e42b49cb65b188ba21c34.mov",
+            "customer_name": "@flavourhouse",
+            "location": "Edinburgh, UK",
+            "rating": 5,
+            "quote": "Bold, balanced, addictive. The DWG hype is real."
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5",
+        "review_6"
+      ],
+      "settings": {
+        "eyebrow": "LOVED BY YOU",
+        "heading": "Real flavour, real people.",
+        "subheading": "<p>From kitchens, cafes and tables around the world — see how the DWG community brings the heat. Tap any video to play with sound.</p>",
+        "columns_desktop": "3",
+        "cta_label": "SHOP THE COLLECTION",
+        "cta_link": "/collections/all",
+        "background_color": "#FBF1E2",
+        "accent_color": "#C9882A",
+        "text_color": "#1C1C1C"
+      }
+    },
+    "ugc_submit": {
+      "type": "dwg-ugc-submit",
+      "settings": {
+        "eyebrow": "ADD YOURS",
+        "heading": "Want to be featured?",
+        "subheading": "<p>Show us how you DWG. Tag us on Instagram or send us your clip — we feature new community videos every week.</p>",
+        "instagram_url": "https://www.instagram.com/diningwithgold/",
+        "instagram_label": "TAG @DININGWITHGOLD",
+        "email_address": "diningwithgold@outlook.com",
+        "email_label": "EMAIL YOUR CLIP",
+        "email_subject": "DWG Community Submission",
+        "email_body": "Hi DWG team, here is my video for the Loved By You wall:",
+        "fineprint": "By submitting you agree to let DWG share your clip across our channels.",
+        "background_color": "#1C1C1C",
+        "accent_color": "#C9882A",
+        "text_color": "#F5EFE2"
+      }
+    },
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "page-content": {
+          "type": "page-content",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "page-content"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "ugc_reviews",
+    "ugc_submit",
+    "main"
+  ]
+}

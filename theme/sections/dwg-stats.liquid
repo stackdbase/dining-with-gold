@@ -1,0 +1,314 @@
+{% liquid
+  assign bg_color = section.settings.background_color | default: '#FFFFFF'
+  assign ring_color = section.settings.ring_color | default: '#1C1C1C'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+%}
+
+<section
+  class="dwg-stats"
+  style="
+    --dwg-stats-bg: {{ bg_color }};
+    --dwg-stats-ring: {{ ring_color }};
+    --dwg-stats-text: {{ text_color }};
+  "
+>
+  <div class="dwg-stats__inner page-width">
+    <div class="dwg-stats__content">
+      {% if section.settings.eyebrow != blank %}
+        <p class="dwg-stats__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.settings.heading != blank %}
+        <h2 class="dwg-stats__title">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <ul class="dwg-stats__list" role="list">
+          {% for block in section.blocks %}
+            {% liquid
+              assign pct = block.settings.percent | at_most: 100 | at_least: 0
+            %}
+            <li class="dwg-stats__row" {{ block.shopify_attributes }}>
+              <div class="dwg-stats__circle">
+                <svg class="dwg-stats__svg" viewBox="0 0 36 36" aria-hidden="true">
+                  <circle class="dwg-stats__ring-bg" cx="18" cy="18" r="15.9155" fill="none"/>
+                  <circle
+                    class="dwg-stats__ring-fg"
+                    cx="18"
+                    cy="18"
+                    r="15.9155"
+                    fill="none"
+                    stroke-dasharray="{{ pct }}, 100"
+                    transform="rotate(-90 18 18)"
+                  />
+                </svg>
+                <span class="dwg-stats__pct">{{ pct }}%</span>
+              </div>
+              {% if block.settings.label != blank %}
+                <span class="dwg-stats__label">{{ block.settings.label }}</span>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if section.settings.disclaimer != blank %}
+        <p class="dwg-stats__disclaimer">{{ section.settings.disclaimer }}</p>
+      {% endif %}
+    </div>
+
+    <div class="dwg-stats__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            class: 'dwg-stats__image',
+            sizes: '(min-width: 750px) 45vw, 100vw',
+            widths: '400, 600, 800, 1200',
+            loading: 'lazy',
+            alt: section.settings.image.alt | default: section.settings.heading
+        }}
+      {% else %}
+        <div class="dwg-stats__image dwg-stats__image--placeholder">
+          {{ 'product-3' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-stats {
+    background-color: var(--dwg-stats-bg);
+    color: var(--dwg-stats-text);
+    padding-block: clamp(40px, 6vw, 80px);
+  }
+
+  .dwg-stats__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 48px);
+    align-items: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-stats__inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+
+  .dwg-stats__eyebrow {
+    margin: 0 0 12px;
+    font-size: 0.9rem;
+    color: rgba(28, 28, 28, 0.7);
+    line-height: 1.45;
+  }
+
+  .dwg-stats__title {
+    margin: 0 0 8px;
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 700;
+  }
+
+  .dwg-stats__list {
+    list-style: none;
+    margin: 24px 0 0;
+    padding: 0;
+    border-block-start: 1px solid rgba(28, 28, 28, 0.12);
+  }
+
+  .dwg-stats__row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 20px;
+    align-items: center;
+    padding-block: 18px;
+    border-block-end: 1px solid rgba(28, 28, 28, 0.12);
+  }
+
+  .dwg-stats__circle {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dwg-stats__svg {
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+
+  .dwg-stats__ring-bg {
+    stroke: rgba(28, 28, 28, 0.1);
+    stroke-width: 2.4;
+  }
+
+  .dwg-stats__ring-fg {
+    stroke: var(--dwg-stats-ring);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    transition: stroke-dasharray 600ms ease;
+  }
+
+  .dwg-stats__pct {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--dwg-stats-text);
+  }
+
+  .dwg-stats__label {
+    font-size: 1rem;
+    line-height: 1.45;
+    color: var(--dwg-stats-text);
+  }
+
+  .dwg-stats__disclaimer {
+    margin: 18px 0 0;
+    font-size: 0.78rem;
+    color: rgba(28, 28, 28, 0.6);
+    line-height: 1.5;
+    max-width: 60ch;
+  }
+
+  .dwg-stats__media {
+    display: flex;
+    justify-content: center;
+  }
+
+  .dwg-stats__image {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 16px;
+  }
+
+  .dwg-stats__image--placeholder {
+    aspect-ratio: 4 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(28, 28, 28, 0.18);
+    background-color: rgba(28, 28, 28, 0.04);
+    border-radius: 16px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-stats__row {
+      grid-template-columns: 64px 1fr;
+      gap: 14px;
+    }
+    .dwg-stats__circle {
+      width: 56px;
+      height: 56px;
+    }
+    .dwg-stats__pct {
+      font-size: 0.8rem;
+    }
+    .dwg-stats__label {
+      font-size: 0.92rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG: Stats",
+  "tag": "section",
+  "class": "section--dwg-stats",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Made for busy days, takeaway meals, and flavour on demand."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Spice That Travels"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "richtext",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "<p>Results are based on customer feedback and may vary by meal and preference. Always enjoy responsibly and adjust spice to taste.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "ring_color",
+      "label": "Progress ring",
+      "default": "#1C1C1C"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1C1C1C"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        {
+          "type": "range",
+          "id": "percent",
+          "label": "Percent",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "default": 95
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Customers loved the bold flavour boost"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "DWG: Stats",
+      "blocks": [
+        { "type": "stat", "settings": { "percent": 96, "label": "Customers loved the bold flavour boost" } },
+        { "type": "stat", "settings": { "percent": 94, "label": "Users said it travels without leaks" } },
+        { "type": "stat", "settings": { "percent": 97, "label": "Most found meals more exciting instantly" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,316 @@
+{% liquid
+  assign bg_color = section.settings.background_color | default: '#FBF1E2'
+  assign accent_color = section.settings.accent_color | default: '#D4A574'
+  assign text_color = section.settings.text_color | default: '#2A2A2A'
+%}
+
+<section
+  class="dwg-how-to-use"
+  style="
+    --dwg-htu-bg: {{ bg_color }};
+    --dwg-htu-accent: {{ accent_color }};
+    --dwg-htu-text: {{ text_color }};
+  "
+>
+  <div class="dwg-how-to-use__inner page-width">
+    <div class="dwg-how-to-use__media">
+      {% if section.settings.image != blank %}
+        {{
+          section.settings.image
+          | image_url: width: 1200
+          | image_tag:
+            class: 'dwg-how-to-use__image',
+            sizes: '(min-width: 750px) 50vw, 100vw',
+            widths: '400, 600, 800, 1200, 1600',
+            loading: 'lazy',
+            alt: section.settings.image.alt | default: section.settings.heading
+        }}
+      {% else %}
+        <div class="dwg-how-to-use__image dwg-how-to-use__image--placeholder">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="dwg-how-to-use__content">
+      {% if section.settings.heading != blank %}
+        <h2 class="dwg-how-to-use__title">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="dwg-how-to-use__lede">{{ section.settings.description }}</div>
+      {% endif %}
+
+      {% if section.settings.eyebrow != blank %}
+        <p class="dwg-how-to-use__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <ol class="dwg-how-to-use__steps" role="list">
+          {% for block in section.blocks %}
+            <li class="dwg-how-to-use__step" {{ block.shopify_attributes }}>
+              <span class="dwg-how-to-use__step-num" aria-hidden="true">{{ forloop.index }}</span>
+              <div class="dwg-how-to-use__step-body">
+                {% if block.settings.title != blank %}
+                  <h3 class="dwg-how-to-use__step-title">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                  <p class="dwg-how-to-use__step-text">{{ block.settings.description }}</p>
+                {% endif %}
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-how-to-use {
+    background-color: var(--dwg-htu-bg);
+    color: var(--dwg-htu-text);
+    padding-block: clamp(16px, 2.5vw, 32px);
+  }
+
+  .dwg-how-to-use__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vw, 32px);
+    align-items: center;
+    padding-inline: clamp(20px, 5vw, 48px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-how-to-use__inner {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    }
+  }
+
+  .dwg-how-to-use__media {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(28, 28, 28, 0.06);
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .dwg-how-to-use__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    max-height: 360px;
+    object-fit: contain;
+    padding: 8px;
+  }
+
+  .dwg-how-to-use__image--placeholder {
+    aspect-ratio: 16 / 10;
+    max-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(28, 28, 28, 0.2);
+  }
+
+  .dwg-how-to-use__title {
+    margin: 0 0 16px;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.15;
+    font-weight: 700;
+    color: var(--dwg-htu-text);
+  }
+
+  .dwg-how-to-use__lede {
+    margin: 0 0 20px;
+    font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    line-height: 1.55;
+    color: rgba(28, 28, 28, 0.78);
+  }
+
+  .dwg-how-to-use__lede > * {
+    margin: 0;
+  }
+
+  .dwg-how-to-use__eyebrow {
+    margin: 0 0 18px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dwg-htu-text);
+  }
+
+  .dwg-how-to-use__steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .dwg-how-to-use__step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .dwg-how-to-use__step:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 44px;
+    bottom: -18px;
+    width: 1.5px;
+    background-color: rgba(212, 165, 116, 0.4);
+    transform: translateX(-50%);
+  }
+
+  .dwg-how-to-use__step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: rgba(212, 165, 116, 0.18);
+    color: var(--dwg-htu-accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .dwg-how-to-use__step-body {
+    padding-block-start: 4px;
+    min-width: 0;
+  }
+
+  .dwg-how-to-use__step-title {
+    margin: 0 0 4px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--dwg-htu-accent);
+    line-height: 1.3;
+  }
+
+  .dwg-how-to-use__step-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: rgba(28, 28, 28, 0.75);
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-how-to-use__title {
+      font-size: 1.5rem;
+    }
+
+    .dwg-how-to-use__step-num {
+      width: 36px;
+      height: 36px;
+      font-size: 0.9rem;
+    }
+
+    .dwg-how-to-use__step {
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+    }
+
+    .dwg-how-to-use__step:not(:last-child)::before {
+      left: 18px;
+      top: 36px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG: How to use",
+  "tag": "section",
+  "class": "section--dwg-how-to-use",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tiny Bottle, Huge Flavor"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Bring restaurant-worthy heat with you wherever you eat. Just open, drizzle, and turn ordinary food into something unforgettable.</p>"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Step list eyebrow",
+      "default": "A SIMPLE WAY TO SPICE UP EVERY BITE"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FBF1E2"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent (numbers + step titles)",
+      "default": "#D4A574"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Body text",
+      "default": "#2A2A2A"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Pop the Cap"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Open the secure bottle when your meal needs more character."
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "DWG: How to use",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Pop the Cap", "description": "Open the secure bottle when your meal needs more character." } },
+        { "type": "step", "settings": { "title": "Pour with Ease", "description": "Drizzle just the amount of chilli oil you want." } },
+        { "type": "step", "settings": { "title": "Mix or Finish", "description": "Stir it in or add it on top for a glossy kick." } },
+        { "type": "step", "settings": { "title": "Enjoy the Heat", "description": "Taste bold flavour that lifts simple meals instantly." } },
+        { "type": "step", "settings": { "title": "Carry It Anywhere", "description": "Slip the compact bottle into your bag or pocket." } },
+        { "type": "step", "settings": { "title": "Repeat Daily", "description": "Use it whenever bland food needs a spicy upgrade." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

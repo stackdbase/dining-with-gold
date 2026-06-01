@@ -1,0 +1,299 @@
+{%- liquid
+  assign bg_color = section.settings.background_color | default: '#1C1C1C'
+  assign accent_color = section.settings.accent_color | default: '#C9882A'
+  assign text_color = section.settings.text_color | default: '#F5EFE2'
+
+  assign instagram_url = section.settings.instagram_url
+  assign instagram_label = section.settings.instagram_label
+  assign email_address = section.settings.email_address
+  assign email_label = section.settings.email_label
+  assign email_subject = section.settings.email_subject | default: 'DWG Community Submission' | url_encode
+  assign email_body = section.settings.email_body | default: 'Hi DWG team, here is my video for the Loved By You wall:' | url_encode
+-%}
+
+<section
+  class="dwg-ugc-submit"
+  style="
+    --dwg-sub-bg: {{ bg_color }};
+    --dwg-sub-accent: {{ accent_color }};
+    --dwg-sub-text: {{ text_color }};
+  "
+>
+  <div class="dwg-ugc-submit__inner page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="dwg-ugc-submit__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="dwg-ugc-submit__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="dwg-ugc-submit__subheading">{{ section.settings.subheading }}</div>
+    {%- endif -%}
+
+    <div class="dwg-ugc-submit__ctas">
+      {%- if instagram_url != blank -%}
+        <a
+          class="dwg-ugc-submit__cta dwg-ugc-submit__cta--primary"
+          href="{{ instagram_url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+          <span>{{ instagram_label | default: 'TAG US ON INSTAGRAM' }}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+
+      {%- if email_address != blank -%}
+        <a
+          class="dwg-ugc-submit__cta dwg-ugc-submit__cta--secondary"
+          href="mailto:{{ email_address }}?subject={{ email_subject }}&body={{ email_body }}"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="M3 7l9 6 9-6"/>
+          </svg>
+          <span>{{ email_label | default: 'EMAIL YOUR CLIP' }}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.fineprint != blank -%}
+      <p class="dwg-ugc-submit__fineprint">{{ section.settings.fineprint }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-ugc-submit {
+    background-color: var(--dwg-sub-bg);
+    color: var(--dwg-sub-text);
+    padding-block: clamp(48px, 7vw, 96px);
+    text-align: center;
+  }
+
+  .dwg-ugc-submit__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-inline: clamp(20px, 5vw, 48px);
+  }
+
+  .dwg-ugc-submit__eyebrow {
+    margin: 0 0 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dwg-sub-accent);
+  }
+
+  .dwg-ugc-submit__heading {
+    margin: 0 0 14px;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--dwg-sub-text);
+  }
+
+  .dwg-ugc-submit__subheading {
+    margin: 0 0 clamp(28px, 4vw, 40px);
+    font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+    line-height: 1.55;
+    color: rgba(245, 239, 226, 0.78);
+  }
+
+  .dwg-ugc-submit__subheading > * {
+    margin: 0;
+  }
+
+  .dwg-ugc-submit__ctas {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dwg-ugc-submit__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .dwg-ugc-submit__cta:hover {
+    transform: translateY(-1px);
+  }
+
+  .dwg-ugc-submit__cta svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  .dwg-ugc-submit__cta--primary {
+    background-color: var(--dwg-sub-accent);
+    color: #fff;
+    border: 1.5px solid var(--dwg-sub-accent);
+  }
+
+  .dwg-ugc-submit__cta--primary:hover {
+    background-color: #b07623;
+    border-color: #b07623;
+  }
+
+  .dwg-ugc-submit__cta--secondary {
+    background-color: transparent;
+    color: var(--dwg-sub-text);
+    border: 1.5px solid rgba(245, 239, 226, 0.4);
+  }
+
+  .dwg-ugc-submit__cta--secondary:hover {
+    color: var(--dwg-sub-accent);
+    border-color: var(--dwg-sub-accent);
+  }
+
+  .dwg-ugc-submit__fineprint {
+    margin: 24px 0 0;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(245, 239, 226, 0.55);
+  }
+
+  @media screen and (max-width: 600px) {
+    .dwg-ugc-submit__ctas {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .dwg-ugc-submit__cta {
+      justify-content: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG: UGC Submit CTA",
+  "tag": "section",
+  "class": "section--dwg-ugc-submit",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "ADD YOURS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Want to be featured?"
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>Show us how you DWG. Tag us on Instagram or send us your clip — we feature new community videos every week.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Instagram CTA"
+    },
+    {
+      "type": "url",
+      "id": "instagram_url",
+      "label": "Instagram link",
+      "info": "Your Instagram profile or tag URL"
+    },
+    {
+      "type": "text",
+      "id": "instagram_label",
+      "label": "Instagram button label",
+      "default": "TAG @DININGWITHGOLD"
+    },
+    {
+      "type": "header",
+      "content": "Email CTA"
+    },
+    {
+      "type": "text",
+      "id": "email_address",
+      "label": "Email address",
+      "default": "diningwithgold@outlook.com"
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Email button label",
+      "default": "EMAIL YOUR CLIP"
+    },
+    {
+      "type": "text",
+      "id": "email_subject",
+      "label": "Email subject line",
+      "default": "DWG Community Submission"
+    },
+    {
+      "type": "textarea",
+      "id": "email_body",
+      "label": "Email body prefill",
+      "default": "Hi DWG team, here is my video for the Loved By You wall:"
+    },
+    {
+      "type": "header",
+      "content": "Fine print"
+    },
+    {
+      "type": "text",
+      "id": "fineprint",
+      "label": "Fine print",
+      "default": "By submitting you agree to let DWG share your clip across our channels."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#1C1C1C"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#C9882A"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#F5EFE2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "DWG: UGC Submit CTA",
+      "settings": {
+        "instagram_url": "https://www.instagram.com/diningwithgold/",
+        "email_address": "diningwithgold@outlook.com"
+      }
+    }
+  ]
+}
+{% endschema %}

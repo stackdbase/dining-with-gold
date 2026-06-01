@@ -1,0 +1,846 @@
+{%- doc -%}
+  DWG branded "Added to cart" success modal. Replaces the cart drawer auto-open
+  on add. Shows added product, trust badges, free shipping notice, and a
+  cross-sell row (related products via /recommendations/products.json).
+
+  Render once globally (in layout/theme.liquid) — JS shows it on CartAddEvent.
+
+  @example
+  {% render 'dwg-added-to-cart' %}
+{%- enddoc -%}
+
+<dwg-added-to-cart-component
+  id="dwg-added-to-cart"
+  class="dwg-atc"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dwg-atc-heading"
+  aria-hidden="true"
+>
+  <div class="dwg-atc__overlay" data-dwg-atc-dismiss></div>
+  <div class="dwg-atc__dialog" role="document">
+    <header class="dwg-atc__header">
+      <span class="dwg-atc__check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12.5l4.5 4.5L19 7" />
+        </svg>
+      </span>
+      <div class="dwg-atc__header-text">
+        <h2 id="dwg-atc-heading" class="dwg-atc__heading">Added to your cart!</h2>
+        <p class="dwg-atc__subtitle" data-dwg-atc-product-title>—</p>
+      </div>
+      <button type="button" class="dwg-atc__close" aria-label="Close" data-dwg-atc-dismiss>
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </header>
+
+    <div class="dwg-atc__main">
+      <div class="dwg-atc__media">
+        <img
+          class="dwg-atc__image"
+          alt=""
+          data-dwg-atc-product-image
+          loading="lazy"
+        >
+      </div>
+
+      <div class="dwg-atc__details">
+        <h3 class="dwg-atc__title" data-dwg-atc-product-title-large>—</h3>
+        <p class="dwg-atc__price" data-dwg-atc-product-price>—</p>
+
+        <ul class="dwg-atc__badges" role="list">
+          <li class="dwg-atc__badge">
+            <span class="dwg-atc__badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 20c0-9 7-16 16-16 0 9-7 16-16 16z"/>
+                <path d="M4 20c4-4 8-8 12-12"/>
+              </svg>
+            </span>
+            <span class="dwg-atc__badge-text">Handmade<br>Small Batches</span>
+          </li>
+          <li class="dwg-atc__badge">
+            <span class="dwg-atc__badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2c1 4 4 5 4 9a4 4 0 1 1-8 0c0-2 1-3 1-5 0 0 2 1 3-4z"/>
+                <path d="M12 22a6 6 0 0 0 6-6c0-3-2-4-3-7"/>
+              </svg>
+            </span>
+            <span class="dwg-atc__badge-text">Bold &amp;<br>Rich Flavour</span>
+          </li>
+          <li class="dwg-atc__badge">
+            <span class="dwg-atc__badge-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="3" width="6" height="3" rx="1"/>
+                <path d="M7 6h10l-1 15H8L7 6z"/>
+                <path d="M10 11h4"/>
+              </svg>
+            </span>
+            <span class="dwg-atc__badge-text">Travel<br>Friendly</span>
+          </li>
+        </ul>
+
+        <div class="dwg-atc__shipping">
+          <span class="dwg-atc__shipping-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="12" height="9" rx="1"/>
+              <path d="M14 10h4l3 3v3h-7"/>
+              <circle cx="6" cy="18" r="2"/>
+              <circle cx="17" cy="18" r="2"/>
+            </svg>
+          </span>
+          <div>
+            <strong class="dwg-atc__shipping-title">FREE SHIPPING</strong>
+            <span class="dwg-atc__shipping-sub">On orders over £50</span>
+          </div>
+        </div>
+
+        <a
+          class="dwg-atc__view-cart"
+          href="{{ routes.cart_url }}"
+        >
+          View cart (<span data-dwg-atc-cart-count>0</span>)
+        </a>
+
+        <button type="button" class="dwg-atc__continue" data-dwg-atc-dismiss>
+          Continue shopping
+        </button>
+      </div>
+    </div>
+
+    <section class="dwg-atc__upsell" data-dwg-atc-upsell hidden>
+      <header class="dwg-atc__upsell-head">
+        <h3 class="dwg-atc__upsell-heading">You might also love</h3>
+        <a href="{{ routes.all_products_collection_url }}" class="dwg-atc__upsell-link">View all <span aria-hidden="true">›</span></a>
+      </header>
+      <ul class="dwg-atc__upsell-list" data-dwg-atc-upsell-list role="list">
+        <!-- populated by JS via /recommendations/products.json -->
+      </ul>
+    </section>
+  </div>
+</dwg-added-to-cart-component>
+
+{% stylesheet %}
+  /* ============================================================
+     DWG Added-to-cart success modal
+     ============================================================ */
+  dwg-added-to-cart-component.dwg-atc {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .dwg-atc.is-open {
+    display: flex;
+  }
+
+  .dwg-atc *,
+  .dwg-atc *::before,
+  .dwg-atc *::after {
+    box-sizing: border-box;
+  }
+
+  .dwg-atc__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(28, 28, 28, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.24s ease;
+  }
+
+  .dwg-atc.is-open .dwg-atc__overlay {
+    opacity: 1;
+  }
+
+  .dwg-atc__dialog {
+    position: relative;
+    width: min(960px, 100%);
+    max-height: calc(100vh - 32px);
+    background-color: #FBF1E2;
+    border: 1.5px solid #1c1c1c;
+    border-radius: 18px;
+    padding: 22px 26px 24px;
+    overflow-y: auto;
+    transform: translateY(12px) scale(0.985);
+    opacity: 0;
+    transition:
+      transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.24s ease;
+    color: #1c1c1c;
+    font-family: var(--font-body--family, inherit);
+  }
+
+  .dwg-atc.is-open .dwg-atc__dialog {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  /* ----- Header ----- */
+  .dwg-atc__header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding-block-end: 16px;
+  }
+
+  .dwg-atc__check {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #C9882A;
+    color: #FBF1E2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .dwg-atc__check svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dwg-atc__header-text {
+    min-width: 0;
+  }
+
+  .dwg-atc__heading {
+    margin: 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: 1.35rem;
+    line-height: 1.15;
+    font-weight: 700;
+    color: #1c1c1c;
+  }
+
+  .dwg-atc__subtitle {
+    margin: 4px 0 0;
+    font-size: 0.92rem;
+    color: rgba(28, 28, 28, 0.75);
+  }
+
+  .dwg-atc__close {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    background-color: transparent;
+    border: 1.2px solid rgba(28, 28, 28, 0.5);
+    border-radius: 8px;
+    color: #1c1c1c;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .dwg-atc__close:hover,
+  .dwg-atc__close:focus-visible {
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-atc__close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ----- Main two-column ----- */
+  .dwg-atc__main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-block: 8px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-atc__main {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 32px;
+      align-items: center;
+    }
+  }
+
+  .dwg-atc__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+  }
+
+  .dwg-atc__image {
+    display: block;
+    max-width: 100%;
+    max-height: 380px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 24px rgba(28, 28, 28, 0.18));
+  }
+
+  .dwg-atc__details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .dwg-atc__title {
+    margin: 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: #1c1c1c;
+  }
+
+  .dwg-atc__price {
+    margin: -4px 0 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+    font-weight: 600;
+    color: #C9882A;
+    letter-spacing: 0.02em;
+  }
+
+  /* ----- Trust badges ----- */
+  .dwg-atc__badges {
+    list-style: none;
+    margin: 4px 0 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+
+  .dwg-atc__badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .dwg-atc__badge-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.4px solid #C9882A;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #C9882A;
+    background-color: rgba(201, 136, 42, 0.06);
+  }
+
+  .dwg-atc__badge-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dwg-atc__badge-text {
+    font-size: 0.74rem;
+    line-height: 1.25;
+    color: #1c1c1c;
+    font-weight: 500;
+  }
+
+  /* ----- Free shipping callout ----- */
+  .dwg-atc__shipping {
+    margin-top: 4px;
+    padding: 12px 14px;
+    border: 1.2px solid #C9882A;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #C9882A;
+    background-color: rgba(201, 136, 42, 0.04);
+  }
+
+  .dwg-atc__shipping-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+  }
+
+  .dwg-atc__shipping-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .dwg-atc__shipping-title {
+    display: block;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #C9882A;
+  }
+
+  .dwg-atc__shipping-sub {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.85rem;
+    color: rgba(201, 136, 42, 0.85);
+  }
+
+  /* ----- CTAs ----- */
+  .dwg-atc__view-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 0 20px;
+    background-color: #C9882A;
+    color: #FBF1E2;
+    border: 0;
+    border-radius: 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .dwg-atc__view-cart:hover,
+  .dwg-atc__view-cart:focus-visible {
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-atc__continue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    padding: 0 20px;
+    background-color: transparent;
+    color: #1c1c1c;
+    border: 1.2px solid #1c1c1c;
+    border-radius: 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .dwg-atc__continue:hover,
+  .dwg-atc__continue:focus-visible {
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  /* ----- Upsell row ----- */
+  .dwg-atc__upsell {
+    margin-top: 22px;
+    padding: 16px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(28, 28, 28, 0.08);
+  }
+
+  .dwg-atc__upsell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .dwg-atc__upsell-heading {
+    margin: 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1c1c1c;
+  }
+
+  .dwg-atc__upsell-link {
+    color: #1c1c1c;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(28, 28, 28, 0.4);
+    padding-bottom: 1px;
+  }
+
+  .dwg-atc__upsell-link:hover {
+    color: #C9882A;
+    border-color: #C9882A;
+  }
+
+  .dwg-atc__upsell-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  @media screen and (min-width: 600px) {
+    .dwg-atc__upsell-list {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+  }
+
+  .dwg-atc__upsell-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 8px 8px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(28, 28, 28, 0.08);
+  }
+
+  .dwg-atc__upsell-card-img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .dwg-atc__upsell-card-info {
+    min-width: 0;
+  }
+
+  .dwg-atc__upsell-card-title {
+    display: block;
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1c1c1c;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .dwg-atc__upsell-card-price {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.85rem;
+    color: #C9882A;
+    font-weight: 600;
+  }
+
+  .dwg-atc__upsell-card-add {
+    height: 36px;
+    padding: 0 16px;
+    background-color: transparent;
+    color: #1c1c1c;
+    border: 1.2px solid #C9882A;
+    border-radius: 6px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .dwg-atc__upsell-card-add:hover,
+  .dwg-atc__upsell-card-add:focus-visible {
+    background-color: #C9882A;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-atc__upsell-card-add[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* ----- Mobile tweaks ----- */
+  @media screen and (max-width: 749px) {
+    .dwg-atc__dialog {
+      padding: 18px 18px 20px;
+      border-radius: 14px;
+    }
+    .dwg-atc__header {
+      gap: 12px;
+    }
+    .dwg-atc__check {
+      width: 36px;
+      height: 36px;
+    }
+    .dwg-atc__check svg {
+      width: 18px;
+      height: 18px;
+    }
+    .dwg-atc__heading {
+      font-size: 1.1rem;
+    }
+    .dwg-atc__subtitle {
+      font-size: 0.84rem;
+    }
+    .dwg-atc__media {
+      min-height: 200px;
+    }
+    .dwg-atc__image {
+      max-height: 240px;
+    }
+    .dwg-atc__title {
+      font-size: 1.4rem;
+    }
+    .dwg-atc__price {
+      font-size: 1.25rem;
+    }
+    .dwg-atc__badges {
+      gap: 6px;
+    }
+    .dwg-atc__badge-text {
+      font-size: 0.68rem;
+    }
+    .dwg-atc__view-cart,
+    .dwg-atc__continue {
+      height: 46px;
+      font-size: 0.92rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    const COMPONENT_TAG = 'dwg-added-to-cart-component';
+    const root = document.getElementById('dwg-added-to-cart');
+    if (!root) return;
+
+    const overlay = root.querySelector('.dwg-atc__overlay');
+    const dialog = root.querySelector('.dwg-atc__dialog');
+    const productTitleEls = root.querySelectorAll('[data-dwg-atc-product-title], [data-dwg-atc-product-title-large]');
+    const productImageEl = root.querySelector('[data-dwg-atc-product-image]');
+    const productPriceEl = root.querySelector('[data-dwg-atc-product-price]');
+    const cartCountEl = root.querySelector('[data-dwg-atc-cart-count]');
+    const upsellWrap = root.querySelector('[data-dwg-atc-upsell]');
+    const upsellList = root.querySelector('[data-dwg-atc-upsell-list]');
+    const dismissEls = root.querySelectorAll('[data-dwg-atc-dismiss]');
+
+    const moneyFormat = (window.Shopify && window.Shopify.currency && window.Shopify.currency.active) || 'GBP';
+
+    function formatMoney(cents) {
+      try {
+        return new Intl.NumberFormat(undefined, { style: 'currency', currency: moneyFormat }).format(cents / 100);
+      } catch (e) {
+        return '£' + (cents / 100).toFixed(2);
+      }
+    }
+
+    function open() {
+      root.classList.add('is-open');
+      root.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function close() {
+      root.classList.remove('is-open');
+      root.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+    }
+
+    dismissEls.forEach((el) => el.addEventListener('click', close));
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && root.classList.contains('is-open')) close();
+    });
+
+    /**
+     * Populate modal from a cart item object (Shopify cart line item shape).
+     */
+    function populate(item, cart) {
+      const title = item.product_title || item.title || '';
+      productTitleEls.forEach((el) => { el.textContent = title; });
+      if (productImageEl) {
+        if (item.featured_image && item.featured_image.url) {
+          productImageEl.src = item.featured_image.url;
+          productImageEl.alt = title;
+        } else if (item.image) {
+          productImageEl.src = item.image;
+          productImageEl.alt = title;
+        }
+      }
+      if (productPriceEl) {
+        const price = (item.final_price != null ? item.final_price : item.price) || 0;
+        productPriceEl.textContent = formatMoney(price);
+      }
+      if (cartCountEl && cart && typeof cart.item_count === 'number') {
+        cartCountEl.textContent = String(cart.item_count);
+      }
+
+      // Cross-sells via Shopify recommendations
+      const productId = item.product_id;
+      if (productId) loadUpsells(productId);
+    }
+
+    function loadUpsells(productId) {
+      const url = '/recommendations/products.json?product_id=' + encodeURIComponent(productId) + '&limit=3&intent=related';
+      fetch(url, { credentials: 'same-origin' })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data) => {
+          if (!data || !Array.isArray(data.products) || data.products.length === 0) {
+            upsellWrap.hidden = true;
+            return;
+          }
+          renderUpsells(data.products.slice(0, 3));
+          upsellWrap.hidden = false;
+        })
+        .catch(() => {
+          upsellWrap.hidden = true;
+        });
+    }
+
+    function renderUpsells(products) {
+      upsellList.innerHTML = '';
+      products.forEach((p) => {
+        const li = document.createElement('li');
+        li.className = 'dwg-atc__upsell-card';
+        const img = document.createElement('img');
+        img.className = 'dwg-atc__upsell-card-img';
+        img.alt = '';
+        img.loading = 'lazy';
+        img.src = (p.featured_image || (p.images && p.images[0]) || '');
+        const info = document.createElement('div');
+        info.className = 'dwg-atc__upsell-card-info';
+        const t = document.createElement('span');
+        t.className = 'dwg-atc__upsell-card-title';
+        t.textContent = p.title;
+        const pr = document.createElement('span');
+        pr.className = 'dwg-atc__upsell-card-price';
+        pr.textContent = formatMoney(p.price);
+        info.appendChild(t);
+        info.appendChild(pr);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'dwg-atc__upsell-card-add';
+        btn.textContent = 'Add';
+        btn.setAttribute('data-variant-id', String((p.variants && p.variants[0] && p.variants[0].id) || ''));
+        btn.addEventListener('click', function () {
+          const variantId = btn.getAttribute('data-variant-id');
+          if (!variantId) return;
+          btn.disabled = true;
+          btn.textContent = 'Adding…';
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: variantId, quantity: 1 }),
+            credentials: 'same-origin',
+          })
+            .then((r) => r.json())
+            .then(() => fetch('/cart.js', { credentials: 'same-origin' }).then((r) => r.json()))
+            .then((cart) => {
+              const lastItem = cart.items[cart.items.length - 1];
+              populate(lastItem, cart);
+              btn.disabled = false;
+              btn.textContent = 'Add';
+              // Notify other components (cart drawer/icon) to update
+              try {
+                const evt = new CustomEvent('cart:update', { detail: { resource: cart, source: 'dwg-atc' } });
+                document.dispatchEvent(evt);
+              } catch (e) {}
+            })
+            .catch(() => {
+              btn.disabled = false;
+              btn.textContent = 'Add';
+            });
+        });
+        li.appendChild(img);
+        li.appendChild(info);
+        li.appendChild(btn);
+        upsellList.appendChild(li);
+      });
+    }
+
+    /**
+     * Detect whether the cart-add originated from a "Recommended products"
+     * section. We only show this modal in that case — main product-page
+     * Add-to-cart keeps its existing cart drawer behavior.
+     */
+    function isFromRecommendations(eventTarget) {
+      if (!eventTarget || typeof eventTarget.closest !== 'function') return false;
+      // The CartAddEvent bubbles up from <product-form-component>; .closest finds
+      // the enclosing Shopify section element. Recommendations sections render
+      // with type "product-recommendations" and an id like
+      // "shopify-section-template--XXX__product_recommendations".
+      const section = eventTarget.closest('.shopify-section');
+      if (!section) return false;
+      if (section.id && section.id.indexOf('product_recommendations') !== -1) return true;
+      // Some themes use a custom element <product-recommendations> inside the section
+      if (section.querySelector('product-recommendations, product-recommendations-component')) return true;
+      return false;
+    }
+
+    /**
+     * Hook into the theme's cart-add events. Horizon emits 'cart:update'
+     * (both CartAddEvent and CartUpdateEvent share that type). We only act
+     * when the source is a Recommended products section.
+     */
+    function handleCartUpdate(e) {
+      const detail = (e && e.detail) || {};
+      // Avoid loops from our own internal upsell-add inside the modal
+      if (detail.source === 'dwg-atc' || (detail.data && detail.data.source === 'dwg-atc')) return;
+      if (!isFromRecommendations(e.target)) return;
+
+      const cart = detail.resource || detail.cart;
+      if (!cart) {
+        // fallback: fetch cart fresh
+        fetch('/cart.js', { credentials: 'same-origin' })
+          .then((r) => r.json())
+          .then((freshCart) => {
+            if (freshCart && freshCart.items && freshCart.items.length) {
+              populate(freshCart.items[freshCart.items.length - 1], freshCart);
+              open();
+            }
+          })
+          .catch(() => {});
+        return;
+      }
+      if (!cart.items || cart.items.length === 0) return;
+      const lastItem = cart.items[cart.items.length - 1];
+      populate(lastItem, cart);
+      open();
+    }
+
+    // Listen on document and window — Horizon dispatches differently in places.
+    document.addEventListener('cart:update', handleCartUpdate);
+    window.addEventListener('cart:update', handleCartUpdate);
+
+    /**
+     * Suppress the cart drawer auto-open ONLY when the add came from a
+     * recommendations section (so main product-page Add-to-cart still
+     * opens the drawer as expected).
+     */
+    function suppressCartDrawer() {
+      const drawer = document.querySelector('cart-drawer-component, [is="cart-drawer-component"]');
+      if (!drawer) return;
+      const dialog = drawer.querySelector('dialog');
+      if (dialog && typeof dialog.close === 'function') {
+        try { dialog.close(); } catch (e) {}
+      }
+    }
+    document.addEventListener('cart:update', function (e) {
+      if (!isFromRecommendations(e.target)) return;
+      // Defer so we run after the drawer's own listener has opened it.
+      setTimeout(suppressCartDrawer, 0);
+    });
+  })();
+{% endjavascript %}

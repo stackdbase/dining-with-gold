@@ -1,0 +1,97 @@
+{%- comment -%}
+  DWG global floating promo — Travel Chilli Oil.
+  Renders bottom-right on every page EXCEPT the cart page (Shopify's hosted
+  checkout uses its own layout, so it's naturally excluded).
+  Dismissible via the close button — dismissal is page-scoped only: the
+  card returns on every reload / navigation. No persistence.
+  Auto-hides while cart/menu drawers are open (avoids visual overlap).
+{%- endcomment -%}
+
+{%- assign promo_handle = 'dwg-travel-chilli-oil' -%}
+{%- assign promo_product = all_products[promo_handle] -%}
+
+{%- if promo_product != blank and request.page_type != 'cart' and request.page_type != 'checkout' -%}
+  <aside class="dwg-floating-promo" id="dwg-floating-promo">
+    <button
+      type="button"
+      class="dwg-floating-promo__close"
+      aria-label="Dismiss promo"
+      aria-controls="dwg-floating-promo"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+        <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <a
+      class="dwg-floating-promo__link"
+      href="{{ promo_product.url }}"
+      aria-label="Shop {{ promo_product.title | escape }}"
+    >
+      <div class="dwg-floating-promo__media">
+        {%- comment -%}
+          ── Floating promo media ──
+          Currently using a video. To revert to the product image, swap the
+          <video> below back for this original render block:
+
+          {% render 'image',
+            image: promo_product.featured_media.preview_image,
+            class: 'dwg-floating-promo__image',
+            alt_text_fallback: promo_product.title
+          %}
+        {%- endcomment -%}
+        <video
+          class="dwg-floating-promo__image dwg-floating-promo__video"
+          src="https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+          webkit-playsinline
+          disableremoteplayback
+          preload="auto"
+          aria-label="{{ promo_product.title | escape }}"
+        ></video>
+        <script>
+          (function () {
+            var v = document.currentScript.previousElementSibling;
+            if (!v || v.tagName !== 'VIDEO') return;
+            v.muted = true;
+            v.playsInline = true;
+            var p = v.play();
+            if (p && typeof p.catch === 'function') {
+              p.catch(function () {
+                // If the first call was blocked, retry on next user interaction or after metadata loads
+                v.addEventListener('loadedmetadata', function () { v.play().catch(function () {}); }, { once: true });
+                document.addEventListener('click', function onceClick() {
+                  v.play().catch(function () {});
+                  document.removeEventListener('click', onceClick);
+                }, { once: true });
+              });
+            }
+          })();
+        </script>
+      </div>
+      <div class="dwg-floating-promo__content">
+        <p class="dwg-floating-promo__eyebrow">SMALL BOTTLE.<br>BIG FLAVOUR.</p>
+        <p class="dwg-floating-promo__title">Take it<br>anywhere.</p>
+        <span class="dwg-floating-promo__cta">SHOP NOW &rarr;</span>
+      </div>
+    </a>
+  </aside>
+  <script>
+    (function () {
+      var promo = document.getElementById('dwg-floating-promo');
+      if (!promo) return;
+      var closeBtn = promo.querySelector('.dwg-floating-promo__close');
+      if (!closeBtn) return;
+      closeBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // Page-scoped dismiss only — no storage. The promo returns on the
+        // next reload / navigation.
+        promo.classList.add('is-dismissed');
+        setTimeout(function () { promo.style.display = 'none'; }, 240);
+      });
+    })();
+  </script>
+{%- endif -%}

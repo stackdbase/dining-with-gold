@@ -1,0 +1,50 @@
+DWG WELCOME FLOW — EMAIL 3 of 3
+================================
+TRIGGER:   Same flow, after Email 2
+SEND TIME:  7 days after signup (Wait/delay: 4 more days after Email 2)
+
+SUBJECT LINE:
+Two things people ask me most
+
+PREVIEW TEXT:
+Shipping, size, and why it fits in your handbag.
+
+BODY (paste into the text block; keep paragraph breaks):
+---------------------------------------------------------
+Hey, Wura here one last time this week.
+
+Before you decide, let me answer the two questions I get most.
+
+"Does it really fit in a handbag?"
+
+Yes. That was the whole point. I built DWG to travel with me on flights,
+restaurants, dinners at a friend's place where the food needs help. It slips into a
+handbag, a backpack, a glovebox. Wherever you go, it goes.
+
+"What about shipping?"
+
+We ship it out properly packed and properly quick. No drama, no broken bottles, no
+waiting forever.
+
+And if you're in the UK, shipping is on us when you spend over £50. So, it's a good
+moment to stock up or grab a bundle.
+
+One more thing before you go.
+
+As a thank you for being here, here's 10% off your first order with the code below.
+
+Code: WELCOME10
+
+Here's what I'd tell you if we were sitting across a table.
+
+A bottle of DWG doesn't change your life. But it does change your plate. And once
+you've had a meal with it, going back to bland feels like a downgrade.
+
+Your next dinner doesn't need to be boring.
+
+[ BUTTON ]  Order your first bottle →   ->  https://diningwithgold.com/collections/all
+
+Come hungry,
+
+Wura
+Founder, Dining With Gold

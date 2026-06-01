@@ -1,0 +1,835 @@
+{%- liquid
+  assign bg_color = section.settings.background_color | default: '#FBF1E2'
+  assign accent_color = section.settings.accent_color | default: '#C9882A'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign columns_desktop = section.settings.columns_desktop | default: 3
+-%}
+
+<section
+  class="dwg-ugc"
+  data-columns-desktop="{{ columns_desktop }}"
+  style="
+    --dwg-ugc-bg: {{ bg_color }};
+    --dwg-ugc-accent: {{ accent_color }};
+    --dwg-ugc-text: {{ text_color }};
+  "
+>
+  <div class="dwg-ugc__inner page-width">
+    {%- if section.settings.eyebrow != blank -%}
+      <p class="dwg-ugc__eyebrow">{{ section.settings.eyebrow }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="dwg-ugc__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <div class="dwg-ugc__subheading">{{ section.settings.subheading }}</div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="dwg-ugc__grid">
+        {%- for block in section.blocks -%}
+          {%- assign idx = forloop.index -%}
+          <article
+            class="dwg-ugc__tile"
+            data-ugc-tile
+            data-index="{{ idx }}"
+            {{ block.shopify_attributes }}
+          >
+            <button
+              type="button"
+              class="dwg-ugc__tile-button"
+              aria-label="Play review from {{ block.settings.customer_name | default: 'a customer' | escape }}"
+              data-ugc-open
+            >
+              <div class="dwg-ugc__media">
+                {%- if block.settings.video_url != blank -%}
+                  <video
+                    class="dwg-ugc__video"
+                    data-ugc-video
+                    src="{{ block.settings.video_url }}"
+                    {% if block.settings.poster != blank %}poster="{{ block.settings.poster | image_url: width: 600 }}"{% endif %}
+                    muted
+                    loop
+                    playsinline
+                    webkit-playsinline
+                    preload="metadata"
+                    disableremoteplayback
+                  ></video>
+                {%- else -%}
+                  <div class="dwg-ugc__placeholder">
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {%- endif -%}
+
+                <span class="dwg-ugc__play-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                </span>
+
+                <div class="dwg-ugc__overlay">
+                  {%- if block.settings.rating > 0 -%}
+                    <span class="dwg-ugc__stars" aria-label="{{ block.settings.rating }} out of 5 stars">
+                      {%- for i in (1..5) -%}
+                        {%- if i <= block.settings.rating -%}
+                          <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.7 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>
+                        {%- else -%}
+                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.7 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </span>
+                  {%- endif -%}
+
+                  {%- if block.settings.customer_name != blank -%}
+                    <p class="dwg-ugc__name">{{ block.settings.customer_name }}</p>
+                  {%- endif -%}
+
+                  {%- if block.settings.location != blank -%}
+                    <p class="dwg-ugc__location">{{ block.settings.location }}</p>
+                  {%- endif -%}
+                </div>
+              </div>
+            </button>
+
+            {%- comment -%} Hidden data the modal will read {%- endcomment -%}
+            <template data-ugc-data>
+              <div
+                data-video-url="{{ block.settings.video_url }}"
+                data-customer="{{ block.settings.customer_name | escape }}"
+                data-location="{{ block.settings.location | escape }}"
+                data-rating="{{ block.settings.rating }}"
+                data-quote="{{ block.settings.quote | escape }}"
+                data-product-url="{{ block.settings.product.url | default: block.settings.cta_link }}"
+                data-product-title="{{ block.settings.product.title | default: block.settings.cta_label | escape }}"
+              ></div>
+            </template>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.cta_label != blank and section.settings.cta_link != blank -%}
+      <div class="dwg-ugc__cta-wrap">
+        <a class="dwg-ugc__cta" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- comment -%} ── Modal ── {%- endcomment -%}
+  <div class="dwg-ugc-modal" data-ugc-modal hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dwg-ugc-modal-title">
+    <button type="button" class="dwg-ugc-modal__backdrop" data-ugc-close aria-label="Close review"></button>
+    <div class="dwg-ugc-modal__panel">
+      <button type="button" class="dwg-ugc-modal__close" data-ugc-close aria-label="Close review">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <div class="dwg-ugc-modal__media">
+        <video
+          class="dwg-ugc-modal__video"
+          data-ugc-modal-video
+          controls
+          playsinline
+          webkit-playsinline
+          preload="metadata"
+        ></video>
+      </div>
+      <div class="dwg-ugc-modal__content">
+        <span class="dwg-ugc-modal__stars" data-ugc-modal-stars></span>
+        <p class="dwg-ugc-modal__quote" data-ugc-modal-quote></p>
+        <p class="dwg-ugc-modal__meta">
+          <strong data-ugc-modal-name id="dwg-ugc-modal-title"></strong>
+          <span data-ugc-modal-location></span>
+        </p>
+        <a class="dwg-ugc-modal__cta" data-ugc-modal-cta href="#"></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-ugc {
+    background-color: var(--dwg-ugc-bg);
+    color: var(--dwg-ugc-text);
+    padding-block: clamp(40px, 6vw, 80px);
+  }
+
+  .dwg-ugc__inner {
+    text-align: center;
+    padding-inline: clamp(20px, 5vw, 48px);
+  }
+
+  .dwg-ugc__eyebrow {
+    margin: 0 0 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dwg-ugc-accent);
+  }
+
+  .dwg-ugc__heading {
+    margin: 0 0 14px;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: var(--dwg-ugc-text);
+  }
+
+  .dwg-ugc__subheading {
+    margin: 0 auto clamp(28px, 4vw, 44px);
+    max-width: 620px;
+    font-size: clamp(0.95rem, 1.5vw, 1.05rem);
+    line-height: 1.55;
+    color: rgba(28, 28, 28, 0.72);
+  }
+
+  .dwg-ugc__subheading > * {
+    margin: 0;
+  }
+
+  .dwg-ugc__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(10px, 1.5vw, 18px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-ugc__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dwg-ugc[data-columns-desktop="4"] .dwg-ugc__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .dwg-ugc__tile {
+    position: relative;
+    margin: 0;
+  }
+
+  .dwg-ugc__tile-button {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 24px rgba(28, 28, 28, 0.08);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .dwg-ugc__tile-button:hover,
+  .dwg-ugc__tile-button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(28, 28, 28, 0.14);
+    outline: none;
+  }
+
+  .dwg-ugc__media {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    background-color: #1c1c1c;
+    overflow: hidden;
+  }
+
+  .dwg-ugc__video,
+  .dwg-ugc__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dwg-ugc__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .dwg-ugc__play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.92);
+    color: var(--dwg-ugc-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .dwg-ugc__play-icon svg {
+    width: 22px;
+    height: 22px;
+    margin-left: 3px;
+  }
+
+  .dwg-ugc__tile-button:hover .dwg-ugc__play-icon,
+  .dwg-ugc__tile-button:focus-visible .dwg-ugc__play-icon {
+    opacity: 1;
+  }
+
+  .dwg-ugc__overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: clamp(14px, 2.5vw, 22px) clamp(14px, 2.5vw, 20px) clamp(12px, 2.2vw, 18px);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.35) 60%, transparent 100%);
+    color: #fff;
+    text-align: left;
+    pointer-events: none;
+  }
+
+  .dwg-ugc__stars {
+    display: inline-flex;
+    gap: 2px;
+    color: var(--dwg-ugc-accent);
+    margin-bottom: 6px;
+  }
+
+  .dwg-ugc__stars svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .dwg-ugc__name {
+    margin: 0;
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .dwg-ugc__location {
+    margin: 2px 0 0;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    opacity: 0.85;
+    letter-spacing: 0.04em;
+  }
+
+  .dwg-ugc__cta-wrap {
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+
+  .dwg-ugc__cta {
+    display: inline-block;
+    padding: 14px 28px;
+    background-color: var(--dwg-ugc-accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .dwg-ugc__cta:hover {
+    transform: translateY(-1px);
+    background-color: #b07623;
+  }
+
+  /* ── Modal ── */
+  .dwg-ugc-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  /* `display: flex` above overrides the UA `[hidden] { display: none }`, so the
+     modal must be explicitly removed when closed — otherwise this full-screen
+     z-index:9999 layer stays mounted at opacity:0 and swallows every click on
+     the page (CTAs, floating-promo close, etc.). */
+  .dwg-ugc-modal[hidden] {
+    display: none;
+  }
+
+  .dwg-ugc-modal:not([hidden]) {
+    opacity: 1;
+  }
+
+  .dwg-ugc-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.82);
+    cursor: pointer;
+  }
+
+  .dwg-ugc-modal__panel {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(420px, 92vw);
+    max-height: 92vh;
+    background-color: #1c1c1c;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-ugc-modal__panel {
+      flex-direction: row;
+      width: min(880px, 92vw);
+      max-height: 88vh;
+    }
+  }
+
+  .dwg-ugc-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 0;
+    background-color: rgba(255, 255, 255, 0.92);
+    color: #1c1c1c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+
+  .dwg-ugc-modal__close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dwg-ugc-modal__media {
+    position: relative;
+    background-color: #000;
+    flex: 0 0 auto;
+    aspect-ratio: 9 / 16;
+    max-height: 70vh;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-ugc-modal__media {
+      flex: 0 0 56%;
+      max-height: none;
+      aspect-ratio: auto;
+    }
+  }
+
+  .dwg-ugc-modal__video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    background-color: #000;
+  }
+
+  .dwg-ugc-modal__content {
+    padding: clamp(20px, 3vw, 32px);
+    color: #f5efe2;
+    background-color: #1c1c1c;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+
+  .dwg-ugc-modal__stars {
+    display: inline-flex;
+    gap: 3px;
+    color: var(--dwg-ugc-accent);
+  }
+
+  .dwg-ugc-modal__stars svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .dwg-ugc-modal__quote {
+    margin: 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    line-height: 1.4;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .dwg-ugc-modal__quote:empty {
+    display: none;
+  }
+
+  .dwg-ugc-modal__meta {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: rgba(245, 239, 226, 0.7);
+  }
+
+  .dwg-ugc-modal__meta strong {
+    display: block;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+  }
+
+  .dwg-ugc-modal__cta {
+    margin-top: auto;
+    align-self: flex-start;
+    padding: 12px 22px;
+    background-color: var(--dwg-ugc-accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+  }
+
+  .dwg-ugc-modal__cta:empty,
+  .dwg-ugc-modal__cta[href="#"] {
+    display: none;
+  }
+
+  .dwg-ugc-modal__cta:hover {
+    background-color: #b07623;
+  }
+
+  body.dwg-ugc-open {
+    overflow: hidden;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var sections = document.querySelectorAll('.dwg-ugc');
+    if (!sections.length) return;
+
+    sections.forEach(function (root) {
+      var tiles = root.querySelectorAll('[data-ugc-tile]');
+      var modal = root.querySelector('[data-ugc-modal]');
+      if (!modal) return;
+      var modalVideo = modal.querySelector('[data-ugc-modal-video]');
+      var modalStars = modal.querySelector('[data-ugc-modal-stars]');
+      var modalQuote = modal.querySelector('[data-ugc-modal-quote]');
+      var modalName = modal.querySelector('[data-ugc-modal-name]');
+      var modalLocation = modal.querySelector('[data-ugc-modal-location]');
+      var modalCta = modal.querySelector('[data-ugc-modal-cta]');
+      var closeEls = modal.querySelectorAll('[data-ugc-close]');
+
+      function starsMarkup(rating) {
+        rating = parseInt(rating, 10) || 0;
+        var out = '';
+        for (var i = 1; i <= 5; i++) {
+          if (i <= rating) {
+            out += '<svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.7 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>';
+          } else {
+            out += '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.7 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>';
+          }
+        }
+        return out;
+      }
+
+      function openModal(tile) {
+        var data = tile.querySelector('[data-ugc-data] > div');
+        if (!data) return;
+        modalVideo.src = data.dataset.videoUrl || '';
+        modalStars.innerHTML = starsMarkup(data.dataset.rating);
+        modalQuote.textContent = data.dataset.quote || '';
+        modalName.textContent = data.dataset.customer || '';
+        modalLocation.textContent = data.dataset.location || '';
+        var ctaUrl = data.dataset.productUrl || '';
+        var ctaTitle = data.dataset.productTitle || '';
+        if (ctaUrl && ctaTitle) {
+          modalCta.href = ctaUrl;
+          modalCta.textContent = 'SHOP ' + ctaTitle.toUpperCase() + ' →';
+        } else {
+          modalCta.href = '#';
+          modalCta.textContent = '';
+        }
+        modal.hidden = false;
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('dwg-ugc-open');
+        var p = modalVideo.play();
+        if (p && typeof p.catch === 'function') p.catch(function () {});
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('dwg-ugc-open');
+        try {
+          modalVideo.pause();
+          modalVideo.removeAttribute('src');
+          modalVideo.load();
+        } catch (e) {}
+      }
+
+      tiles.forEach(function (tile) {
+        var btn = tile.querySelector('[data-ugc-open]');
+        if (btn) btn.addEventListener('click', function () { openModal(tile); });
+      });
+
+      closeEls.forEach(function (el) {
+        el.addEventListener('click', function (e) { e.preventDefault(); closeModal(); });
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
+
+      // Autoplay tile previews only when in view; pause when out.
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            var v = entry.target;
+            if (entry.isIntersecting) {
+              var p = v.play();
+              if (p && typeof p.catch === 'function') p.catch(function () {});
+            } else {
+              try { v.pause(); } catch (e) {}
+            }
+          });
+        }, { threshold: 0.35 });
+        root.querySelectorAll('[data-ugc-video]').forEach(function (v) { observer.observe(v); });
+      } else {
+        root.querySelectorAll('[data-ugc-video]').forEach(function (v) {
+          var p = v.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        });
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "DWG: UGC Reviews",
+  "tag": "section",
+  "class": "section--dwg-ugc",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "LOVED BY YOU"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Real flavour, real people."
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "<p>From kitchens, cafes and tables around the world — see how the DWG community brings the heat. Tap any video to play with sound.</p>"
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "3"
+    },
+    {
+      "type": "header",
+      "content": "Bottom CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label",
+      "default": "SHOP THE COLLECTION"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FBF1E2"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#C9882A"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1C1C1C"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL (.mp4 / .mov)"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Poster image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer name",
+          "default": "@diningwithgold"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "London, UK"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Honestly transformed my dinner. The flavour is unreal."
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Linked product (optional)"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Custom CTA label (used if no product set)"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "Custom CTA link (used if no product set)"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 24,
+  "presets": [
+    {
+      "name": "DWG: UGC Reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "@diningwithgold",
+            "location": "London, UK",
+            "rating": 5,
+            "quote": "Honestly transformed my dinner. The flavour is unreal."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "@thatchillilover",
+            "location": "Manchester, UK",
+            "rating": 5,
+            "quote": "A drizzle on my eggs and I am never going back."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "@kitchenlagos",
+            "location": "Lagos, NG",
+            "rating": 5,
+            "quote": "Jollof rice with DWG on top? Game changer."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/2127cb2a23ae428b83f9adcbf16160c6.mov",
+            "customer_name": "@spicequeen",
+            "location": "Birmingham, UK",
+            "rating": 5,
+            "quote": "I carry it everywhere — small bottle, huge upgrade."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/a3306f7e61c440f69f4e200b1be84348.mov",
+            "customer_name": "@chefonthego",
+            "location": "Bristol, UK",
+            "rating": 5,
+            "quote": "Hands down the best chilli oil I have ever tasted."
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/9f52da1ba51e42b49cb65b188ba21c34.mov",
+            "customer_name": "@flavourhouse",
+            "location": "Edinburgh, UK",
+            "rating": 5,
+            "quote": "Bold, balanced, addictive. The DWG hype is real."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

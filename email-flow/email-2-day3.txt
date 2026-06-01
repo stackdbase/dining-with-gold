@@ -1,0 +1,46 @@
+DWG WELCOME FLOW — EMAIL 2 of 3
+================================
+TRIGGER:   Same flow, after Email 1
+SEND TIME:  3 days after signup (Wait/delay: 3 days)
+
+SUBJECT LINE:
+Three chillies. One small bottle.
+
+PREVIEW TEXT:
+Why DWG isn't just another hot sauce.
+
+BODY (paste into the text block; keep paragraph breaks):
+---------------------------------------------------------
+Hey, Wura again.
+
+Last time I told you how Dining With Gold started. Today I want to tell you what's
+actually in the bottle.
+
+Three chillies. Salt. Seasoning. Vegetable oil.
+
+That's it.
+
+No fillers. No mystery ingredients. No twenty-syllable preservatives pretending to
+be food.
+
+But don't let the simple list fool you. The balance took me a long time to get
+right. This isn't heat for the sake of heat. It's heat with flavour. The kind that
+makes you go back for a second spoon before you've even finished the first.
+
+I grew up watching my mum cook with intention. She'd keep a pot of jollof in the
+fridge so me and my siblings always had something waiting. That's the energy I
+bring to every bottle.
+
+Spray it on eggs. Drizzle it over rice. Mix it into noodles. Take it to a
+restaurant in Milan if the pasta's looking flat.
+
+Literally put it on anything.
+
+The only rule is no bland plates allowed.
+
+[ BUTTON ]  Try a bottle →   ->  https://diningwithgold.com/collections/all
+
+Come hungry,
+
+Wura
+Founder, Dining With Gold

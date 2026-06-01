@@ -1,0 +1,1026 @@
+{%- doc -%}
+  DWG newsletter signup modal.
+  Renders on every page (from layout/theme.liquid). Shows after a short delay
+  on EVERY page load and navigation by default — keeps appearing until the
+  visitor signs up (permanent, localStorage) or clicks "Don't Show Me Again"
+  (session-only, sessionStorage). Plain dismissal via X / NO THANKS / overlay
+  / ESC closes for the current page only and the modal returns on the next
+  navigation.
+
+  @example
+  {% render 'dwg-welcome-banner' %}
+{%- enddoc -%}
+
+{%- liquid
+  assign newsletter_image = 'https://cdn.shopify.com/s/files/1/1018/3609/5836/files/10_Untitled_design.png?v=1777443932'
+  assign popup_just_submitted = false
+  assign popup_form_errors = ''
+-%}
+
+{%- comment -%}
+  Render the customer form inside a capture so we can read `form.posted_successfully?`
+  in the form's Liquid scope (the `form` object only exists inside the `{% form %}` block).
+  The capture's side-effects (the `assign` below) flip `popup_just_submitted` to true
+  when the visitor just signed up. We then re-output the captured form HTML in the
+  form-scene markup below.
+{%- endcomment -%}
+{%- capture popup_form_html -%}
+  {%- form 'customer', class: 'dwg-welcome-banner__form' -%}
+    {%- if form.posted_successfully? -%}
+      {%- assign popup_just_submitted = true -%}
+    {%- endif -%}
+    {%- if form.errors -%}
+      {%- capture popup_form_errors -%}{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}{%- endcapture -%}
+    {%- endif -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <label for="dwg-welcome-banner-email" class="visually-hidden">Email Address</label>
+    <input
+      id="dwg-welcome-banner-email"
+      class="dwg-welcome-banner__input"
+      type="email"
+      name="contact[email]"
+      placeholder="Email Address"
+      autocomplete="email"
+      autocorrect="off"
+      autocapitalize="off"
+      required
+    >
+    <button type="submit" class="dwg-welcome-banner__submit">SIGN UP</button>
+    {%- if form.errors -%}
+      <p class="dwg-welcome-banner__error" role="alert">{{ popup_form_errors }}</p>
+    {%- endif -%}
+  {%- endform -%}
+{%- endcapture -%}
+
+<aside
+  class="dwg-welcome-banner"
+  id="dwg-welcome-banner"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dwg-welcome-banner-title"
+  aria-describedby="dwg-welcome-banner-sub"
+  data-just-submitted="{{ popup_just_submitted }}"
+>
+  <div class="dwg-welcome-banner__overlay" data-dwg-dismiss tabindex="-1"></div>
+
+  {%- if popup_just_submitted -%}
+    <!-- Reward modal: separate, focused single-panel design shown after signup. -->
+    <div class="dwg-reward" role="document">
+      <button
+        type="button"
+        class="dwg-reward__close"
+        aria-label="Dismiss reward"
+        aria-controls="dwg-welcome-banner"
+        data-dwg-dismiss
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <span class="dwg-reward__icon" aria-hidden="true">
+        <svg viewBox="0 0 56 56" fill="none">
+          <path d="M28 4 L33.5 19 L49 22 L37 33 L40.5 49 L28 41 L15.5 49 L19 33 L7 22 L22.5 19 Z"
+                fill="#C9882A" stroke="#1c1c1c" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </span>
+
+      <p class="dwg-reward__eyebrow">DINING WITH GOLD</p>
+      <h2 id="dwg-welcome-banner-title" class="dwg-reward__title">Here's Your 10% Off</h2>
+      <p id="dwg-welcome-banner-sub" class="dwg-reward__sub">
+        Use this code on your first order. One use per customer.
+      </p>
+
+      <div class="dwg-reward__code-block">
+        <span class="dwg-reward__code-label">YOUR CODE</span>
+        <span class="dwg-reward__code" data-dwg-copy-code>WELCOME10</span>
+      </div>
+
+      <div class="dwg-reward__actions dwg-reward__actions--single">
+        <button
+          type="button"
+          class="dwg-reward__btn dwg-reward__btn--copy"
+          data-dwg-copy-code
+        >
+          COPY DISCOUNT CODE
+        </button>
+        {%- comment -%}
+          REVERT NOTE: "Apply Discount Code" button was removed on 2026-05-11 per user request.
+          To restore: uncomment the block below, change actions container class back to just
+          `dwg-reward__actions`, and restore the two-action legal copy.
+
+          <a
+            class="dwg-reward__btn dwg-reward__btn--apply"
+            href="/discount/WELCOME10?redirect=/cart"
+          >
+            APPLY DISCOUNT CODE
+          </a>
+        {%- endcomment -%}
+      </div>
+
+      <p class="dwg-reward__legal">
+        Copy your code and paste it at checkout to redeem 10% off your first order.
+      </p>
+    </div>
+  {%- else -%}
+  <div class="dwg-welcome-banner__dialog" role="document">
+    <div
+      class="dwg-welcome-banner__media"
+      aria-hidden="true"
+      style="background-image: url('{{ newsletter_image }}'), linear-gradient(135deg, #fbe9c8 0%, #f4d29a 100%);"
+    ></div>
+
+    <div class="dwg-welcome-banner__panel">
+      <button
+        type="button"
+        class="dwg-welcome-banner__close"
+        aria-label="Dismiss newsletter signup"
+        aria-controls="dwg-welcome-banner"
+        data-dwg-dismiss
+      >
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <p class="dwg-welcome-banner__brand">DINING WITH GOLD</p>
+
+      {%- comment -%}Newsletter form scene only (success now renders its own modal above).{%- endcomment -%}
+
+        <h2 id="dwg-welcome-banner-title" class="dwg-welcome-banner__title">
+          UNLOCK 10% OFF<br>YOUR FIRST ORDER
+        </h2>
+        <p id="dwg-welcome-banner-sub" class="dwg-welcome-banner__sub">
+          When you sign up to our list
+        </p>
+
+        <p class="dwg-welcome-banner__legal">
+          By subscribing, you agree to receive recurring marketing emails from Dining With Gold and accept our <a href="/policies/privacy-policy">Privacy Policy</a>. Consent is not a condition of any purchase. You can opt out at any time.
+        </p>
+
+        {{ popup_form_html }}
+
+        <div class="dwg-welcome-banner__actions">
+          <button
+            type="button"
+            class="dwg-welcome-banner__no-thanks"
+            data-dwg-dismiss
+          >
+            NO THANKS
+          </button>
+          <button
+            type="button"
+            class="dwg-welcome-banner__dont-show"
+            data-dwg-dismiss-session
+          >
+            DON'T SHOW ME AGAIN
+          </button>
+        </div>
+
+        <p class="dwg-welcome-banner__finePrint">
+          Discount applied to your first order. Cannot be combined with other offers. New subscribers only.
+        </p>
+    </div>
+  </div>
+  {%- endif -%}
+</aside>
+
+{% stylesheet %}
+  /* ------- Backdrop / outer ------- */
+  .dwg-welcome-banner {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition:
+      opacity 280ms ease,
+      visibility 320ms ease;
+  }
+
+  .dwg-welcome-banner.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  .dwg-welcome-banner__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(28, 28, 28, 0.55);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+  }
+
+  /* ------- Dialog ------- */
+  .dwg-welcome-banner__dialog {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: min(960px, 100%);
+    max-height: calc(100vh - 48px);
+    background-color: #FBF1E2;
+    border: 1px solid rgba(201, 136, 42, 0.18);
+    border-radius: 18px;
+    box-shadow:
+      0 30px 70px rgba(28, 28, 28, 0.22),
+      0 6px 18px rgba(201, 136, 42, 0.08);
+    overflow: hidden;
+    transform: translateY(16px) scale(0.98);
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dwg-welcome-banner.is-visible .dwg-welcome-banner__dialog {
+    transform: translateY(0) scale(1);
+  }
+
+  /* ------- Media (image) -------
+     The image URL is set inline (background-image: url, fallback gradient).
+     If the asset is missing, the gradient still shows. */
+  .dwg-welcome-banner__media {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    min-height: 100%;
+  }
+
+  /* ------- Panel (right side) ------- */
+  .dwg-welcome-banner__panel {
+    position: relative;
+    padding: 44px 44px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  .dwg-welcome-banner__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(201, 136, 42, 0.25);
+    border-radius: 50%;
+    color: #1c1c1c;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .dwg-welcome-banner__close:hover,
+  .dwg-welcome-banner__close:focus-visible {
+    background-color: rgba(201, 136, 42, 0.12);
+    border-color: rgba(201, 136, 42, 0.55);
+    transform: scale(1.04);
+    outline: none;
+  }
+
+  .dwg-welcome-banner__close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ------- Type ------- */
+  .dwg-welcome-banner__brand {
+    margin: 0 0 28px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: #C9882A;
+    font-weight: 700;
+  }
+
+  .dwg-welcome-banner__title {
+    margin: 0 0 12px;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: #1c1c1c;
+    font-weight: 700;
+  }
+
+  .dwg-welcome-banner__title--success {
+    font-size: clamp(1.4rem, 2vw, 1.9rem);
+  }
+
+  /* Success-state: discount code block */
+  .dwg-welcome-banner__code-block {
+    margin: 8px 0 14px;
+    padding: 12px 16px;
+    border: 1.5px dashed #C9882A;
+    border-radius: 10px;
+    background-color: rgba(201, 136, 42, 0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dwg-welcome-banner__code-label {
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(28, 28, 28, 0.65);
+  }
+
+  .dwg-welcome-banner__code {
+    font-family: var(--font-heading--family, inherit);
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #C9882A;
+    cursor: pointer;
+    user-select: all;
+    transition: color 0.18s ease;
+  }
+
+  .dwg-welcome-banner__code:hover {
+    color: #1c1c1c;
+  }
+
+  .dwg-welcome-banner__shop-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    margin-top: 4px;
+    padding: 0 24px;
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    border: 0;
+    border-radius: 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease;
+  }
+
+  .dwg-welcome-banner__shop-cta:hover,
+  .dwg-welcome-banner__shop-cta:focus-visible {
+    background-color: #C9882A;
+    outline: none;
+  }
+
+  .dwg-welcome-banner__sub {
+    margin: 0 0 18px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #1c1c1c;
+    font-weight: 600;
+  }
+
+  .dwg-welcome-banner__legal {
+    margin: 0 0 18px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: rgba(28, 28, 28, 0.7);
+  }
+
+  .dwg-welcome-banner__legal a {
+    color: #C9882A;
+    text-decoration: underline;
+    text-decoration-color: rgba(201, 136, 42, 0.45);
+  }
+
+  .dwg-welcome-banner__legal a:hover {
+    color: #1c1c1c;
+    text-decoration-color: #C9882A;
+  }
+
+  /* ------- Form ------- */
+  .dwg-welcome-banner__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 12px;
+  }
+
+  .dwg-welcome-banner__input {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(28, 28, 28, 0.12);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #1c1c1c;
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+  }
+
+  .dwg-welcome-banner__input::placeholder {
+    color: rgba(28, 28, 28, 0.45);
+  }
+
+  .dwg-welcome-banner__input:focus {
+    outline: none;
+    border-color: #C9882A;
+    box-shadow: 0 0 0 3px rgba(201, 136, 42, 0.18);
+  }
+
+  .dwg-welcome-banner__submit {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: #1c1c1c;
+    color: #FAF7F2;
+    border: 1px solid #1c1c1c;
+    border-radius: 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .dwg-welcome-banner__submit:hover,
+  .dwg-welcome-banner__submit:focus-visible {
+    background-color: #C9882A;
+    border-color: #C9882A;
+    color: #FAF7F2;
+    outline: none;
+  }
+
+  .dwg-welcome-banner__submit:active {
+    transform: translateY(1px);
+  }
+
+  .dwg-welcome-banner__error {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #B0341E;
+  }
+
+  /* ------- No thanks + Don't show again ------- */
+  .dwg-welcome-banner__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 14px 0 0;
+  }
+
+  .dwg-welcome-banner__no-thanks,
+  .dwg-welcome-banner__dont-show {
+    padding: 6px 0;
+    background: transparent;
+    border: 0;
+    border-block-end: 1px solid rgba(28, 28, 28, 0.4);
+    color: #1c1c1c;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .dwg-welcome-banner__dont-show {
+    border-block-end-color: rgba(28, 28, 28, 0.25);
+    color: rgba(28, 28, 28, 0.6);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+  }
+
+  .dwg-welcome-banner__no-thanks:hover,
+  .dwg-welcome-banner__no-thanks:focus-visible,
+  .dwg-welcome-banner__dont-show:hover,
+  .dwg-welcome-banner__dont-show:focus-visible {
+    color: #C9882A;
+    border-color: #C9882A;
+    outline: none;
+  }
+
+  .dwg-welcome-banner__finePrint {
+    margin: 18px 0 0;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: rgba(28, 28, 28, 0.55);
+    text-align: center;
+  }
+
+  /* ============================================================
+     Reward modal (post-signup) — centered single panel
+     ============================================================ */
+  .dwg-reward {
+    position: relative;
+    width: min(480px, 100%);
+    background-color: #FBF1E2;
+    border: 1.5px solid #1c1c1c;
+    border-radius: 18px;
+    padding: 40px 32px 28px;
+    box-shadow: 0 24px 60px rgba(28, 28, 28, 0.28);
+    text-align: center;
+    transform: translateY(12px) scale(0.98);
+    opacity: 0;
+    transition:
+      transform 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.26s ease;
+    font-family: var(--font-body--family, inherit);
+    color: #1c1c1c;
+  }
+
+  .dwg-welcome-banner.is-visible .dwg-reward {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .dwg-reward__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background-color: transparent;
+    border: 1.2px solid rgba(28, 28, 28, 0.5);
+    border-radius: 8px;
+    color: #1c1c1c;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+
+  .dwg-reward__close:hover,
+  .dwg-reward__close:focus-visible {
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-reward__close svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dwg-reward__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    filter: drop-shadow(0 6px 14px rgba(201, 136, 42, 0.4));
+  }
+
+  .dwg-reward__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .dwg-reward__eyebrow {
+    margin: 0 0 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #C9882A;
+  }
+
+  .dwg-reward__title {
+    margin: 0 0 10px;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    line-height: 1.1;
+    font-weight: 700;
+    color: #1c1c1c;
+  }
+
+  .dwg-reward__sub {
+    margin: 0 0 22px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(28, 28, 28, 0.7);
+  }
+
+  .dwg-reward__code-block {
+    margin: 0 0 20px;
+    padding: 16px 18px;
+    border: 2px dashed #C9882A;
+    border-radius: 12px;
+    background-color: rgba(201, 136, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .dwg-reward__code-label {
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(28, 28, 28, 0.65);
+  }
+
+  .dwg-reward__code {
+    font-family: var(--font-heading--family, inherit);
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #C9882A;
+    cursor: pointer;
+    user-select: all;
+    transition: color 0.18s ease;
+  }
+
+  .dwg-reward__code:hover {
+    color: #1c1c1c;
+  }
+
+  .dwg-reward__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 0 0 18px;
+  }
+
+  /* Single-button variant: stretch one CTA across the full panel width */
+  .dwg-reward__actions--single {
+    grid-template-columns: 1fr;
+  }
+
+  .dwg-reward__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-family: var(--font-accent--family, inherit);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
+  }
+
+  .dwg-reward__btn:active {
+    transform: scale(0.98);
+  }
+
+  .dwg-reward__btn--copy {
+    background-color: transparent;
+    color: #1c1c1c;
+    border: 1.4px solid #1c1c1c;
+  }
+
+  .dwg-reward__btn--copy:hover,
+  .dwg-reward__btn--copy:focus-visible {
+    background-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-reward__btn--apply {
+    background-color: #C9882A;
+    color: #FBF1E2;
+    border: 1.4px solid #C9882A;
+  }
+
+  .dwg-reward__btn--apply:hover,
+  .dwg-reward__btn--apply:focus-visible {
+    background-color: #1c1c1c;
+    border-color: #1c1c1c;
+    color: #FBF1E2;
+    outline: none;
+  }
+
+  .dwg-reward__legal {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: rgba(28, 28, 28, 0.6);
+  }
+
+  /* Mobile: stack the two buttons and tighten padding */
+  @media screen and (max-width: 599px) {
+    .dwg-reward {
+      padding: 32px 22px 22px;
+    }
+    .dwg-reward__icon {
+      width: 52px;
+      height: 52px;
+      margin-bottom: 14px;
+    }
+    .dwg-reward__title {
+      font-size: 1.4rem;
+    }
+    .dwg-reward__code {
+      font-size: 1.6rem;
+    }
+    .dwg-reward__actions {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .dwg-reward__btn {
+      height: 48px;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* ------- Tablet (750–989) — image column slightly narrower so form has room ------- */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .dwg-welcome-banner__dialog {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    }
+
+    .dwg-welcome-banner__panel {
+      padding: 36px 32px 28px;
+    }
+
+    .dwg-welcome-banner__title {
+      font-size: 1.7rem;
+    }
+  }
+
+  /* ------- Mobile (< 750) — stack: image on top as a banner, form below ------- */
+  @media screen and (max-width: 749px) {
+    .dwg-welcome-banner {
+      padding: 16px;
+    }
+
+    .dwg-welcome-banner__dialog {
+      grid-template-columns: 1fr;
+      grid-template-rows: 200px 1fr;
+      max-height: calc(100dvh - 32px);
+    }
+
+    .dwg-welcome-banner__media {
+      width: 100%;
+      height: 200px;
+      min-height: 200px;
+      /* Bias the crop slightly upward so the chef's face/bottle stay in frame */
+      background-position: center 28%;
+    }
+
+    .dwg-welcome-banner__panel {
+      padding: 28px 22px 24px;
+      overflow-y: auto;
+    }
+
+    .dwg-welcome-banner__close {
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      /* Sits over the image — make sure it stays readable */
+      background-color: rgba(255, 255, 255, 0.92);
+    }
+
+    .dwg-welcome-banner__brand {
+      margin-bottom: 18px;
+      font-size: 0.72rem;
+      letter-spacing: 0.28em;
+    }
+
+    .dwg-welcome-banner__title {
+      font-size: 1.5rem;
+    }
+
+    .dwg-welcome-banner__sub {
+      font-size: 0.72rem;
+      margin-bottom: 14px;
+    }
+
+    .dwg-welcome-banner__legal {
+      font-size: 0.74rem;
+      margin-bottom: 14px;
+    }
+
+    .dwg-welcome-banner__input,
+    .dwg-welcome-banner__submit {
+      padding: 12px 14px;
+      font-size: 0.9rem;
+    }
+
+    .dwg-welcome-banner__finePrint {
+      font-size: 0.66rem;
+      margin-top: 14px;
+    }
+  }
+
+  /* ------- Very small phones (< 380) — tighten image so the form has full visibility ------- */
+  @media screen and (max-width: 379px) {
+    .dwg-welcome-banner__dialog {
+      grid-template-rows: 160px 1fr;
+    }
+
+    .dwg-welcome-banner__media {
+      height: 160px;
+      min-height: 160px;
+    }
+
+    .dwg-welcome-banner__panel {
+      padding: 24px 18px 22px;
+    }
+
+    .dwg-welcome-banner__title {
+      font-size: 1.35rem;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var banner = document.getElementById('dwg-welcome-banner');
+    if (!banner) return;
+
+    var SESSION_KEY = 'dwg-welcome-banner-session-dismissed';
+    var PERMANENT_KEY = 'dwg-welcome-banner-signed-up';
+    var PAGEVIEWS_KEY = 'dwg-welcome-banner-page-views';
+    // Strategic show schedule (page views in the current session).
+    // The banner appears the first time, again after a bit of browsing,
+    // and once more for engaged users — capped at 3 shows per session.
+    var SHOW_AT_PAGEVIEWS = [1, 4, 8];
+    var SHOW_DELAY_MS = 1500;
+    var CLOSE_TRANSITION_MS = 320;
+    var dismissEls = banner.querySelectorAll('[data-dwg-dismiss]');
+    var dismissSessionEls = banner.querySelectorAll('[data-dwg-dismiss-session]');
+    var justSubmitted = banner.getAttribute('data-just-submitted') === 'true';
+
+    function isPermanentlyDismissed() {
+      try { return window.localStorage.getItem(PERMANENT_KEY) === '1'; } catch (e) { return false; }
+    }
+
+    function isSessionDismissed() {
+      try { return window.sessionStorage.getItem(SESSION_KEY) === '1'; } catch (e) { return false; }
+    }
+
+    function rememberPermanent() {
+      try { window.localStorage.setItem(PERMANENT_KEY, '1'); } catch (e) {}
+    }
+
+    function rememberSession() {
+      try { window.sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+    }
+
+    function incrementPageViews() {
+      try {
+        var current = parseInt(window.sessionStorage.getItem(PAGEVIEWS_KEY) || '0', 10) || 0;
+        var next = current + 1;
+        window.sessionStorage.setItem(PAGEVIEWS_KEY, String(next));
+        return next;
+      } catch (e) { return 1; }
+    }
+
+    function shouldShowAtPageView(n) {
+      for (var i = 0; i < SHOW_AT_PAGEVIEWS.length; i++) {
+        if (SHOW_AT_PAGEVIEWS[i] === n) return true;
+      }
+      return false;
+    }
+
+    function show() {
+      banner.classList.add('is-visible');
+      document.documentElement.style.overflow = 'hidden';
+    }
+
+    function hide() {
+      // Plain dismiss — does NOT persist. Pop-up returns on next page load.
+      banner.classList.remove('is-visible');
+      document.documentElement.style.overflow = '';
+      setTimeout(function () {
+        banner.style.display = 'none';
+      }, CLOSE_TRANSITION_MS);
+    }
+
+    function dismissForSession() {
+      rememberSession();
+      hide();
+    }
+
+    // Skip rendering if user already signed up (permanent) or chose
+    // "Don't Show Me Again" this session.
+    if ((isPermanentlyDismissed() || isSessionDismissed()) && !justSubmitted) {
+      banner.style.display = 'none';
+      return;
+    }
+
+    // Strategic show throttle: count every page view in this session
+    // and only show on pre-defined trigger views (e.g. 1st, 4th, 8th).
+    // After 3 shows in a session, the banner stays hidden for that session
+    // even if the user keeps browsing.
+    var pageViews = incrementPageViews();
+    if (!justSubmitted && !shouldShowAtPageView(pageViews)) {
+      banner.style.display = 'none';
+      return;
+    }
+
+    // Plain dismissals (X / NO THANKS / overlay click)
+    dismissEls.forEach(function (el) {
+      el.addEventListener('click', hide);
+    });
+
+    // Session-dismissal button ("DON'T SHOW ME AGAIN")
+    dismissSessionEls.forEach(function (el) {
+      el.addEventListener('click', dismissForSession);
+    });
+
+    // ESC closes (no persistence)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && banner.classList.contains('is-visible')) {
+        hide();
+      }
+    });
+
+    function reveal() {
+      window.requestAnimationFrame(function () {
+        setTimeout(show, SHOW_DELAY_MS);
+      });
+    }
+
+    /* Silently apply the WELCOME10 discount to the user's cart session.
+       Shopify's /discount/CODE endpoint applies the code as a server-side
+       cart attribute and then redirects. fetch() with default redirect
+       behavior + no-cors mode is enough to trigger the apply without
+       navigating away from this page. */
+    function applyWelcomeDiscount() {
+      try {
+        fetch('/discount/WELCOME10', { credentials: 'same-origin', mode: 'no-cors' })
+          .catch(function () {});
+      } catch (e) {}
+    }
+
+    /* Click-to-copy the discount code in the reward modal. Binds both the
+       code text itself and the "COPY DISCOUNT CODE" button. */
+    var COPY_CODE = 'WELCOME10';
+    var copyEls = banner.querySelectorAll('[data-dwg-copy-code]');
+    copyEls.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var clickedBtn = el;
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(COPY_CODE);
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = COPY_CODE;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'absolute';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+          }
+          var original = clickedBtn.textContent;
+          clickedBtn.textContent = 'COPIED!';
+          setTimeout(function () { clickedBtn.textContent = original; }, 1500);
+        } catch (e) {}
+      });
+    });
+
+    if (justSubmitted) {
+      // Successful signup: persist permanently so it never returns.
+      rememberPermanent();
+      // Apply the 10% discount to the user's cart in the background, so
+      // even if the user just dismisses without clicking Apply, their cart
+      // already has the code on it.
+      applyWelcomeDiscount();
+      show();
+      // No auto-close for the reward — user dismisses manually via X /
+      // overlay / Esc, or by clicking Copy/Apply.
+    } else if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      reveal();
+    } else {
+      window.addEventListener('DOMContentLoaded', reveal);
+    }
+  })();
+{% endjavascript %}

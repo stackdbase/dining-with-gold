@@ -1,0 +1,814 @@
+/* ============================================================
+   DWG (Dining With Gold) — brand overrides for the mobile menu
+   drawer, cart drawer, and cart page.
+
+   Loaded after base.css via snippets/stylesheets.liquid so these
+   rules win specificity ties via source order. All edits here
+   are additive — base.css is untouched, so removing this file
+   restores stock Horizon.
+
+   Brand tokens reused (defined by scheme-1 / settings_data.json):
+     --color-background        cream   (#FAF7F2)
+     --color-foreground-heading dark   (#1C1C1C)
+     --color-foreground         dark   (#1C1C1C d9)
+     --color-primary            gold   (#C9882A)
+     --font-heading--family     Playfair Display
+     --font-body--family        Inter
+     --font-accent--family      Inter (bold)
+   ============================================================ */
+
+/* ============================================================
+   1. MOBILE MENU DRAWER — gold-filled brand treatment
+   ============================================================ */
+
+.menu-drawer {
+  --menu-drawer-padding-x: clamp(20px, 6vw, 32px);
+  --dwg-dark: #1C1C1C;
+  --dwg-dark-soft: rgba(28, 28, 28, 0.72);
+  --dwg-dark-faint: rgba(28, 28, 28, 0.14);
+
+  /* Solid amber fill — opaque, brand-aligned */
+  background: #FFC879 !important;
+  color: var(--dwg-dark) !important;
+
+  /* Override scheme tokens INSIDE the drawer so child elements pick up dark-on-amber */
+  --color-foreground: var(--dwg-dark);
+  --color-foreground-heading: var(--dwg-dark);
+  --color-background: transparent;
+  --color-border: var(--dwg-dark-faint);
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Close button — dark tint, soft hover */
+.menu-drawer .menu-drawer__close-button {
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  color: var(--dwg-dark);
+  background: transparent;
+  transition:
+    background-color var(--animation-speed) var(--animation-easing),
+    color var(--animation-speed) var(--animation-easing);
+}
+
+.menu-drawer .menu-drawer__close-button:hover {
+  background: rgba(28, 28, 28, 0.08);
+  color: #000000;
+}
+
+/* Brand logo at the top edge of the drawer */
+.menu-drawer .menu-drawer__brand-logo {
+  padding: 8px var(--menu-drawer-padding-x) 20px;
+  border-bottom: 1px solid var(--dwg-dark-faint);
+  margin-block-end: 12px;
+}
+
+.menu-drawer .menu-drawer__brand-logo a {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.menu-drawer .menu-drawer__brand-logo-image {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(28, 28, 28, 0.12));
+}
+
+.menu-drawer .menu-drawer__brand-logo-text {
+  font-family: var(--font-heading--family);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--dwg-dark);
+}
+
+/* Navigation container — generous breathing room, scrollable middle */
+.menu-drawer .menu-drawer__navigation {
+  padding-inline: var(--menu-drawer-padding-x);
+  padding-block-start: 4px;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+/* Top-level menu items — editorial, large, serif, dark-on-amber */
+.menu-drawer .menu-drawer__menu-item--mainlist {
+  font-family: var(--font-heading--family);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  padding-block: 18px;
+  color: var(--dwg-dark);
+}
+
+.menu-drawer .menu-drawer__menu-item--mainlist:hover,
+.menu-drawer .menu-drawer__menu-item--mainlist[aria-expanded='true'] {
+  color: #000000;
+}
+
+/* Child / sub-menu items — body font, soft dark */
+.menu-drawer .menu-drawer__menu-item--child {
+  font-family: var(--font-body--family);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  padding-block: 10px;
+  color: var(--dwg-dark-soft);
+}
+
+.menu-drawer .menu-drawer__menu-item--child:hover {
+  color: #000000;
+}
+
+/* Active link — bold dark underline */
+.menu-drawer .menu-drawer__menu-item--active {
+  color: #000000;
+}
+
+.menu-drawer .menu-drawer__menu-item--active .menu-drawer__menu-item-text {
+  display: inline-block;
+  border-bottom: 1px solid #1C1C1C;
+  padding-bottom: 2px;
+}
+
+/* Dividers between top-level items — dark hairlines */
+.menu-drawer .menu-drawer__list-item--divider {
+  border-bottom: 1px solid var(--dwg-dark-faint);
+}
+
+/* Plus / chevron icons in accordions */
+.menu-drawer .menu-drawer__menu-item .svg-wrapper svg {
+  color: var(--dwg-dark);
+}
+
+/* Localisation buttons (currency / language) in the drawer footer */
+.menu-drawer .drawer-localization {
+  padding-block-start: clamp(20px, 4vh, 32px);
+  padding-block-end: clamp(16px, 3vh, 24px);
+  border-top: 1px solid var(--dwg-dark-faint);
+  margin-block-start: 20px;
+}
+
+.menu-drawer .drawer-localization__button {
+  font-family: var(--font-accent--family);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dwg-dark-soft);
+}
+
+.menu-drawer .drawer-localization__button:hover {
+  color: #000000;
+}
+
+/* ----------------------------------------------------------
+   Brand banner at the bottom — DWG Travel Chilli Oil promo
+   ---------------------------------------------------------- */
+
+.menu-drawer .menu-drawer__brand-banner {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  align-items: stretch;
+  gap: 0;
+  text-decoration: none;
+  margin-inline: var(--menu-drawer-padding-x);
+  margin-block-end: clamp(20px, 4vh, 32px);
+  margin-block-start: 8px;
+
+  /* Cream card on amber — drawer's amber bg must NOT bleed through */
+  background: #FAF7F2 !important;
+  color: #1C1C1C;
+  border-radius: 12px;
+  overflow: hidden;
+  isolation: isolate; /* keeps the card on its own paint layer */
+  box-shadow:
+    0 12px 28px rgba(28, 28, 28, 0.22),
+    0 4px 8px rgba(28, 28, 28, 0.10);
+  flex-shrink: 0;
+  transition: transform var(--animation-speed) var(--animation-easing),
+              box-shadow var(--animation-speed) var(--animation-easing);
+}
+
+.menu-drawer .menu-drawer__brand-banner-media {
+  background: #FAF7F2 !important;
+}
+
+.menu-drawer .menu-drawer__brand-banner-content {
+  background: #FAF7F2 !important;
+}
+
+.menu-drawer .menu-drawer__brand-banner:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px rgba(28, 28, 28, 0.28),
+    0 6px 12px rgba(28, 28, 28, 0.12);
+}
+
+.menu-drawer .menu-drawer__brand-banner-media {
+  position: relative;
+  background: linear-gradient(135deg, #FAF7F2 0%, #EDE6D9 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  min-height: 140px;
+}
+
+.menu-drawer .menu-drawer__brand-banner-image {
+  max-height: 140px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(28, 28, 28, 0.18));
+}
+
+.menu-drawer .menu-drawer__brand-banner-content {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.menu-drawer .menu-drawer__brand-banner-eyebrow {
+  font-family: var(--font-accent--family);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: #C9882A;
+  margin: 0;
+}
+
+.menu-drawer .menu-drawer__brand-banner-title {
+  font-family: var(--font-heading--family);
+  font-style: italic;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  color: #1C1C1C;
+  margin: 0;
+}
+
+.menu-drawer .menu-drawer__brand-banner-cta {
+  font-family: var(--font-accent--family);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C9882A;
+  margin-block-start: 4px;
+  align-self: flex-start;
+  border-bottom: 1px solid #C9882A;
+  padding-bottom: 1px;
+}
+
+/* ============================================================
+   2. CART DRAWER + CART PAGE
+   ============================================================ */
+
+.cart-drawer,
+main:has(.shopify-section [data-template='cart']) .cart-summary,
+.shopify-section--main-cart {
+  background: var(--color-background);
+}
+
+/* Cart heading — Playfair editorial */
+.cart-title h1,
+.cart-title h2,
+.cart-drawer h2.cart-title {
+  font-family: var(--font-heading--family);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-foreground-heading);
+}
+
+/* Empty cart — gold script accent */
+.cart-empty,
+.cart-drawer__empty {
+  text-align: center;
+  padding-block: clamp(32px, 8vh, 64px);
+}
+
+.cart-empty p,
+.cart-drawer__empty p {
+  font-family: var(--font-heading--family);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin-block-end: 16px;
+}
+
+/* Cart line item — product title in heading font, italic feel */
+.cart-items__product-title,
+.cart-items__product-name a {
+  font-family: var(--font-heading--family) !important;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: var(--color-foreground-heading);
+}
+
+.cart-items__product-title:hover,
+.cart-items__product-name a:hover {
+  color: var(--color-primary);
+}
+
+/* Variant / option text under product title — small, refined */
+.cart-items__variant,
+.cart-items__product-meta {
+  font-family: var(--font-body--family);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  color: rgba(28, 28, 28, 0.65);
+}
+
+/* Line item price — gold accent */
+.cart-items__price,
+.cart-items__line-price,
+.cart-items__product-price {
+  font-family: var(--font-heading--family);
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+/* Quantity selector — clean, gold focus ring */
+.cart-items__quantity-selector,
+.cart-items__quantity {
+  border-radius: 4px;
+  border: 1px solid rgba(28, 28, 28, 0.18);
+}
+
+.cart-items__quantity input:focus-visible,
+.cart-items__quantity-selector:focus-within {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201, 136, 42, 0.15);
+}
+
+/* Remove button — minimal text link, gold on hover */
+.cart-items__remove,
+button[name='remove'] {
+  font-family: var(--font-accent--family);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  color: rgba(28, 28, 28, 0.55);
+}
+
+.cart-items__remove:hover,
+button[name='remove']:hover {
+  color: var(--color-primary);
+}
+
+/* Cart totals — typography hierarchy */
+.cart-totals {
+  border-top: 1px solid rgba(28, 28, 28, 0.08);
+  padding-block-start: 20px;
+}
+
+.cart-totals__original-label,
+.cart-totals__item .cart-primary-typography {
+  font-family: var(--font-body--family);
+  font-size: 0.875rem;
+  color: rgba(28, 28, 28, 0.7);
+}
+
+.cart-totals__original-value {
+  font-family: var(--font-body--family);
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+}
+
+/* Final total — emphasized, Playfair, gold */
+.cart-totals__total {
+  padding-block-start: 12px;
+  border-top: 1px solid rgba(28, 28, 28, 0.08);
+}
+
+.cart-totals__total-label {
+  font-family: var(--font-heading--family) !important;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--color-foreground-heading) !important;
+}
+
+.cart-totals__total-value {
+  font-family: var(--font-heading--family) !important;
+  font-size: 1.5rem !important;
+  font-weight: 500;
+  color: var(--color-primary) !important;
+}
+
+/* Tax note — subtle, italic */
+.cart-totals__tax-note {
+  font-family: var(--font-body--family);
+  font-size: 0.75rem;
+  font-style: italic;
+  color: rgba(28, 28, 28, 0.55);
+  margin-block-start: 4px;
+}
+
+/* Discount code input — refined */
+.cart-discount__input,
+.cart-discount input[type='text'] {
+  border-radius: 4px;
+  border: 1px solid rgba(28, 28, 28, 0.18);
+  font-family: var(--font-body--family);
+  letter-spacing: 0.02em;
+}
+
+.cart-discount__input:focus,
+.cart-discount input[type='text']:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* Checkout button — bold gold pill, prominent */
+.cart-actions button[name='checkout'],
+.cart-summary button[name='checkout'],
+.cart-drawer button[name='checkout'],
+button[name='checkout'].button {
+  font-family: var(--font-accent--family);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8125rem;
+  border-radius: 999px;
+  padding-block: 16px;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 4px 12px rgba(201, 136, 42, 0.20);
+  transition:
+    background-color var(--animation-speed) var(--animation-easing),
+    transform var(--animation-speed) var(--animation-easing),
+    box-shadow var(--animation-speed) var(--animation-easing);
+}
+
+.cart-actions button[name='checkout']:hover,
+.cart-summary button[name='checkout']:hover,
+.cart-drawer button[name='checkout']:hover,
+button[name='checkout'].button:hover {
+  background: #A86F1F;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(201, 136, 42, 0.28);
+}
+
+.cart-actions button[name='checkout']:active,
+button[name='checkout'].button:active {
+  transform: translateY(0);
+}
+
+/* Cart note textarea — refined */
+.cart-note__textarea,
+.cart-note textarea {
+  border-radius: 4px;
+  border: 1px solid rgba(28, 28, 28, 0.18);
+  font-family: var(--font-body--family);
+}
+
+.cart-note__textarea:focus,
+.cart-note textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+
+/* Drawer drop shadow — slightly deeper to match header treatment */
+dialog.cart-drawer,
+.cart-drawer[open] {
+  box-shadow: -8px 0 32px rgba(28, 28, 28, 0.18);
+}
+
+/* Backdrop — subtle warm overlay instead of pure black */
+dialog.cart-drawer::backdrop,
+.menu-drawer-overlay::backdrop {
+  background: rgba(28, 28, 28, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+/* ============================================================
+   3. FLOATING PROMO CARD — Travel Chilli Oil, every page
+   Bottom-right, portrait, dismissible. Survives one session.
+   ============================================================ */
+
+.dwg-floating-promo {
+  position: fixed;
+  right: clamp(12px, 2.5vw, 24px);
+  bottom: clamp(16px, 3vh, 28px);
+  z-index: 90;
+  width: clamp(150px, 38vw, 180px);
+  background: #FAF7F2;
+  color: #1C1C1C;
+  border-radius: 14px;
+  box-shadow:
+    0 14px 32px rgba(28, 28, 28, 0.22),
+    0 4px 10px rgba(28, 28, 28, 0.12);
+  animation: dwg-promo-in 0.55s 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  overflow: hidden;
+}
+
+@keyframes dwg-promo-in {
+  from { transform: translateX(140%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+
+/* Close button on the floating promo (right bottom card).
+   Sits over the video at the top-right corner; click hides the card
+   for the rest of the session (handled by inline JS in the snippet). */
+.dwg-floating-promo__close {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background-color: rgba(28, 28, 28, 0.72);
+  color: #FBF1E2;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 6px rgba(28, 28, 28, 0.25);
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.dwg-floating-promo__close:hover,
+.dwg-floating-promo__close:focus-visible {
+  background-color: #C9882A;
+  outline: none;
+  transform: scale(1.05);
+}
+
+.dwg-floating-promo__close:active {
+  transform: scale(0.95);
+}
+
+.dwg-floating-promo__close svg {
+  width: 11px;
+  height: 11px;
+  display: block;
+}
+
+/* Dismiss transition — slides off to the right + fades */
+.dwg-floating-promo.is-dismissed {
+  transform: translateX(120%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.24s ease, opacity 0.22s ease;
+}
+
+/* Hide on print + when cart drawer or menu drawer is open (avoid overlap) */
+@media print { .dwg-floating-promo { display: none; } }
+body:has(dialog.cart-drawer[open]),
+body:has(.menu-drawer-container[open]) {
+  .dwg-floating-promo { display: none; }
+}
+
+/* The card itself is a single link (image + content stacked) */
+.dwg-floating-promo__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.dwg-floating-promo__media {
+  background: linear-gradient(135deg, #FAF7F2 0%, #EDE6D9 100%);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Image variant (kept for revert path — uses contain + padding) */
+.dwg-floating-promo__image:not(.dwg-floating-promo__video) {
+  height: clamp(96px, 22vw, 130px);
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(28, 28, 28, 0.18));
+}
+
+/* Video variant — full-bleed inside the original-sized card, cover fit */
+.dwg-floating-promo__video {
+  display: block;
+  width: 100%;
+  height: clamp(120px, 26vw, 160px);
+  object-fit: cover;
+  background-color: #1c1c1c;
+}
+
+.dwg-floating-promo__content {
+  padding: 10px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dwg-floating-promo__eyebrow {
+  font-family: var(--font-accent--family);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: #C9882A;
+  margin: 0;
+}
+
+.dwg-floating-promo__title {
+  font-family: var(--font-heading--family);
+  font-style: italic;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  color: #1C1C1C;
+  margin: 0;
+}
+
+.dwg-floating-promo__cta {
+  font-family: var(--font-accent--family);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #C9882A;
+  margin-block-start: 4px;
+  border-bottom: 1px solid #C9882A;
+  padding-bottom: 1px;
+  align-self: flex-start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dwg-floating-promo,
+  .dwg-floating-promo.is-dismissed { animation: none; }
+}
+
+/* DWG: Quick-Add (cart) button on product cards — visible by default on
+   both desktop and mobile. Theme default hides it (opacity: 0 on desktop,
+   display: none on mobile) until product-card hover. We keep the desktop
+   hover "Add" text reveal on the button itself unchanged. */
+.quick-add__button {
+  opacity: 1 !important;
+  display: flex !important;
+}
+
+/* ==========================================================================
+   DWG: Quick-Add modal branding
+   Cream surface, soft gold accents, branded close button, refined backdrop.
+   Functional buttons (Add to cart, PayPal, More payment options) are NOT
+   restyled to preserve checkout/express-payment compliance.
+   ========================================================================== */
+
+/* Backdrop — warm dim with a subtle blur so the gold modal pops */
+.quick-add-modal::backdrop {
+  background-color: rgba(28, 28, 28, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+/* Modal surface — brand cream with soft gold-tinted border + lift */
+.quick-add-modal {
+  background-color: #FBF1E2 !important;
+  border: 1px solid rgba(201, 136, 42, 0.18);
+  border-radius: 20px;
+  box-shadow:
+    0 24px 60px rgba(28, 28, 28, 0.18),
+    0 4px 12px rgba(201, 136, 42, 0.08);
+  overflow: hidden;
+}
+
+/* Inner content surface stays cream — layer a faint paper texture via radial */
+.quick-add-modal__content {
+  background:
+    radial-gradient(circle at top right, rgba(212, 165, 116, 0.06), transparent 60%),
+    #FBF1E2;
+}
+
+/* Close button — circular, branded, with hover gold halo */
+.quick-add-modal__close {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(201, 136, 42, 0.25) !important;
+  border-radius: 50% !important;
+  width: 36px;
+  height: 36px;
+  inset-inline-end: 18px;
+  inset-block-start: 18px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.quick-add-modal__close:hover,
+.quick-add-modal__close:focus-visible {
+  background-color: rgba(201, 136, 42, 0.12) !important;
+  border-color: rgba(201, 136, 42, 0.55) !important;
+  transform: scale(1.04);
+}
+
+.quick-add-modal__close svg {
+  color: #1c1c1c;
+}
+
+/* Product title in modal — match brand heading family */
+.quick-add-modal .product-title,
+.quick-add-modal h1.product-title,
+.quick-add-modal .product-information__details h1 {
+  font-family: var(--font-heading--family);
+  color: #1c1c1c;
+  letter-spacing: -0.01em;
+}
+
+/* Price — DWG gold, heading font, generous size */
+.quick-add-modal .price,
+.quick-add-modal .product-information__details .price,
+.quick-add-modal [data-testid='product-price'] {
+  color: #C9882A !important;
+  font-family: var(--font-heading--family);
+  font-weight: 700;
+}
+
+/* Quantity selector — soft cream inset with gold border */
+.quick-add-modal .quantity-selector {
+  background-color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(201, 136, 42, 0.25);
+}
+
+/* Soft separator above accelerated checkout */
+.quick-add-modal .accelerated-checkout,
+.quick-add-modal accelerated-checkout-component {
+  margin-block-start: 14px;
+  padding-block-start: 14px;
+  border-block-start: 1px solid rgba(201, 136, 42, 0.18);
+}
+
+/* "More payment options" link — DWG gold underlined */
+.quick-add-modal a[href*='checkout'],
+.quick-add-modal .more-payment-options {
+  color: #C9882A;
+  text-decoration-color: rgba(201, 136, 42, 0.4);
+}
+
+.quick-add-modal a[href*='checkout']:hover,
+.quick-add-modal .more-payment-options:hover {
+  color: #1c1c1c;
+  text-decoration-color: #C9882A;
+}
+
+/* Mobile: drawer-like radius (top corners only) */
+@media screen and (max-width: 749px) {
+  .quick-add-modal {
+    border-radius: 24px 24px 0 0 !important;
+    border-block-end: none;
+  }
+  .quick-add-modal__close {
+    inset-inline-end: 14px;
+    inset-block-start: 14px;
+  }
+}
+
+/* DWG: "Pick your perfect pack" — show 2 cards per row on tablet only.
+   Targets the pack_row group inside the shop_pack_picker section.
+   The pack_row is the only descendant group containing 4 group-block children. */
+@media screen and (min-width: 750px) and (max-width: 989px) {
+  #shopify-section-shop_pack_picker
+    [data-testid="group-block"]:has(
+      > [data-testid="group-block"]
+      + [data-testid="group-block"]
+      + [data-testid="group-block"]
+      + [data-testid="group-block"]
+    ) {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    row-gap: 20px !important;
+  }
+
+  #shopify-section-shop_pack_picker
+    [data-testid="group-block"]:has(
+      > [data-testid="group-block"]
+      + [data-testid="group-block"]
+      + [data-testid="group-block"]
+      + [data-testid="group-block"]
+    ) > [data-testid="group-block"] {
+    flex: 0 0 calc(50% - 10px) !important;
+    max-width: calc(50% - 10px) !important;
+    width: calc(50% - 10px) !important;
+  }
+}

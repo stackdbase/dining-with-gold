@@ -1,0 +1,46 @@
+DWG WELCOME FLOW — EMAIL 1 of 3
+================================
+TRIGGER:   Customer subscribes / signs up
+SEND TIME:  Immediately (delay: 0)
+
+SUBJECT LINE:
+Welcome to my table
+
+PREVIEW TEXT:
+A small bottle. A big story. Come hungry.
+
+BODY (paste into the text block; keep paragraph breaks):
+---------------------------------------------------------
+Hey, I'm Wura.
+
+Founder, chef and the woman behind every bottle of Dining With Gold.
+
+In Yoruba, Wura means gold. So when you eat with DWG, you're dining at my
+table. And at my table, the food is always bold, always flavourful, and always
+made with love.
+
+Here's how this brand started.
+
+A friend brought a chilli oil on holiday once. I had one taste and something
+clicked. I travel a lot, and everywhere I went I noticed the same thing. The
+cities are beautiful, but the food tastes bland. So I started making my own and
+carrying it with me.
+
+Somewhere between Euro summers and dinner tables abroad, Dining With Gold was
+born.
+
+Small enough for your handbag.
+
+Bold enough to rescue any meal.
+
+I'll be back in a few days to tell you exactly what's in the bottle and why it
+took me so long to get right.
+
+For now, have a look around.
+
+[ BUTTON ]  Step into the kitchen →   ->  https://diningwithgold.com
+
+Come hungry,
+
+Wura
+Founder, Dining With Gold

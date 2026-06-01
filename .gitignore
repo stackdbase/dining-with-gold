@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Shopify CLI
+.shopify/
+*.log
+
+# Editor
+.vscode/
+.idea/
+
+# Temp
+*.tmp
+*~

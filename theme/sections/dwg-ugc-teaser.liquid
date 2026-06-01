@@ -1,0 +1,411 @@
+{%- liquid
+  assign bg_color = section.settings.background_color | default: '#FFFFFF'
+  assign accent_color = section.settings.accent_color | default: '#C9882A'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign view_all_url = section.settings.view_all_url | default: '/pages/reviews'
+-%}
+
+<section
+  class="dwg-ugc-teaser"
+  style="
+    --dwg-ugct-bg: {{ bg_color }};
+    --dwg-ugct-accent: {{ accent_color }};
+    --dwg-ugct-text: {{ text_color }};
+  "
+>
+  <div class="dwg-ugc-teaser__inner page-width">
+    <div class="dwg-ugc-teaser__header">
+      <div class="dwg-ugc-teaser__heading-block">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="dwg-ugc-teaser__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.heading != blank -%}
+          <h2 class="dwg-ugc-teaser__heading">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.view_all_label != blank -%}
+        <a class="dwg-ugc-teaser__view-all" href="{{ view_all_url }}">
+          {{ section.settings.view_all_label }} <span aria-hidden="true">→</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="dwg-ugc-teaser__grid">
+        {%- for block in section.blocks -%}
+          <a
+            class="dwg-ugc-teaser__tile"
+            href="{{ view_all_url }}"
+            aria-label="See review from {{ block.settings.customer_name | default: 'a customer' | escape }}"
+            {{ block.shopify_attributes }}
+          >
+            <div class="dwg-ugc-teaser__media">
+              {%- if block.settings.video_url != blank -%}
+                <video
+                  class="dwg-ugc-teaser__video"
+                  data-ugct-video
+                  src="{{ block.settings.video_url }}"
+                  {% if block.settings.poster != blank %}poster="{{ block.settings.poster | image_url: width: 600 }}"{% endif %}
+                  muted
+                  loop
+                  playsinline
+                  webkit-playsinline
+                  preload="metadata"
+                  disableremoteplayback
+                ></video>
+              {%- else -%}
+                <div class="dwg-ugc-teaser__placeholder">
+                  {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+
+              <div class="dwg-ugc-teaser__overlay">
+                {%- if block.settings.rating > 0 -%}
+                  <span class="dwg-ugc-teaser__stars" aria-label="{{ block.settings.rating }} out of 5 stars">
+                    {%- for i in (1..5) -%}
+                      {%- if i <= block.settings.rating -%}
+                        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1l2.6 5.6 6.1.7-4.5 4.2 1.2 6L10 14.7 4.6 17.5l1.2-6L1.3 7.3l6.1-.7L10 1z"/></svg>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </span>
+                {%- endif -%}
+                {%- if block.settings.customer_name != blank -%}
+                  <p class="dwg-ugc-teaser__name">{{ block.settings.customer_name }}</p>
+                {%- endif -%}
+              </div>
+            </div>
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.view_all_label != blank -%}
+      <div class="dwg-ugc-teaser__view-all-mobile">
+        <a class="dwg-ugc-teaser__view-all" href="{{ view_all_url }}">
+          {{ section.settings.view_all_label }} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-ugc-teaser {
+    background-color: var(--dwg-ugct-bg);
+    color: var(--dwg-ugct-text);
+    padding-block: clamp(28px, 4vw, 56px);
+  }
+
+  .dwg-ugc-teaser__inner {
+    padding-inline: clamp(20px, 5vw, 48px);
+  }
+
+  .dwg-ugc-teaser__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: clamp(20px, 2.5vw, 32px);
+    flex-wrap: wrap;
+  }
+
+  .dwg-ugc-teaser__heading-block {
+    text-align: left;
+  }
+
+  .dwg-ugc-teaser__eyebrow {
+    margin: 0 0 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dwg-ugct-accent);
+  }
+
+  .dwg-ugc-teaser__heading {
+    margin: 0;
+    font-family: var(--font-heading--family, inherit);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.15;
+    font-weight: 700;
+    color: var(--dwg-ugct-text);
+  }
+
+  .dwg-ugc-teaser__view-all {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--dwg-ugct-text);
+    border-bottom: 1px solid var(--dwg-ugct-accent);
+    padding-bottom: 4px;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .dwg-ugc-teaser__view-all:hover {
+    color: var(--dwg-ugct-accent);
+  }
+
+  /* Mobile-only repeat under the grid */
+  .dwg-ugc-teaser__view-all-mobile {
+    display: none;
+    text-align: center;
+    margin-top: 24px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-ugc-teaser__header .dwg-ugc-teaser__view-all {
+      display: none;
+    }
+    .dwg-ugc-teaser__view-all-mobile {
+      display: block;
+    }
+  }
+
+  .dwg-ugc-teaser__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(8px, 1.2vw, 14px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-ugc-teaser__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+  }
+
+  .dwg-ugc-teaser__tile {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(28, 28, 28, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .dwg-ugc-teaser__tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(28, 28, 28, 0.14);
+  }
+
+  .dwg-ugc-teaser__media {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    background-color: #1c1c1c;
+    overflow: hidden;
+  }
+
+  .dwg-ugc-teaser__video,
+  .dwg-ugc-teaser__placeholder {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .dwg-ugc-teaser__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  .dwg-ugc-teaser__overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: clamp(12px, 2vw, 18px) clamp(12px, 2vw, 16px) clamp(10px, 1.8vw, 14px);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+    color: #fff;
+    pointer-events: none;
+  }
+
+  .dwg-ugc-teaser__stars {
+    display: inline-flex;
+    gap: 1px;
+    color: var(--dwg-ugct-accent);
+    margin-bottom: 3px;
+  }
+
+  .dwg-ugc-teaser__stars svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .dwg-ugc-teaser__name {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-ugc-teaser__name {
+      font-size: 0.7rem;
+    }
+    .dwg-ugc-teaser__overlay {
+      padding: 10px 10px 8px;
+    }
+    .dwg-ugc-teaser__stars svg {
+      width: 10px;
+      height: 10px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    var teasers = document.querySelectorAll('.dwg-ugc-teaser');
+    if (!teasers.length) return;
+    teasers.forEach(function (root) {
+      var videos = root.querySelectorAll('[data-ugct-video]');
+      if (!videos.length) return;
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            var v = entry.target;
+            if (entry.isIntersecting) {
+              var p = v.play();
+              if (p && typeof p.catch === 'function') p.catch(function () {});
+            } else {
+              try { v.pause(); } catch (e) {}
+            }
+          });
+        }, { threshold: 0.35 });
+        videos.forEach(function (v) { io.observe(v); });
+      } else {
+        videos.forEach(function (v) {
+          var p = v.play();
+          if (p && typeof p.catch === 'function') p.catch(function () {});
+        });
+      }
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "DWG: UGC Teaser",
+  "tag": "section",
+  "class": "section--dwg-ugc-teaser",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "LOVED BY YOU"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Real flavour, real people."
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "SEE ALL REVIEWS"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View all link",
+      "info": "Leave empty to default to /pages/reviews"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent",
+      "default": "#C9882A"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#1C1C1C"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL (.mp4 / .mov)"
+        },
+        {
+          "type": "image_picker",
+          "id": "poster",
+          "label": "Poster image (optional)"
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer name",
+          "default": "@diningwithgold"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "label": "Star rating",
+          "min": 0,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "DWG: UGC Teaser",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "@diningwithgold",
+            "rating": 5
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "@thatchillilover",
+            "rating": 5
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "@kitchenlagos",
+            "rating": 5
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

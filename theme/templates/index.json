@@ -485,6 +485,7 @@
     },
     "divider_KgYaXH": {
       "type": "divider",
+      "disabled": true,
       "name": "t:names.divider_section",
       "settings": {
         "color_scheme": "scheme-2",
@@ -978,6 +979,7 @@
     },
     "divider_JzKwKQ": {
       "type": "divider",
+      "disabled": true,
       "name": "t:names.divider_section",
       "settings": {
         "color_scheme": "scheme-5",
@@ -1014,14 +1016,14 @@
           "settings": {
             "image": "shopify://shop_images/ChatGPT_Image_Apr_29_2026_at_03_27_51_PM.png",
             "link": "",
-            "image_ratio": "square",
+            "image_ratio": "landscape",
             "width": "custom",
             "custom_width": 31,
             "width_mobile": "fill",
             "custom_width_mobile": 100,
             "height": "fill",
             "border": "solid",
-            "border_width": 1,
+            "border_width": 0,
             "border_opacity": 100,
             "border_radius": 6,
             "padding-block-start": 0,
@@ -1616,6 +1618,7 @@
     },
     "divider_qefCMr": {
       "type": "divider",
+      "disabled": true,
       "name": "t:names.divider_section",
       "settings": {
         "color_scheme": "scheme-5",
@@ -1626,6 +1629,49 @@
         "alignment_horizontal": "center",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "ugc_teaser": {
+      "type": "dwg-ugc-teaser",
+      "blocks": {
+        "teaser_1": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "Honestly transformed my dinner. The flavour is unreal.",
+            "rating": 5
+          }
+        },
+        "teaser_2": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "A drizzle on my eggs and I'm never going back.",
+            "rating": 5
+          }
+        },
+        "teaser_3": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "Jollof rice with DWG on top? Game changer.",
+            "rating": 5
+          }
+        }
+      },
+      "block_order": [
+        "teaser_1",
+        "teaser_2",
+        "teaser_3"
+      ],
+      "settings": {
+        "eyebrow": "LOVED BY YOU",
+        "heading": "Real flavour, real people.",
+        "view_all_label": "SEE ALL REVIEWS",
+        "view_all_url": "/pages/reviews",
+        "background_color": "#fccf8a",
+        "accent_color": "#c9882a",
+        "text_color": "#1c1c1c"
       }
     },
     "dwg_feature_grid_hDy9PE": {
@@ -3518,59 +3564,16 @@
         "step_kfXRNx"
       ],
       "custom_css": [
-        "{padding-left: 30px; padding-right: 30px; margin-top: 0px; margin-bottom: 0px; background-color: #feebcd;}"
+        "{padding-left: 0px; padding-right: 0px; margin-top: 0px; margin-bottom: 0px; background-color: #feebcd;}"
       ],
       "settings": {
         "heading": "Tiny Bottle, Huge Flavor",
         "description": "<p>Bring restaurant-worthy heat with you wherever you eat. Just open, drizzle, and turn ordinary food into something unforgettable.</p>",
         "eyebrow": "A SIMPLE WAY TO SPICE UP EVERY BITE",
         "image": "shopify://shop_images/ChatGPT_Image_May_3_2026_at_10_38_43_AM.png",
-        "background_color": "#feebcd",
+        "background_color": "#fccf8a",
         "accent_color": "#d4a574",
         "text_color": "#2a2a2a"
-      }
-    },
-    "ugc_teaser": {
-      "type": "dwg-ugc-teaser",
-      "blocks": {
-        "teaser_1": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
-            "customer_name": "@diningwithgold",
-            "rating": 5
-          }
-        },
-        "teaser_2": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
-            "customer_name": "@thatchillilover",
-            "rating": 5
-          }
-        },
-        "teaser_3": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
-            "customer_name": "@kitchenlagos",
-            "rating": 5
-          }
-        }
-      },
-      "block_order": [
-        "teaser_1",
-        "teaser_2",
-        "teaser_3"
-      ],
-      "settings": {
-        "eyebrow": "LOVED BY YOU",
-        "heading": "Real flavour, real people.",
-        "view_all_label": "SEE ALL REVIEWS",
-        "view_all_url": "/pages/reviews",
-        "background_color": "#FFFFFF",
-        "accent_color": "#C9882A",
-        "text_color": "#1C1C1C"
       }
     },
     "divider_xj3UGX": {
@@ -4212,6 +4215,7 @@
     "divider_MhNnCz",
     "product_feature",
     "divider_qefCMr",
+    "ugc_teaser",
     "dwg_feature_grid_hDy9PE",
     "divider_G3HfmY",
     "trust_bar",
@@ -4221,7 +4225,6 @@
     "blocks_HG6C8U",
     "our_story",
     "dwg_how_to_use_wheNEH",
-    "ugc_teaser",
     "divider_xj3UGX",
     "meal_categories",
     "divider_ymWcpz",

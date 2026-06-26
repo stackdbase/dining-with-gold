@@ -814,121 +814,28 @@ body:has(.menu-drawer-container[open]) {
 }
 
 /* ============================================================
-   DWG: Judge.me reviews — brand the widget gold (#C9882A)
-   Judge.me ships teal #108474 by default. Override its CSS
-   custom properties + the few hardcoded teal elements so the
-   review widget, stars, write-review button and badges match
-   the DWG palette on the product page and reviews page.
-   (Review EMAILS are coloured separately in the Judge.me
-   dashboard — CSS can't reach those.)
+   DWG: Judge.me reviews — branding note
+   ------------------------------------------------------------
+   The NEW Judge.me review widget (shopify_v2.css + loader.js)
+   renders inside a SHADOW DOM (<template shadowrootmode="open">).
+   Theme CSS class selectors (.jdgm-*) CANNOT cross that boundary,
+   so the widget MUST be branded in the Judge.me dashboard:
+     • Settings > Branding > Primary color  -> #C9882A
+     • Settings > Widgets > Review Widget > Color and styling
+       (star/bar, button, button-text, text colours)
+   Custom CSS to reach the shadow DOM needs Judge.me's paid
+   "Awesome" plan — not available on Free.
+
+   Only CSS *custom properties* inherit across the shadow
+   boundary, so we set the ones the widget reads as a supplement
+   to the dashboard settings (harmless if unread).
    ============================================================ */
 :root {
-  --jdgm-primary-color: #C9882A !important;
-  --jdgm-star-color: #C9882A !important;
-  --jdgm-secondary-color: #1C1C1C !important;
-  --jdgm-write-review-bg-color: #C9882A !important;
-  --jdgm-write-review-text-color: #FFFFFF !important;
-  --jdgm-paginate-color: #C9882A !important;
-  --jdgm-reviewer-name-color: #1C1C1C !important;
-}
-
-/* --- Typography: match DWG (Inter body / Playfair headings) --- */
-.jdgm-widget,
-.jdgm-widget *,
-.jdgm-prev-badge,
-.jdgm-prev-badge * {
-  font-family: var(--font-body--family, "Inter", sans-serif) !important;
-}
-.jdgm-widget { color: var(--dwg-dark, #1C1C1C); }
-
-/* Widget title + section averages -> Playfair, like DWG section headings */
-.jdgm-rev-widg__title,
-.jdgm-all-reviews-page__title,
-.jdgm-histogram__average,
-.jdgm-form__title {
-  font-family: var(--font-heading--family, "Playfair Display", serif) !important;
-  color: var(--dwg-dark, #1C1C1C) !important;
-  letter-spacing: -0.01em !important;
-}
-
-/* Body copy + author names */
-.jdgm-rev__author,
-.jdgm-rev__title,
-.jdgm-rev-widg__summary-text {
-  color: var(--dwg-dark, #1C1C1C) !important;
-}
-.jdgm-rev__body {
-  color: var(--dwg-dark-soft, rgba(28, 28, 28, 0.72)) !important;
-}
-
-/* --- Stars --- */
-.jdgm-star.jdgm-star--on,
-.jdgm-star.jdgm-star--half,
-.jdgm-prev-badge__stars .jdgm-star.jdgm-star--on {
-  color: #C9882A !important;
-}
-.jdgm-star.jdgm-star--off {
-  color: rgba(28, 28, 28, 0.22) !important;
-}
-
-/* --- Buttons: DWG style (gold, uppercase, tracked, 12px radius) --- */
-.jdgm-widget .jdgm-write-rev-link,
-.jdgm-all-reviews-page .jdgm-write-rev-link,
-.jdgm-widget .jdgm-form__submit-btn {
-  background-color: #C9882A !important;
-  color: #FFFFFF !important;
-  border: 1px solid #C9882A !important;
-  border-radius: 12px !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.1em !important;
-  font-weight: 600 !important;
-  padding: 12px 22px !important;
-  transition: background-color 0.2s ease, transform 0.2s ease !important;
-}
-.jdgm-widget .jdgm-write-rev-link:hover,
-.jdgm-all-reviews-page .jdgm-write-rev-link:hover,
-.jdgm-widget .jdgm-form__submit-btn:hover {
-  background-color: #B0741F !important;
-  transform: translateY(-1px) !important;
-}
-
-/* --- Review form inputs: faint dark border, gold focus --- */
-.jdgm-form input,
-.jdgm-form textarea,
-.jdgm-form select {
-  border: 1px solid var(--dwg-dark-faint, rgba(28, 28, 28, 0.14)) !important;
-  border-radius: 8px !important;
-  font-family: var(--font-body--family, "Inter", sans-serif) !important;
-}
-.jdgm-form input:focus,
-.jdgm-form textarea:focus,
-.jdgm-form select:focus {
-  border-color: #C9882A !important;
-  outline: none !important;
-  box-shadow: 0 0 0 2px rgba(201, 136, 42, 0.18) !important;
-}
-
-/* --- Review cards / dividers: subtle DWG hairlines --- */
-.jdgm-rev {
-  border-color: var(--dwg-dark-faint, rgba(28, 28, 28, 0.12)) !important;
-}
-
-/* --- Rating histogram --- */
-.jdgm-histogram__bar-content {
-  background-color: #C9882A !important;
-}
-.jdgm-histogram__bar {
-  background-color: rgba(28, 28, 28, 0.06) !important;
-}
-
-/* --- Verified-buyer badge + verified icon --- */
-.jdgm-rev__buyer-badge.jdgm-rev__buyer-badge,
-.jdgm-rev[data-verified-buyer="true"] .jdgm-rev__icon.jdgm-rev__icon:after {
-  color: #FFFFFF !important;
-  background-color: #C9882A !important;
-}
-
-/* --- Pagination current page --- */
-.jdgm-paginate .jdgm-curt {
-  color: #C9882A !important;
+  --jdgm-primary-color: #C9882A;
+  --jdgm-star-color: #C9882A;
+  --jdgm-secondary-color: #1C1C1C;
+  --jdgm-write-review-bg-color: #C9882A;
+  --jdgm-write-review-text-color: #FFFFFF;
+  --jdgm-paginate-color: #C9882A;
+  --jdgm-reviewer-name-color: #1C1C1C;
 }

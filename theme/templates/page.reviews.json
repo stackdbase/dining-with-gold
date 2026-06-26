@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "ugc_reviews": {
@@ -10,7 +19,10 @@
             "customer_name": "@diningwithgold",
             "location": "London, UK",
             "rating": 5,
-            "quote": "Honestly transformed my dinner. The flavour is unreal."
+            "quote": "Honestly transformed my dinner. The flavour is unreal.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         },
         "review_2": {
@@ -20,7 +32,10 @@
             "customer_name": "@thatchillilover",
             "location": "Manchester, UK",
             "rating": 5,
-            "quote": "A drizzle on my eggs and I'm never going back."
+            "quote": "A drizzle on my eggs and I'm never going back.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         },
         "review_3": {
@@ -30,7 +45,10 @@
             "customer_name": "@kitchenlagos",
             "location": "Lagos, NG",
             "rating": 5,
-            "quote": "Jollof rice with DWG on top? Game changer."
+            "quote": "Jollof rice with DWG on top? Game changer.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         },
         "review_4": {
@@ -40,7 +58,10 @@
             "customer_name": "@spicequeen",
             "location": "Birmingham, UK",
             "rating": 5,
-            "quote": "I carry it everywhere — small bottle, huge upgrade."
+            "quote": "I carry it everywhere — small bottle, huge upgrade.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         },
         "review_5": {
@@ -50,7 +71,10 @@
             "customer_name": "@chefonthego",
             "location": "Bristol, UK",
             "rating": 5,
-            "quote": "Hands down the best chilli oil I've ever tasted."
+            "quote": "Hands down the best chilli oil I've ever tasted.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         },
         "review_6": {
@@ -60,7 +84,10 @@
             "customer_name": "@flavourhouse",
             "location": "Edinburgh, UK",
             "rating": 5,
-            "quote": "Bold, balanced, addictive. The DWG hype is real."
+            "quote": "Bold, balanced, addictive. The DWG hype is real.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
           }
         }
       },
@@ -79,9 +106,9 @@
         "columns_desktop": "3",
         "cta_label": "SHOP THE COLLECTION",
         "cta_link": "/collections/all",
-        "background_color": "#FBF1E2",
-        "accent_color": "#C9882A",
-        "text_color": "#1C1C1C"
+        "background_color": "#ffe2bb",
+        "accent_color": "#c9882a",
+        "text_color": "#1c1c1c"
       }
     },
     "ugc_submit": {
@@ -97,9 +124,9 @@
         "email_subject": "DWG Community Submission",
         "email_body": "Hi DWG team, here is my video for the Loved By You wall:",
         "fineprint": "By submitting you agree to let DWG share your clip across our channels.",
-        "background_color": "#1C1C1C",
-        "accent_color": "#C9882A",
-        "text_color": "#F5EFE2"
+        "background_color": "#1c1c1c",
+        "accent_color": "#c9882a",
+        "text_color": "#f5efe2"
       }
     },
     "main": {
@@ -107,7 +134,8 @@
       "blocks": {
         "page-content": {
           "type": "page-content",
-          "settings": {}
+          "settings": {},
+          "blocks": {}
         }
       },
       "block_order": [

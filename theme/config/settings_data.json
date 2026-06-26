@@ -10,8 +10,10 @@
 {
   "current": {
     "logo": "shopify://shop_images/diningwith_87375745-be29-400e-966c-3224f361cecc.png",
+    "logo_inverse": "shopify://shop_images/diningwith_87375745-be29-400e-966c-3224f361cecc.png",
     "logo_height": 63,
     "logo_height_mobile": 78,
+    "favicon": "shopify://shop_images/diningwith_87375745-be29-400e-966c-3224f361cecc.png",
     "type_body_font": "inter_n4",
     "type_subheading_font": "inter_n5",
     "type_heading_font": "playfair_display_n7",
@@ -88,6 +90,13 @@
       }
     },
     "content_for_index": [],
+    "blocks": {
+      "14060646107696862457": {
+        "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+        "disabled": false,
+        "settings": {}
+      }
+    },
     "color_schemes": {
       "scheme-1": {
         "settings": {

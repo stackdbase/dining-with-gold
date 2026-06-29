@@ -273,6 +273,10 @@
             <textarea name="body" rows="5" required maxlength="1500"></textarea>
           </label>
 
+          {%- if s.turnstile_site_key != blank -%}
+            <div class="cf-turnstile dwg-reviews__turnstile" data-sitekey="{{ s.turnstile_site_key }}" data-theme="light"></div>
+          {%- endif -%}
+
           <button type="submit" class="dwg-reviews__submit">{{ s.submit_label | default: 'Submit review' }}</button>
           <p class="dwg-reviews__form-msg" data-dwgr-msg role="status" aria-live="polite"></p>
           <p class="dwg-reviews__form-note">{{ s.form_note | default: 'Reviews are checked before they appear.' }}</p>
@@ -281,6 +285,10 @@
     </div>
   {%- endif -%}
 </section>
+
+{%- if s.turnstile_site_key != blank -%}
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+{%- endif -%}
 
 <script>
   (function () {
@@ -320,6 +328,11 @@
       if (form.company && form.company.value) { return; } // honeypot tripped — silently drop
       if (!form.rating.value) { msg.textContent = 'Please choose a star rating.'; msg.classList.add('is-error'); return; }
 
+      var tsEl = form.querySelector('[name="cf-turnstile-response"]');
+      if (root.querySelector('.cf-turnstile') && (!tsEl || !tsEl.value)) {
+        msg.textContent = 'Please complete the verification.'; msg.classList.add('is-error'); return;
+      }
+
       var btn = form.querySelector('.dwg-reviews__submit');
       btn.disabled = true;
       var original = btn.textContent;
@@ -332,7 +345,8 @@
         author: form.author.value,
         email: form.email.value,
         title: form.title.value,
-        body: form.body.value
+        body: form.body.value,
+        turnstile_token: tsEl ? tsEl.value : ''
       };
 
       fetch(endpoint, {
@@ -662,6 +676,8 @@
     box-shadow: 0 0 0 3px rgba(201, 136, 42, 0.18);
   }
 
+  .dwg-reviews__turnstile { margin-bottom: 14px; }
+
   .dwg-reviews__submit { width: 100%; margin-top: 4px; }
 
   .dwg-reviews__form-msg { margin: 12px 0 0; font-size: 0.9rem; min-height: 1.2em; }
@@ -701,7 +717,8 @@
     { "type": "text", "id": "form_button_label", "label": "Open-form button label", "default": "Write a review" },
     { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Write a review" },
     { "type": "text", "id": "submit_label", "label": "Submit button label", "default": "Submit review" },
-    { "type": "text", "id": "submit_endpoint", "label": "Submit endpoint (app proxy)", "default": "/apps/reviews/submit" },
+    { "type": "text", "id": "submit_endpoint", "label": "Submit endpoint (full backend URL)", "default": "/apps/reviews/submit", "info": "e.g. https://dwg-reviews-api.vercel.app/api/submit" },
+    { "type": "text", "id": "turnstile_site_key", "label": "Cloudflare Turnstile site key", "info": "Optional anti-spam. Leave blank to disable. Pair with TURNSTILE_SECRET on the backend." },
     { "type": "text", "id": "success_message", "label": "Success message", "default": "Thank you! Your review has been submitted and will appear after a quick check." },
     { "type": "text", "id": "form_note", "label": "Form footnote", "default": "Reviews are checked before they appear." },
     {

@@ -29,6 +29,16 @@ Reviews go live automatically. You only act if you want to **remove** a bad one:
 Want approvals back on? Set env `MODERATE=true` in Vercel and redeploy — then new reviews
 land as `pending` until you publish them.
 
+## Fields captured
+Rating (required), headline, review text (required), name (required), location, would-recommend
+(yes/no), reviewer avatar (upload), up to 4 product photos (upload), email (private).
+Photos/avatars are resized in the browser, uploaded via the backend to the **Supabase Storage
+bucket `review-media`** (public), and shown as thumbnails with a lightbox.
+
+> **One-time migration for photos/avatars/recommend:** run `db/migration-2-media.sql` (in the
+> `dwg-reviews-api` repo) once in the Supabase **SQL editor**. Until it's run, reviews still save
+> but those three fields are dropped.
+
 ## Redeploying the backend
 ```
 cd ~/Projects/dwg-reviews-api

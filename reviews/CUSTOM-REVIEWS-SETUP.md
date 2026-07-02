@@ -21,13 +21,18 @@ product page ─GET /api/list?product=<handle>─▶ published reviews + rating 
 Display is rendered client-side by the section's JS; it also injects JSON-LD `AggregateRating`
 so Google can show star rich-snippets. New reviews show on the storefront within ~1 min (60s cache).
 
-## ✅ Zero-touch — you don't approve anything
-Reviews go live automatically. You only act if you want to **remove** a bad one:
-- Supabase → project `udmynmslsxrrhnunziir` → **Table Editor → `reviews`** → set that row's
-  **status → `spam`** (or delete it). Gone from the storefront within ~1 min.
+## ✅ Moderation — one-click approve page
+New reviews land as **pending** (env `MODERATE=true`) and don't show until you approve them.
+Approving is effortless — no Supabase login:
 
-Want approvals back on? Set env `MODERATE=true` in Vercel and redeploy — then new reviews
-land as `pending` until you publish them.
+**Bookmark:** `https://dwg-reviews-api.vercel.app/api/moderate?secret=<MODERATE_SECRET>`
+(the secret is in the Vercel project env / local `.env`).
+
+It lists pending reviews with **✓ Approve** (publishes) and **✕ Reject** (marks spam) buttons.
+Approved reviews appear on the storefront within ~1 min.
+
+Prefer zero-touch instead? Set `MODERATE=false` in Vercel and redeploy — reviews then auto-publish.
+Either way you can always remove one later via the Supabase Table Editor (`status → spam`).
 
 ## Fields captured
 Rating (required), headline, review text (required), name (required), location, would-recommend

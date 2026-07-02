@@ -2,15 +2,13 @@
   # ============================================================
   # DWG: Product Reviews — fully owned, fully branded
   # ------------------------------------------------------------
-  # Reads individual reviews from the MERCHANT-OWNED metaobject
-  #   shop.metaobjects.product_review  (storefront public_read)
-  # Fields: rating(int 1-5), title, body, author, country,
-  #         status(pending|published), created_on(date_time),
-  #         product(product_reference), verified_buyer(boolean)
-  # Submit form POSTs JSON to the app-proxy endpoint
-  #   (section setting `submit_endpoint`, default /apps/reviews/submit)
-  # which creates a `pending` metaobject via the Admin API.
-  # Only status == 'published' reviews render here (moderation).
+  # Reviews live in our own backend (Supabase via the dwg-reviews-api
+  # Vercel functions), NOT in Shopify — because DWG is a collaborator
+  # store where we can't mint an Admin API token.
+  #   • Display: JS fetches <api_base>/api/list?product=<handle>
+  #   • Submit:  form POSTs to <api_base>/api/submit (status=pending)
+  #   • Moderate: flip status→published in the Supabase Table Editor
+  # Set the API base URL in this section's settings.
   # ============================================================
 
   assign s = section.settings
@@ -18,74 +16,15 @@
   assign dark = s.text_color | default: '#1C1C1C'
   assign cream = s.background_color | default: '#FAF7F2'
   assign card = s.card_color | default: '#FFFFFF'
-
   assign product = closest.product | default: product
-
-  # --- aggregate the published reviews for this product ---
-  assign total = 0
-  assign count = 0
-  assign c5 = 0
-  assign c4 = 0
-  assign c3 = 0
-  assign c2 = 0
-  assign c1 = 0
-  assign all_reviews = shop.metaobjects.product_review.values
-
-  for r in all_reviews
-    if r.status.value != 'published'
-      continue
-    endif
-    if product != blank and r.product.value.id != product.id
-      continue
-    endif
-    assign rt = r.rating.value | plus: 0
-    assign total = total | plus: rt
-    assign count = count | plus: 1
-    case rt
-      when 5
-        assign c5 = c5 | plus: 1
-      when 4
-        assign c4 = c4 | plus: 1
-      when 3
-        assign c3 = c3 | plus: 1
-      when 2
-        assign c2 = c2 | plus: 1
-      else
-        assign c1 = c1 | plus: 1
-    endcase
-  endfor
-
-  assign avg = 0
-  if count > 0
-    assign avg = total | times: 1.0 | divided_by: count
-  endif
-  assign avg_rounded = avg | round: 1
-
-  # editor preview: show sample numbers so the layout isn't blank
-  if request.design_mode and count == 0
-    assign avg_rounded = 4.8
-    assign count = 24
-    assign c5 = 20
-    assign c4 = 3
-    assign c3 = 1
-    assign c2 = 0
-    assign c1 = 0
-  endif
-
-  assign full_stars = avg | floor
-  assign has_half = false
-  assign rem = avg | minus: full_stars
-  if rem >= 0.25 and rem < 0.75
-    assign has_half = true
-  elsif rem >= 0.75
-    assign full_stars = full_stars | plus: 1
-  endif
-  assign half_pos = full_stars | plus: 1
 -%}
 
 <section
   class="dwg-reviews"
   id="dwg-reviews-{{ section.id }}"
+  data-api-base="{{ s.api_base }}"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle }}"
   style="
     --dwgr-accent: {{ accent }};
     --dwgr-dark: {{ dark }};
@@ -108,120 +47,30 @@
 
   <div class="dwg-reviews__inner page-width">
     <header class="dwg-reviews__top">
-      <div class="dwg-reviews__summary">
-        {%- if s.eyebrow != blank -%}
-          <p class="dwg-reviews__eyebrow">{{ s.eyebrow }}</p>
-        {%- endif -%}
-        {%- if s.heading != blank -%}
-          <h2 class="dwg-reviews__heading">{{ s.heading }}</h2>
-        {%- endif -%}
+      {%- if s.eyebrow != blank -%}
+        <p class="dwg-reviews__eyebrow">{{ s.eyebrow }}</p>
+      {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="dwg-reviews__heading">{{ s.heading }}</h2>
+      {%- endif -%}
 
-        {%- if count > 0 -%}
-          <div class="dwg-reviews__score">
-            <span class="dwg-reviews__avg">{{ avg_rounded }}</span>
-            <span class="dwg-reviews__stars" aria-label="{{ avg_rounded }} out of 5 stars">
-              {%- for i in (1..5) -%}
-                <svg class="dwgr-star" viewBox="0 0 32 32" role="presentation">
-                  {%- if i <= full_stars -%}
-                    <use href="#dwgr-star-{{ section.id }}" fill="var(--dwgr-accent)"></use>
-                  {%- elsif has_half and i == half_pos -%}
-                    <use href="#dwgr-star-{{ section.id }}" fill="url(#dwgr-half-{{ section.id }})"></use>
-                  {%- else -%}
-                    <use href="#dwgr-star-{{ section.id }}" fill="rgba(28,28,28,0.18)"></use>
-                  {%- endif -%}
-                </svg>
-              {%- endfor -%}
-            </span>
-            <span class="dwg-reviews__count">{{ count }} {% if count == 1 %}review{% else %}reviews{% endif %}</span>
-          </div>
-
-          {%- if s.show_histogram -%}
-            <div class="dwg-reviews__histogram">
-              {%- assign rows = '5,4,3,2,1' | split: ',' -%}
-              {%- for row in rows -%}
-                {%- liquid
-                  case row
-                    when '5'
-                      assign rc = c5
-                    when '4'
-                      assign rc = c4
-                    when '3'
-                      assign rc = c3
-                    when '2'
-                      assign rc = c2
-                    else
-                      assign rc = c1
-                  endcase
-                  assign pct = 0
-                  if count > 0
-                    assign pct = rc | times: 100 | divided_by: count
-                  endif
-                -%}
-                <div class="dwg-reviews__hist-row">
-                  <span class="dwg-reviews__hist-label">{{ row }}★</span>
-                  <span class="dwg-reviews__hist-track"><span class="dwg-reviews__hist-fill" style="width: {{ pct }}%;"></span></span>
-                  <span class="dwg-reviews__hist-num">{{ rc }}</span>
-                </div>
-              {%- endfor -%}
-            </div>
-          {%- endif -%}
-        {%- else -%}
-          <p class="dwg-reviews__empty">{{ s.empty_text | default: 'No reviews yet — be the first to share your experience.' }}</p>
-        {%- endif -%}
-
-        {%- if s.show_form -%}
-          <button type="button" class="dwg-reviews__write-btn" data-dwgr-open>
-            {{ s.form_button_label | default: 'Write a review' }}
-          </button>
-        {%- endif -%}
+      {%- comment -%} summary (average + histogram) — filled by JS {%- endcomment -%}
+      <div class="dwg-reviews__summary" data-dwgr-summary>
+        <p class="dwg-reviews__loading">Loading reviews…</p>
       </div>
-    </header>
 
-    {%- comment -%} ---- review list ---- {%- endcomment -%}
-    {%- if count > 0 -%}
-      <ul class="dwg-reviews__list" role="list">
-        {%- assign shown = 0 -%}
-        {%- for r in all_reviews -%}
-          {%- if r.status.value != 'published' -%}{%- continue -%}{%- endif -%}
-          {%- if product != blank and r.product.value.id != product.id -%}{%- continue -%}{%- endif -%}
-          {%- assign rt = r.rating.value | plus: 0 -%}
-          {%- assign shown = shown | plus: 1 -%}
-          <li class="dwg-reviews__item{% if shown > s.initial_visible %} is-hidden{% endif %}">
-            <div class="dwg-reviews__item-stars" aria-label="{{ rt }} out of 5 stars">
-              {%- for i in (1..5) -%}
-                <svg class="dwgr-star dwgr-star--sm" viewBox="0 0 32 32" role="presentation">
-                  <use href="#dwgr-star-{{ section.id }}" fill="{% if i <= rt %}var(--dwgr-accent){% else %}rgba(28,28,28,0.18){% endif %}"></use>
-                </svg>
-              {%- endfor -%}
-            </div>
-            {%- if r.title.value != blank -%}
-              <p class="dwg-reviews__item-title">{{ r.title.value | escape }}</p>
-            {%- endif -%}
-            {%- if r.body.value != blank -%}
-              <p class="dwg-reviews__item-body">{{ r.body.value | escape | newline_to_br }}</p>
-            {%- endif -%}
-            <p class="dwg-reviews__item-meta">
-              <span class="dwg-reviews__item-author">{{ r.author.value | default: 'Verified customer' | escape }}</span>
-              {%- if r.verified_buyer.value -%}
-                <span class="dwg-reviews__verified">✓ Verified buyer</span>
-              {%- endif -%}
-              {%- if r.country.value != blank -%}
-                <span class="dwg-reviews__item-loc">{{ r.country.value | escape }}</span>
-              {%- endif -%}
-              {%- if r.created_on.value != blank -%}
-                <span class="dwg-reviews__item-date">{{ r.created_on.value | date: '%b %-d, %Y' }}</span>
-              {%- endif -%}
-            </p>
-          </li>
-        {%- endfor -%}
-      </ul>
-
-      {%- if shown > s.initial_visible -%}
-        <button type="button" class="dwg-reviews__more" data-dwgr-more>
-          {{ s.show_more_label | default: 'Show all reviews' }}
+      {%- if s.show_form -%}
+        <button type="button" class="dwg-reviews__write-btn" data-dwgr-open>
+          {{ s.form_button_label | default: 'Write a review' }}
         </button>
       {%- endif -%}
-    {%- endif -%}
+    </header>
+
+    {%- comment -%} review list — filled by JS {%- endcomment -%}
+    <ul class="dwg-reviews__list" role="list" data-dwgr-list></ul>
+    <button type="button" class="dwg-reviews__more" data-dwgr-more hidden>
+      {{ s.show_more_label | default: 'Show all reviews' }}
+    </button>
   </div>
 
   {%- comment -%} ---- submit modal ---- {%- endcomment -%}
@@ -233,8 +82,6 @@
         <h3 class="dwg-reviews__form-title" id="dwgr-form-title-{{ section.id }}">{{ s.form_heading | default: 'Write a review' }}</h3>
 
         <form class="dwg-reviews__form" data-dwgr-form novalidate>
-          <input type="hidden" name="product_id" value="{{ product.id }}">
-          <input type="hidden" name="product_handle" value="{{ product.handle }}">
           {%- comment -%} honeypot — bots fill this, humans don't see it {%- endcomment -%}
           <div class="dwg-reviews__hp" aria-hidden="true">
             <label>Leave this empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
@@ -295,14 +142,164 @@
     var root = document.getElementById('dwg-reviews-{{ section.id }}');
     if (!root) return;
 
-    // reveal-all toggle
+    var SID = {{ section.id | json }};
+    var API_BASE = (root.getAttribute('data-api-base') || '').replace(/\/+$/, '');
+    var PRODUCT_HANDLE = root.getAttribute('data-product-handle') || '';
+    var PRODUCT_ID = root.getAttribute('data-product-id') || '';
+    var PRODUCT_TITLE = {{ product.title | default: '' | json }};
+    var INITIAL = {{ s.initial_visible | default: 5 }};
+    var EMPTY_TEXT = {{ s.empty_text | default: 'No reviews yet — be the first to share your experience.' | json }};
+    var SUCCESS_MSG = {{ s.success_message | default: 'Thank you! Your review has been submitted and will appear after a quick check.' | json }};
+    var DESIGN_MODE = {{ request.design_mode | json }};
+
+    var GOLD = 'var(--dwgr-accent)';
+    var EMPTY = 'rgba(28,28,28,0.18)';
+    var HALF = 'url(#dwgr-half-' + SID + ')';
+
+    function esc(v) {
+      return (v == null ? '' : String(v))
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function br(v) { return esc(v).replace(/\n/g, '<br>'); }
+
+    function star(fill, sm) {
+      return '<svg class="dwgr-star' + (sm ? ' dwgr-star--sm' : '') + '" viewBox="0 0 32 32">' +
+        '<use href="#dwgr-star-' + SID + '" fill="' + fill + '"></use></svg>';
+    }
+    function starsFor(avg, sm) {
+      var out = '', fs = Math.floor(avg), rem = avg - fs;
+      for (var i = 1; i <= 5; i++) {
+        if (i <= fs) out += star(GOLD, sm);
+        else if (i === fs + 1 && rem >= 0.75) out += star(GOLD, sm);
+        else if (i === fs + 1 && rem >= 0.25) out += star(HALF, sm);
+        else out += star(EMPTY, sm);
+      }
+      return out;
+    }
+    function starsInt(n, sm) {
+      var out = '';
+      for (var i = 1; i <= 5; i++) out += star(i <= n ? GOLD : EMPTY, sm);
+      return out;
+    }
+    function fmtDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      } catch (e) { return ''; }
+    }
+
+    var summaryEl = root.querySelector('[data-dwgr-summary]');
+    var listEl = root.querySelector('[data-dwgr-list]');
     var moreBtn = root.querySelector('[data-dwgr-more]');
+
+    function render(data) {
+      var count = data.count || 0;
+      var avg = data.average || 0;
+
+      if (!count) {
+        summaryEl.innerHTML = '<p class="dwg-reviews__empty">' + esc(EMPTY_TEXT) + '</p>';
+        listEl.innerHTML = '';
+        moreBtn.hidden = true;
+        return;
+      }
+
+      var h = data.histogram || {};
+      var histRows = '';
+      [5, 4, 3, 2, 1].forEach(function (n) {
+        var rc = h[n] || 0;
+        var pct = count ? Math.round((rc * 100) / count) : 0;
+        histRows += '<div class="dwg-reviews__hist-row">' +
+          '<span class="dwg-reviews__hist-label">' + n + '★</span>' +
+          '<span class="dwg-reviews__hist-track"><span class="dwg-reviews__hist-fill" style="width:' + pct + '%"></span></span>' +
+          '<span class="dwg-reviews__hist-num">' + rc + '</span></div>';
+      });
+
+      summaryEl.innerHTML =
+        '<div class="dwg-reviews__score">' +
+          '<span class="dwg-reviews__avg">' + avg.toFixed(1) + '</span>' +
+          '<span class="dwg-reviews__stars">' + starsFor(avg, false) + '</span>' +
+          '<span class="dwg-reviews__count">' + count + (count === 1 ? ' review' : ' reviews') + '</span>' +
+        '</div>' +
+        '<div class="dwg-reviews__histogram">' + histRows + '</div>';
+
+      var reviews = data.reviews || [];
+      listEl.innerHTML = reviews.map(function (r, idx) {
+        var meta = '<span class="dwg-reviews__item-author">' + esc(r.author || 'Verified customer') + '</span>';
+        if (r.verified_buyer) meta += '<span class="dwg-reviews__verified">✓ Verified buyer</span>';
+        if (r.country) meta += '<span class="dwg-reviews__item-loc">' + esc(r.country) + '</span>';
+        if (r.created_at) meta += '<span class="dwg-reviews__item-date">' + esc(fmtDate(r.created_at)) + '</span>';
+        return '<li class="dwg-reviews__item' + (idx >= INITIAL ? ' is-hidden' : '') + '">' +
+          '<div class="dwg-reviews__item-stars">' + starsInt(r.rating, true) + '</div>' +
+          (r.title ? '<p class="dwg-reviews__item-title">' + esc(r.title) + '</p>' : '') +
+          (r.body ? '<p class="dwg-reviews__item-body">' + br(r.body) + '</p>' : '') +
+          '<p class="dwg-reviews__item-meta">' + meta + '</p>' +
+        '</li>';
+      }).join('');
+
+      moreBtn.hidden = reviews.length <= INITIAL;
+
+      injectJsonLd(data);
+    }
+
+    function injectJsonLd(data) {
+      if (!data.count || !PRODUCT_TITLE) return;
+      try {
+        var ld = {
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: PRODUCT_TITLE,
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: data.average,
+            reviewCount: data.count,
+            bestRating: 5, worstRating: 1
+          },
+          review: (data.reviews || []).slice(0, 20).map(function (r) {
+            return {
+              '@type': 'Review',
+              reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5, worstRating: 1 },
+              author: { '@type': 'Person', name: r.author || 'Verified customer' },
+              reviewBody: r.body || '', name: r.title || undefined,
+              datePublished: r.created_at ? String(r.created_at).slice(0, 10) : undefined
+            };
+          })
+        };
+        var el = document.createElement('script');
+        el.type = 'application/ld+json';
+        el.setAttribute('data-dwgr-ld', SID);
+        el.textContent = JSON.stringify(ld);
+        var old = document.querySelector('script[data-dwgr-ld="' + SID + '"]');
+        if (old) old.remove();
+        document.head.appendChild(el);
+      } catch (e) { /* non-fatal */ }
+    }
+
+    var SAMPLE = {
+      count: 3, average: 4.7, histogram: { 5: 2, 4: 1, 3: 0, 2: 0, 1: 0 },
+      reviews: [
+        { rating: 5, title: 'Incredible depth of flavour', body: 'A little goes a long way — the gold really shines on everything.', author: 'Amara O.', country: 'London, UK', verified_buyer: true, created_at: '2026-06-20' },
+        { rating: 5, title: 'New pantry staple', body: 'Perfect heat and beautifully packaged. Travels well too.', author: 'James P.', country: 'Manchester, UK', verified_buyer: true, created_at: '2026-06-14' },
+        { rating: 4, title: 'Lovely', body: 'Great gift. Would love a larger size.', author: 'Priya S.', country: 'Leeds, UK', verified_buyer: false, created_at: '2026-06-02' }
+      ]
+    };
+
+    function load() {
+      if (DESIGN_MODE || !API_BASE) { render(SAMPLE); return; }
+      var url = API_BASE + '/api/list?product=' + encodeURIComponent(PRODUCT_HANDLE) +
+        '&product_id=' + encodeURIComponent(PRODUCT_ID);
+      fetch(url, { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+        .then(render)
+        .catch(function () {
+          summaryEl.innerHTML = '<p class="dwg-reviews__empty">' + esc(EMPTY_TEXT) + '</p>';
+        });
+    }
+
+    // show-all toggle
     if (moreBtn) {
       moreBtn.addEventListener('click', function () {
-        root.querySelectorAll('.dwg-reviews__item.is-hidden').forEach(function (el) {
-          el.classList.remove('is-hidden');
-        });
-        moreBtn.remove();
+        listEl.querySelectorAll('.dwg-reviews__item.is-hidden').forEach(function (el) { el.classList.remove('is-hidden'); });
+        moreBtn.hidden = true;
       });
     }
 
@@ -316,65 +313,59 @@
 
     // submit
     var form = root.querySelector('[data-dwgr-form]');
-    if (!form) return;
-    var msg = form.querySelector('[data-dwgr-msg]');
-    var endpoint = {{ s.submit_endpoint | default: '/apps/reviews/submit' | json }};
+    if (form) {
+      var msg = form.querySelector('[data-dwgr-msg]');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        msg.className = 'dwg-reviews__form-msg';
+        msg.textContent = '';
+        if (form.company && form.company.value) { return; }
+        if (!form.rating.value) { msg.textContent = 'Please choose a star rating.'; msg.classList.add('is-error'); return; }
 
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      msg.className = 'dwg-reviews__form-msg';
-      msg.textContent = '';
+        var tsEl = form.querySelector('[name="cf-turnstile-response"]');
+        if (root.querySelector('.cf-turnstile') && (!tsEl || !tsEl.value)) {
+          msg.textContent = 'Please complete the verification.'; msg.classList.add('is-error'); return;
+        }
+        if (!API_BASE) { msg.textContent = 'Reviews aren’t configured yet.'; msg.classList.add('is-error'); return; }
 
-      if (form.company && form.company.value) { return; } // honeypot tripped — silently drop
-      if (!form.rating.value) { msg.textContent = 'Please choose a star rating.'; msg.classList.add('is-error'); return; }
+        var btn = form.querySelector('.dwg-reviews__submit');
+        btn.disabled = true;
+        var original = btn.textContent;
+        btn.textContent = 'Sending…';
 
-      var tsEl = form.querySelector('[name="cf-turnstile-response"]');
-      if (root.querySelector('.cf-turnstile') && (!tsEl || !tsEl.value)) {
-        msg.textContent = 'Please complete the verification.'; msg.classList.add('is-error'); return;
-      }
-
-      var btn = form.querySelector('.dwg-reviews__submit');
-      btn.disabled = true;
-      var original = btn.textContent;
-      btn.textContent = 'Sending…';
-
-      var payload = {
-        product_id: form.product_id.value,
-        product_handle: form.product_handle.value,
-        rating: form.rating.value,
-        author: form.author.value,
-        email: form.email.value,
-        title: form.title.value,
-        body: form.body.value,
-        turnstile_token: tsEl ? tsEl.value : ''
-      };
-
-      fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-        .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
-        .then(function (res) {
-          if (res.ok) {
-            form.reset();
-            msg.textContent = {{ s.success_message | default: 'Thank you! Your review has been submitted and will appear after a quick check.' | json }};
-            msg.classList.add('is-success');
-            btn.textContent = 'Submitted ✓';
-          } else {
-            msg.textContent = (res.d && res.d.error) || 'Something went wrong. Please try again.';
-            msg.classList.add('is-error');
-            btn.disabled = false;
-            btn.textContent = original;
-          }
+        fetch(API_BASE + '/api/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({
+            product_id: PRODUCT_ID,
+            product_handle: PRODUCT_HANDLE,
+            rating: form.rating.value,
+            author: form.author.value,
+            email: form.email.value,
+            title: form.title.value,
+            body: form.body.value,
+            turnstile_token: tsEl ? tsEl.value : ''
+          })
         })
-        .catch(function () {
-          msg.textContent = 'Network error. Please try again.';
-          msg.classList.add('is-error');
-          btn.disabled = false;
-          btn.textContent = original;
-        });
-    });
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (res.ok) {
+              form.reset();
+              msg.textContent = SUCCESS_MSG; msg.classList.add('is-success');
+              btn.textContent = 'Submitted ✓';
+            } else {
+              msg.textContent = (res.d && res.d.error) || 'Something went wrong. Please try again.';
+              msg.classList.add('is-error'); btn.disabled = false; btn.textContent = original;
+            }
+          })
+          .catch(function () {
+            msg.textContent = 'Network error. Please try again.';
+            msg.classList.add('is-error'); btn.disabled = false; btn.textContent = original;
+          });
+      });
+    }
+
+    load();
   })();
 </script>
 
@@ -385,10 +376,7 @@
     padding-block: clamp(48px, 6vw, 88px);
   }
 
-  .dwg-reviews__inner {
-    max-width: 980px;
-    margin: 0 auto;
-  }
+  .dwg-reviews__inner { max-width: 980px; margin: 0 auto; }
 
   .dwgr-svg-defs { position: absolute; width: 0; height: 0; }
 
@@ -399,247 +387,129 @@
 
   .dwg-reviews__eyebrow {
     margin: 0 0 10px;
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--dwgr-accent);
+    font-size: 0.74rem; font-weight: 700; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--dwgr-accent);
   }
 
   .dwg-reviews__heading {
     margin: 0 0 18px;
     font-family: var(--font-heading--family, serif);
-    font-size: clamp(1.6rem, 3.6vw, 2.4rem);
-    line-height: 1.1;
-    color: var(--dwgr-dark);
+    font-size: clamp(1.6rem, 3.6vw, 2.4rem); line-height: 1.1; color: var(--dwgr-dark);
   }
 
+  .dwg-reviews__loading { opacity: 0.5; margin: 0 0 20px; }
+
   .dwg-reviews__score {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 22px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 22px;
   }
 
   .dwg-reviews__avg {
     font-family: var(--font-heading--family, serif);
-    font-size: 2.6rem;
-    line-height: 1;
-    font-weight: 700;
-    color: var(--dwgr-dark);
+    font-size: 2.6rem; line-height: 1; font-weight: 700; color: var(--dwgr-dark);
   }
 
   .dwg-reviews__stars { font-size: 1.4rem; line-height: 1; color: var(--dwgr-accent); }
 
   .dwg-reviews__count {
     font-family: var(--font-body--family, sans-serif);
-    font-size: 0.95rem;
-    color: var(--dwgr-dark);
-    opacity: 0.7;
+    font-size: 0.95rem; color: var(--dwgr-dark); opacity: 0.7;
   }
 
-  .dwg-reviews__histogram {
-    display: grid;
-    gap: 7px;
-    max-width: 360px;
-    margin-bottom: 24px;
-  }
+  .dwg-reviews__histogram { display: grid; gap: 7px; max-width: 360px; margin-bottom: 24px; }
 
   .dwg-reviews__hist-row {
-    display: grid;
-    grid-template-columns: 30px 1fr 28px;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.82rem;
-    color: var(--dwgr-dark);
+    display: grid; grid-template-columns: 30px 1fr 28px; align-items: center; gap: 10px;
+    font-size: 0.82rem; color: var(--dwgr-dark);
   }
 
   .dwg-reviews__hist-label { opacity: 0.7; }
   .dwg-reviews__hist-num { opacity: 0.6; text-align: right; font-variant-numeric: tabular-nums; }
 
-  .dwg-reviews__hist-track {
-    height: 8px;
-    border-radius: 999px;
-    background: rgba(28, 28, 28, 0.1);
-    overflow: hidden;
-  }
+  .dwg-reviews__hist-track { height: 8px; border-radius: 999px; background: rgba(28, 28, 28, 0.1); overflow: hidden; }
+  .dwg-reviews__hist-fill { display: block; height: 100%; border-radius: 999px; background: var(--dwgr-accent); }
 
-  .dwg-reviews__hist-fill {
-    display: block;
-    height: 100%;
-    border-radius: 999px;
-    background: var(--dwgr-accent);
-  }
-
-  .dwg-reviews__empty {
-    font-size: 1.02rem;
-    color: var(--dwgr-dark);
-    opacity: 0.75;
-    margin: 0 0 22px;
-  }
+  .dwg-reviews__empty { font-size: 1.02rem; color: var(--dwgr-dark); opacity: 0.75; margin: 0 0 22px; }
 
   .dwg-reviews__write-btn,
   .dwg-reviews__submit {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 14px 30px;
-    border-radius: 12px;
-    border: none;
-    background: var(--dwgr-accent);
-    color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 14px 30px; border-radius: 12px; border: none;
+    background: var(--dwgr-accent); color: #fff;
     font-family: var(--font-body--family, sans-serif);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+    font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
   }
 
   .dwg-reviews__write-btn:hover,
   .dwg-reviews__submit:hover { background: #b07623; transform: translateY(-1px); }
   .dwg-reviews__submit:disabled { opacity: 0.65; cursor: default; transform: none; }
 
-  /* ---- list ---- */
-  .dwg-reviews__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 16px;
-  }
+  .dwg-reviews__list { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
 
   .dwg-reviews__item {
-    background: var(--dwgr-card);
-    border: 1px solid rgba(28, 28, 28, 0.08);
-    border-radius: 14px;
-    padding: 22px 24px;
+    background: var(--dwgr-card); border: 1px solid rgba(28, 28, 28, 0.08);
+    border-radius: 14px; padding: 22px 24px;
   }
-
   .dwg-reviews__item.is-hidden { display: none; }
 
   .dwg-reviews__item-stars { color: var(--dwgr-accent); font-size: 1rem; margin-bottom: 10px; }
 
   .dwg-reviews__item-title {
-    margin: 0 0 6px;
-    font-family: var(--font-heading--family, serif);
-    font-size: 1.08rem;
-    font-weight: 700;
-    color: var(--dwgr-dark);
+    margin: 0 0 6px; font-family: var(--font-heading--family, serif);
+    font-size: 1.08rem; font-weight: 700; color: var(--dwgr-dark);
   }
 
   .dwg-reviews__item-body {
-    margin: 0 0 14px;
-    font-size: 0.96rem;
-    line-height: 1.6;
-    color: var(--dwgr-dark);
-    opacity: 0.88;
+    margin: 0 0 14px; font-size: 0.96rem; line-height: 1.6; color: var(--dwgr-dark); opacity: 0.88;
   }
 
   .dwg-reviews__item-meta {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-    font-size: 0.8rem;
-    color: var(--dwgr-dark);
-    opacity: 0.65;
+    margin: 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    font-size: 0.8rem; color: var(--dwgr-dark); opacity: 0.65;
   }
 
   .dwg-reviews__item-author { font-weight: 700; opacity: 1; }
   .dwg-reviews__verified { color: var(--dwgr-accent); font-weight: 700; opacity: 1; }
 
   .dwg-reviews__more {
-    display: block;
-    margin: 22px auto 0;
-    padding: 12px 28px;
-    border-radius: 12px;
-    border: 1.5px solid rgba(28, 28, 28, 0.25);
-    background: transparent;
-    color: var(--dwgr-dark);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: border-color 0.15s ease, color 0.15s ease;
+    display: block; margin: 22px auto 0; padding: 12px 28px; border-radius: 12px;
+    border: 1.5px solid rgba(28, 28, 28, 0.25); background: transparent; color: var(--dwgr-dark);
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease;
   }
-
   .dwg-reviews__more:hover { border-color: var(--dwgr-accent); color: var(--dwgr-accent); }
 
   /* ---- modal ---- */
   .dwg-reviews__modal {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
   }
   .dwg-reviews__modal[hidden] { display: none; }
 
-  .dwg-reviews__modal-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(28, 28, 28, 0.55);
-    backdrop-filter: blur(2px);
-  }
+  .dwg-reviews__modal-overlay { position: absolute; inset: 0; background: rgba(28, 28, 28, 0.55); backdrop-filter: blur(2px); }
 
   .dwg-reviews__modal-card {
-    position: relative;
-    background: var(--dwgr-card);
-    border-radius: 16px;
-    padding: clamp(24px, 4vw, 40px);
-    width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 24px 60px rgba(28, 28, 28, 0.28);
+    position: relative; background: var(--dwgr-card); border-radius: 16px;
+    padding: clamp(24px, 4vw, 40px); width: 100%; max-width: 480px; max-height: 90vh;
+    overflow-y: auto; box-shadow: 0 24px 60px rgba(28, 28, 28, 0.28);
   }
 
   .dwg-reviews__modal-x {
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    background: none;
-    border: none;
-    font-size: 1.7rem;
-    line-height: 1;
-    color: var(--dwgr-dark);
-    opacity: 0.5;
-    cursor: pointer;
+    position: absolute; top: 14px; right: 16px; background: none; border: none;
+    font-size: 1.7rem; line-height: 1; color: var(--dwgr-dark); opacity: 0.5; cursor: pointer;
   }
   .dwg-reviews__modal-x:hover { opacity: 1; }
 
   .dwg-reviews__form-title {
-    margin: 0 0 20px;
-    font-family: var(--font-heading--family, serif);
-    font-size: 1.5rem;
-    color: var(--dwgr-dark);
+    margin: 0 0 20px; font-family: var(--font-heading--family, serif); font-size: 1.5rem; color: var(--dwgr-dark);
   }
 
   .dwg-reviews__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 
   .dwg-reviews__rating-input { border: none; padding: 0; margin: 0 0 18px; }
-  .dwg-reviews__rating-input legend {
-    padding: 0;
-    margin-bottom: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--dwgr-dark);
-  }
+  .dwg-reviews__rating-input legend { padding: 0; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; color: var(--dwgr-dark); }
 
-  /* star input: reverse-row so hover/checked can style preceding siblings */
-  .dwg-reviews__star-input {
-    display: inline-flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    gap: 4px;
-  }
+  .dwg-reviews__star-input { display: inline-flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
   .dwg-reviews__star-input input { position: absolute; opacity: 0; width: 0; height: 0; }
   .dwg-reviews__star-input label { cursor: pointer; color: rgba(28, 28, 28, 0.2); transition: color 0.1s ease; }
   .dwg-reviews__star-input label svg { width: 30px; height: 30px; display: block; }
@@ -649,32 +519,17 @@
   .dwg-reviews__star-input input:focus-visible + label { outline: 2px solid var(--dwgr-accent); outline-offset: 2px; border-radius: 4px; }
 
   .dwg-reviews__field { display: block; margin-bottom: 16px; }
-  .dwg-reviews__field > span {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: var(--dwgr-dark);
-  }
+  .dwg-reviews__field > span { display: block; margin-bottom: 6px; font-size: 0.85rem; font-weight: 700; color: var(--dwgr-dark); }
   .dwg-reviews__field em { font-weight: 400; opacity: 0.6; font-style: normal; }
 
   .dwg-reviews__field input,
   .dwg-reviews__field textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1px solid rgba(28, 28, 28, 0.2);
-    border-radius: 10px;
-    background: #fff;
-    color: var(--dwgr-dark);
-    font-family: var(--font-body--family, sans-serif);
-    font-size: 0.95rem;
+    width: 100%; padding: 11px 14px; border: 1px solid rgba(28, 28, 28, 0.2);
+    border-radius: 10px; background: #fff; color: var(--dwgr-dark);
+    font-family: var(--font-body--family, sans-serif); font-size: 0.95rem;
   }
   .dwg-reviews__field input:focus,
-  .dwg-reviews__field textarea:focus {
-    outline: none;
-    border-color: var(--dwgr-accent);
-    box-shadow: 0 0 0 3px rgba(201, 136, 42, 0.18);
-  }
+  .dwg-reviews__field textarea:focus { outline: none; border-color: var(--dwgr-accent); box-shadow: 0 0 0 3px rgba(201, 136, 42, 0.18); }
 
   .dwg-reviews__turnstile { margin-bottom: 14px; }
 
@@ -698,43 +553,30 @@
   "tag": "section",
   "class": "section--dwg-reviews",
   "settings": [
-    { "type": "paragraph", "content": "Reads reviews from the 'product_review' metaobject and posts new ones to the app-proxy endpoint. Only published reviews show." },
+    { "type": "paragraph", "content": "Reviews are stored in the DWG reviews backend (Supabase). Set the API base URL below. Only published reviews show." },
+    { "type": "text", "id": "api_base", "label": "API base URL", "info": "e.g. https://dwg-reviews-api.vercel.app (no trailing slash). Calls <base>/api/list and <base>/api/submit." },
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "LOVED BY YOU" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Reviews" },
     { "type": "text", "id": "empty_text", "label": "Empty state text", "default": "No reviews yet — be the first to share your experience." },
-    {
-      "type": "header",
-      "content": "Display"
-    },
-    { "type": "checkbox", "id": "show_histogram", "label": "Show rating breakdown", "default": true },
+    { "type": "header", "content": "Display" },
     { "type": "range", "id": "initial_visible", "label": "Reviews shown before 'Show all'", "min": 2, "max": 20, "step": 1, "default": 5 },
     { "type": "text", "id": "show_more_label", "label": "Show-all button label", "default": "Show all reviews" },
-    {
-      "type": "header",
-      "content": "Submission form"
-    },
+    { "type": "header", "content": "Submission form" },
     { "type": "checkbox", "id": "show_form", "label": "Enable Write-a-review form", "default": true },
     { "type": "text", "id": "form_button_label", "label": "Open-form button label", "default": "Write a review" },
     { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Write a review" },
     { "type": "text", "id": "submit_label", "label": "Submit button label", "default": "Submit review" },
-    { "type": "text", "id": "submit_endpoint", "label": "Submit endpoint (full backend URL)", "default": "/apps/reviews/submit", "info": "e.g. https://dwg-reviews-api.vercel.app/api/submit" },
     { "type": "text", "id": "turnstile_site_key", "label": "Cloudflare Turnstile site key", "info": "Optional anti-spam. Leave blank to disable. Pair with TURNSTILE_SECRET on the backend." },
     { "type": "text", "id": "success_message", "label": "Success message", "default": "Thank you! Your review has been submitted and will appear after a quick check." },
     { "type": "text", "id": "form_note", "label": "Form footnote", "default": "Reviews are checked before they appear." },
-    {
-      "type": "header",
-      "content": "Colours"
-    },
+    { "type": "header", "content": "Colours" },
     { "type": "color", "id": "accent_color", "label": "Accent (stars / buttons)", "default": "#C9882A" },
     { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
     { "type": "color", "id": "background_color", "label": "Section background", "default": "#FAF7F2" },
     { "type": "color", "id": "card_color", "label": "Review card background", "default": "#FFFFFF" }
   ],
   "presets": [
-    {
-      "name": "DWG: Product Reviews",
-      "category": "Product"
-    }
+    { "name": "DWG: Product Reviews", "category": "Product" }
   ]
 }
 {% endschema %}

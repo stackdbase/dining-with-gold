@@ -50,11 +50,9 @@
       <p class="dwg-reviews__loading">Loading reviews…</p>
     </div>
 
-    {%- comment -%} review cards — filled by JS {%- endcomment -%}
+    {%- comment -%} review cards — horizontally scrollable, filled by JS {%- endcomment -%}
     <div class="dwg-reviews__list" data-dwgr-list></div>
-    <button type="button" class="dwg-reviews__more" data-dwgr-more hidden>
-      {{ s.show_more_label | default: 'Show all reviews' }}
-    </button>
+    <p class="dwg-reviews__scrollhint" data-dwgr-scrollhint hidden>Swipe for more →</p>
   </div>
 
   {%- comment -%} ---- submit modal ---- {%- endcomment -%}
@@ -209,13 +207,13 @@
 
     var summaryEl = root.querySelector('[data-dwgr-summary]');
     var listEl = root.querySelector('[data-dwgr-list]');
-    var moreBtn = root.querySelector('[data-dwgr-more]');
+    var scrollHint = root.querySelector('[data-dwgr-scrollhint]');
 
     function render(data) {
       var count = data.count || 0, avg = data.average || 0;
       if (!count) {
         summaryEl.innerHTML = '<div class="dwg-reviews__empty-wrap"><p class="dwg-reviews__empty">' + esc(EMPTY_TEXT) + '</p>' + writeBtn() + '</div>';
-        listEl.innerHTML = ''; moreBtn.hidden = true; wireWrite(); return;
+        listEl.innerHTML = ''; if (scrollHint) scrollHint.hidden = true; wireWrite(); return;
       }
       var h = data.histogram || {}, histRows = '';
       [5, 4, 3, 2, 1].forEach(function (n) {
@@ -253,7 +251,7 @@
           ? '<div class="dwg-reviews__item-photos">' + r.images.map(function (u) {
               return '<button type="button" class="dwg-reviews__thumb" data-full="' + esc(u) + '"><img src="' + esc(u) + '" loading="lazy" alt="Customer photo"></button>';
             }).join('') + '</div>' : '';
-        return '<article class="dwg-reviews__item' + (idx >= INITIAL ? ' is-hidden' : '') + '">' +
+        return '<article class="dwg-reviews__item">' +
             '<div class="dwg-reviews__item-head">' + av +
               '<div class="dwg-reviews__item-who"><span class="dwg-reviews__item-author">' + esc(r.author || 'Verified customer') + '</span>' +
               (sub.length ? '<span class="dwg-reviews__item-sub">' + sub.join(' · ') + '</span>' : '') + '</div>' +
@@ -266,7 +264,7 @@
           '</article>';
       }).join('');
 
-      moreBtn.hidden = reviews.length <= INITIAL;
+      if (scrollHint) scrollHint.hidden = reviews.length <= 1;
       wireWrite(); wireThumbs(); injectJsonLd(data);
     }
 
@@ -302,11 +300,6 @@
         .then(render)
         .catch(function () { render({ count: 0 }); });
     }
-
-    if (moreBtn) moreBtn.addEventListener('click', function () {
-      listEl.querySelectorAll('.dwg-reviews__item.is-hidden').forEach(function (el) { el.classList.remove('is-hidden'); });
-      moreBtn.hidden = true;
-    });
 
     // ---- modal ----
     var modal = root.querySelector('[data-dwgr-modal]');
@@ -419,30 +412,30 @@
 </script>
 
 {% stylesheet %}
-  .dwg-reviews { background-color: var(--dwgr-cream); color: var(--dwgr-dark); padding-block: clamp(52px, 6vw, 96px); }
+  .dwg-reviews { background-color: var(--dwgr-cream); color: var(--dwgr-dark); padding-block: clamp(34px, 4vw, 60px); }
   .dwg-reviews__inner { max-width: 1080px; margin: 0 auto; padding-inline: clamp(18px, 5vw, 44px); }
   .dwgr-svg-defs { position: absolute; width: 0; height: 0; }
   .dwgr-star { width: 1.15em; height: 1.15em; display: inline-block; vertical-align: middle; }
   .dwgr-star--sm { width: 0.95em; height: 0.95em; }
   .dwgr-star--xs { width: 0.72em; height: 0.72em; }
 
-  .dwg-reviews__head { text-align: center; margin-bottom: clamp(24px, 3vw, 36px); }
+  .dwg-reviews__head { text-align: center; margin-bottom: clamp(16px, 2.2vw, 24px); }
   .dwg-reviews__eyebrow { margin: 0 0 10px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dwgr-accent); }
   .dwg-reviews__heading { margin: 0; font-family: var(--font-heading--family, serif); font-size: clamp(1.9rem, 4vw, 2.9rem); line-height: 1.08; color: var(--dwgr-dark); }
-  .dwg-reviews__heading::after { content: ""; display: block; width: 48px; height: 3px; border-radius: 3px; background: var(--dwgr-accent); margin: 16px auto 0; }
+  .dwg-reviews__heading::after { content: ""; display: block; width: 44px; height: 3px; border-radius: 3px; background: var(--dwgr-accent); margin: 11px auto 0; }
   .dwg-reviews__loading { opacity: 0.5; text-align: center; padding: 30px 0; }
 
   /* ---- overview panel ---- */
   .dwg-reviews__overview {
-    display: grid; grid-template-columns: minmax(200px, 1fr) minmax(240px, 1.4fr) auto;
-    gap: clamp(24px, 4vw, 48px); align-items: center;
-    background: var(--dwgr-card); border: 1px solid rgba(28,28,28,0.08); border-radius: 22px;
-    padding: clamp(24px, 3.5vw, 40px); margin-bottom: clamp(28px, 4vw, 44px);
-    box-shadow: 0 18px 44px rgba(28,28,28,0.06);
+    display: grid; grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.4fr) auto;
+    gap: clamp(16px, 3vw, 30px); align-items: center;
+    background: var(--dwgr-card); border: 1px solid rgba(28,28,28,0.08); border-radius: 18px;
+    padding: clamp(18px, 2.6vw, 28px); margin-bottom: clamp(18px, 2.6vw, 28px);
+    box-shadow: 0 14px 34px rgba(28,28,28,0.05);
   }
   .dwg-reviews__ov-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
-  .dwg-reviews__avg { font-family: var(--font-heading--family, serif); font-size: clamp(3rem, 6vw, 4.2rem); line-height: 0.95; font-weight: 700; color: var(--dwgr-dark); }
-  .dwg-reviews__ov-stars { font-size: 1.5rem; color: var(--dwgr-accent); }
+  .dwg-reviews__avg { font-family: var(--font-heading--family, serif); font-size: clamp(2.5rem, 5vw, 3.4rem); line-height: 0.95; font-weight: 700; color: var(--dwgr-dark); }
+  .dwg-reviews__ov-stars { font-size: 1.3rem; color: var(--dwgr-accent); }
   .dwg-reviews__count { font-size: 0.9rem; opacity: 0.65; }
   .dwg-reviews__recline { margin: 6px 0 0; font-size: 0.9rem; opacity: 0.8; }
   .dwg-reviews__recline strong { color: var(--dwgr-accent); }
@@ -468,10 +461,11 @@
   .dwg-reviews__submit:disabled { opacity: 0.65; cursor: default; transform: none; box-shadow: none; }
 
   /* ---- review cards grid ---- */
-  .dwg-reviews__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; align-items: start; }
-  .dwg-reviews__item { background: var(--dwgr-card); border: 1px solid rgba(28,28,28,0.08); border-radius: 18px; padding: 24px; transition: transform .18s ease, box-shadow .18s ease; }
-  .dwg-reviews__item:hover { transform: translateY(-3px); box-shadow: 0 16px 36px rgba(28,28,28,0.09); }
-  .dwg-reviews__item.is-hidden { display: none; }
+  .dwg-reviews__list { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; margin-inline: calc(clamp(18px, 5vw, 44px) * -1); padding-inline: clamp(18px, 5vw, 44px); -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .dwg-reviews__list::-webkit-scrollbar { height: 6px; }
+  .dwg-reviews__list::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.18); border-radius: 999px; }
+  .dwg-reviews__item { flex: 0 0 clamp(258px, 78vw, 320px); scroll-snap-align: start; background: var(--dwgr-card); border: 1px solid rgba(28,28,28,0.08); border-radius: 16px; padding: 20px; transition: transform .18s ease, box-shadow .18s ease; }
+  .dwg-reviews__item:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(28,28,28,0.08); }
   .dwg-reviews__item-head { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-bottom: 14px; }
   .dwg-reviews__avatar { width: 46px; height: 46px; border-radius: 50%; background-size: cover; background-position: center; flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; }
   .dwg-reviews__avatar--initials { background: linear-gradient(135deg, var(--dwgr-accent), #b07623); color: #fff; font-weight: 700; font-size: 0.95rem; }
@@ -489,8 +483,7 @@
   .dwg-reviews__thumb { width: 70px; height: 70px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(28,28,28,0.1); padding: 0; cursor: zoom-in; background: none; }
   .dwg-reviews__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .dwg-reviews__more { display: block; margin: 26px auto 0; padding: 13px 30px; border-radius: 12px; border: 1.5px solid rgba(28,28,28,0.25); background: transparent; color: var(--dwgr-dark); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: border-color .15s, color .15s; }
-  .dwg-reviews__more:hover { border-color: var(--dwgr-accent); color: var(--dwgr-accent); }
+  .dwg-reviews__scrollhint { text-align: right; margin: 8px 2px 0; font-size: 0.74rem; opacity: 0.45; }
 
   /* ---- modal / form ---- */
   .dwg-reviews__modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 18px; }
@@ -592,8 +585,8 @@
     { "type": "text", "id": "form_subheading", "label": "Form subheading", "default": "Share your experience — it only takes a minute." },
     { "type": "text", "id": "submit_label", "label": "Submit button label", "default": "Submit review" },
     { "type": "text", "id": "turnstile_site_key", "label": "Cloudflare Turnstile site key", "info": "Optional anti-spam. Leave blank to disable." },
-    { "type": "text", "id": "success_message", "label": "Success message", "default": "Thank you! Your review is now live." },
-    { "type": "text", "id": "form_note", "label": "Form footnote", "default": "Your review posts straight to the page." },
+    { "type": "text", "id": "success_message", "label": "Success message", "default": "Thank you! Your review has been submitted — it’ll appear shortly once approved." },
+    { "type": "text", "id": "form_note", "label": "Form footnote", "default": "Reviews are checked before they appear." },
     { "type": "header", "content": "Colours" },
     { "type": "color", "id": "accent_color", "label": "Accent (stars / buttons)", "default": "#C9882A" },
     { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },

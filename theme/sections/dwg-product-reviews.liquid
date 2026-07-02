@@ -311,6 +311,16 @@
     root.querySelectorAll('[data-dwgr-close]').forEach(function (b) { b.addEventListener('click', close); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 
+    // Deep-link: auto-open the form when arriving from the review-request email
+    // e.g. /products/<handle>#write-a-review
+    if (modal) {
+      var deep = (location.hash + location.search).toLowerCase();
+      if (deep.indexOf('write-a-review') !== -1 || deep.indexOf('leave-review') !== -1) {
+        setTimeout(open, 300);
+        try { root.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
+      }
+    }
+
     // submit
     var form = root.querySelector('[data-dwgr-form]');
     if (form) {

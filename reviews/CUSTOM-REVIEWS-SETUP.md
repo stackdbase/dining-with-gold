@@ -13,20 +13,21 @@ Shopify Admin token, so reviews live in **our own Supabase database**, not in Sh
 | Backend | repo `stackdbase/dwg-reviews-api` → **https://dwg-reviews-api.vercel.app** (Vercel, stackdbase account) |
 | Database | Supabase project `udmynmslsxrrhnunziir` → table `public.reviews` |
 
-## Flow
+## Flow — reviews AUTO-PUBLISH (no approval step)
 ```
-customer fills form ─POST /api/submit─▶ Supabase reviews (status = pending)
-you approve  ─(Supabase Table Editor: status → published)─▶ visible
+customer fills form ─POST /api/submit─▶ Supabase reviews (status = published)  ← live immediately
 product page ─GET /api/list?product=<handle>─▶ published reviews + rating ─▶ rendered
 ```
 Display is rendered client-side by the section's JS; it also injects JSON-LD `AggregateRating`
-so Google can show star rich-snippets.
+so Google can show star rich-snippets. New reviews show on the storefront within ~1 min (60s cache).
 
-## ✅ Moderating reviews (your day-to-day)
-1. Supabase → project `udmynmslsxrrhnunziir` → **Table Editor → `reviews`**.
-2. New submissions have **status = `pending`**. Read one, then set **status → `published`**
-   (or `spam`) and save.
-3. It appears on the storefront within ~1 minute (60s edge cache).
+## ✅ Zero-touch — you don't approve anything
+Reviews go live automatically. You only act if you want to **remove** a bad one:
+- Supabase → project `udmynmslsxrrhnunziir` → **Table Editor → `reviews`** → set that row's
+  **status → `spam`** (or delete it). Gone from the storefront within ~1 min.
+
+Want approvals back on? Set env `MODERATE=true` in Vercel and redeploy — then new reviews
+land as `pending` until you publish them.
 
 ## Redeploying the backend
 ```

@@ -21,15 +21,20 @@ product page ─GET /api/list?product=<handle>─▶ published reviews + rating 
 Display is rendered client-side by the section's JS; it also injects JSON-LD `AggregateRating`
 so Google can show star rich-snippets. New reviews show on the storefront within ~1 min (60s cache).
 
-## ✅ Moderation — one-click approve page
-New reviews land as **pending** (env `MODERATE=true`) and don't show until you approve them.
-Approving is effortless — no Supabase login:
+## ✅ Moderation — approve from your inbox
+New reviews land as **pending** (env `MODERATE=true`) and don't show until approved.
 
-**Bookmark:** `https://dwg-reviews-api.vercel.app/api/moderate?secret=<MODERATE_SECRET>`
-(the secret is in the Vercel project env / local `.env`).
+**Primary way — email:** every new review emails **team@stackdbase.com** (via Resend) with
+**✓ Approve & publish** and **✕ Reject** buttons. Click Approve in your inbox → live in ~1 min.
+No dashboard, no login. (Sent from `onboarding@resend.dev`; swap to a branded address once a
+domain is verified in the Stackdbase Resend account.)
 
-It lists pending reviews with **✓ Approve** (publishes) and **✕ Reject** (marks spam) buttons.
-Approved reviews appear on the storefront within ~1 min.
+**Backup way — moderation page:** `https://dwg-reviews-api.vercel.app/api/moderate?secret=<MODERATE_SECRET>`
+lists all pending reviews with the same Approve/Reject buttons (secret is in Vercel env / `.env`).
+
+> Native Shopify-admin moderation isn't possible here — it needs a Shopify app with Admin API
+> access, which can't be created on this collaborator store (app creation lands in our own org).
+> The email approval is the practical equivalent.
 
 Prefer zero-touch instead? Set `MODERATE=false` in Vercel and redeploy — reviews then auto-publish.
 Either way you can always remove one later via the Supabase Table Editor (`status → spam`).

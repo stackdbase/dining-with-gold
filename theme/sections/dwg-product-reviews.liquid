@@ -11,8 +11,8 @@
   assign dark = s.text_color | default: '#1C1C1C'
   assign cream = s.background_color | default: '#FAF7F2'
   assign card = s.card_color | default: '#FFFFFF'
-  assign panel = s.panel_color | default: '#1C1C1C'
-  assign panel_text = s.panel_text_color | default: '#F5EFE2'
+  assign panel = s.panel_color | default: '#FFFFFF'
+  assign panel_text = s.panel_text_color | default: '#1C1C1C'
   assign product = closest.product | default: product
 -%}
 
@@ -433,9 +433,10 @@
   .dwg-reviews__overview {
     display: grid; grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.4fr) auto;
     gap: clamp(16px, 3vw, 30px); align-items: center;
-    background: var(--dwgr-panel); color: var(--dwgr-panel-text); border: none; border-radius: 18px;
+    background: var(--dwgr-panel); color: var(--dwgr-panel-text);
+    border: 1px solid rgba(201,136,42,0.28); border-top: 4px solid var(--dwgr-accent); border-radius: 18px;
     padding: clamp(20px, 2.8vw, 32px); margin-bottom: clamp(18px, 2.6vw, 28px);
-    box-shadow: 0 18px 40px rgba(28,28,28,0.18);
+    box-shadow: 0 16px 38px rgba(201,136,42,0.12);
   }
   .dwg-reviews__ov-left { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
   .dwg-reviews__avg { font-family: var(--font-heading--family, serif); font-size: clamp(2.6rem, 5vw, 3.6rem); line-height: 0.95; font-weight: 700; color: var(--dwgr-accent); }
@@ -447,7 +448,7 @@
   .dwg-reviews__ov-right { display: grid; gap: 8px; }
   .dwg-reviews__hist-row { display: grid; grid-template-columns: 42px 1fr 30px; align-items: center; gap: 12px; background: none; border: none; padding: 0; cursor: default; font: inherit; color: var(--dwgr-panel-text); }
   .dwg-reviews__hist-label { display: inline-flex; align-items: center; gap: 3px; font-size: 0.8rem; opacity: 0.9; color: var(--dwgr-accent); }
-  .dwg-reviews__hist-track { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.15); overflow: hidden; }
+  .dwg-reviews__hist-track { height: 9px; border-radius: 999px; background: rgba(28,28,28,0.1); overflow: hidden; }
   .dwg-reviews__hist-fill { display: block; height: 100%; border-radius: 999px; background: var(--dwgr-accent); transition: width .5s ease; }
   .dwg-reviews__hist-num { font-size: 0.8rem; opacity: 0.6; text-align: right; font-variant-numeric: tabular-nums; }
   .dwg-reviews__ov-cta { display: flex; justify-content: center; }
@@ -596,8 +597,8 @@
     { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
     { "type": "color", "id": "background_color", "label": "Section background", "default": "#FAF7F2" },
     { "type": "color", "id": "card_color", "label": "Card background", "default": "#FFFFFF" },
-    { "type": "color", "id": "panel_color", "label": "Rating panel background", "default": "#1C1C1C" },
-    { "type": "color", "id": "panel_text_color", "label": "Rating panel text", "default": "#F5EFE2" }
+    { "type": "color", "id": "panel_color", "label": "Rating panel background", "default": "#FFFFFF" },
+    { "type": "color", "id": "panel_text_color", "label": "Rating panel text", "default": "#1C1C1C" }
   ],
   "presets": [ { "name": "DWG: Product Reviews", "category": "Product" } ]
 }

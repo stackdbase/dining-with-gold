@@ -1764,7 +1764,8 @@
         "api_base": "https://dwg-reviews-api.vercel.app",
         "eyebrow": "LOVED BY YOU",
         "heading": "Reviews",
-        "show_form": true
+        "show_form": true,
+        "review_pool": "all"
       }
     },
     "dwg_how_to_use_tCRXD7": {

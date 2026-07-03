@@ -181,6 +181,7 @@
     var EMPTY_TEXT = {{ s.empty_text | default: 'No reviews yet — be the first to share your experience.' | json }};
     var SUCCESS_MSG = {{ s.success_message | default: 'Thank you! Your review is now live.' | json }};
     var DESIGN_MODE = {{ request.design_mode | json }};
+    var POOL = {{ s.review_pool | default: 'current' | json }};
 
     var GOLD = 'var(--dwgr-accent)', EMPTY = 'rgba(28,28,28,0.16)', HALF = 'url(#dwgr-half-' + SID + ')';
 
@@ -299,7 +300,10 @@
 
     function load() {
       if (DESIGN_MODE || !API_BASE) { render(SAMPLE); return; }
-      fetch(API_BASE + '/api/list?product=' + encodeURIComponent(PRODUCT_HANDLE) + '&product_id=' + encodeURIComponent(PRODUCT_ID), { headers: { Accept: 'application/json' } })
+      var url = POOL === 'all'
+        ? API_BASE + '/api/list?all=1'
+        : API_BASE + '/api/list?product=' + encodeURIComponent(PRODUCT_HANDLE) + '&product_id=' + encodeURIComponent(PRODUCT_ID);
+      fetch(url, { headers: { Accept: 'application/json' } })
         .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
         .then(render)
         .catch(function () { render({ count: 0 }); });
@@ -581,6 +585,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "What our customers say" },
     { "type": "text", "id": "empty_text", "label": "Empty state text", "default": "No reviews yet — be the first to share your experience." },
     { "type": "header", "content": "Display" },
+    { "type": "select", "id": "review_pool", "label": "Which reviews to show", "options": [ { "value": "current", "label": "This product only" }, { "value": "all", "label": "All reviews (shared across pages)" } ], "default": "current", "info": "Use 'All' for a single-product store so every page shows the same reviews." },
     { "type": "range", "id": "initial_visible", "label": "Reviews shown before 'Show all'", "min": 2, "max": 24, "step": 1, "default": 4 },
     { "type": "text", "id": "show_more_label", "label": "Show-all button label", "default": "Show all reviews" },
     { "type": "header", "content": "Submission form" },

@@ -1,0 +1,314 @@
+{% comment %}
+  DWG redesign — "Made to Elevate / Every Drop Matters".
+  Left: eyebrow, split-color heading, body, feature rows, CTA.
+  Right: product imagery. Remove this section to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign accent = section.settings.accent_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign btn_bg = section.settings.button_background | default: '#A97E0C'
+  assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+%}
+
+<section
+  class="dwg-rd-elevate"
+  style="
+    --rd-el-bg: {{ bg }};
+    --rd-el-eyebrow: {{ eyebrow_color }};
+    --rd-el-accent: {{ accent }};
+    --rd-el-text: {{ text_color }};
+    --rd-el-btn-bg: {{ btn_bg }};
+    --rd-el-btn-text: {{ btn_text }};
+  "
+>
+  <div class="dwg-rd-elevate__wrap page-width">
+    <div class="dwg-rd-elevate__content">
+      {% if section.settings.eyebrow != blank %}
+        <p class="dwg-rd-elevate__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="dwg-rd-elevate__heading">
+          <span class="dwg-rd-elevate__heading-accent">{{ section.settings.heading_accent }}</span>
+          {{ section.settings.heading }}
+        </h2>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="dwg-rd-elevate__body">{{ section.settings.body }}</div>
+      {% endif %}
+
+      {% if section.blocks.size > 0 %}
+        <div class="dwg-rd-elevate__features">
+          {% for block in section.blocks %}
+            <div class="dwg-rd-elevate__feature" {{ block.shopify_attributes }}>
+              <div class="dwg-rd-elevate__feature-icon">
+                {% if block.settings.icon != blank %}
+                  {{ block.settings.icon | image_url: width: 120 | image_tag: widths: '60, 120', loading: 'lazy', alt: block.settings.title }}
+                {% else %}
+                  {% if forloop.index == 1 %}
+                    <img src="{{ 'dwg-rd-feature-1.png' | asset_url }}" alt="{{ block.settings.title }}" width="120" height="120" loading="lazy">
+                  {% elsif forloop.index == 2 %}
+                    <img src="{{ 'dwg-rd-feature-2.png' | asset_url }}" alt="{{ block.settings.title }}" width="120" height="120" loading="lazy">
+                  {% endif %}
+                {% endif %}
+              </div>
+              <div class="dwg-rd-elevate__feature-text">
+                {% if block.settings.title != blank %}
+                  <h3 class="dwg-rd-elevate__feature-title">{{ block.settings.title }}</h3>
+                {% endif %}
+                {% if block.settings.description != blank %}
+                  <p class="dwg-rd-elevate__feature-desc">{{ block.settings.description }}</p>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <a class="dwg-rd-elevate__btn" href="{{ section.settings.button_link | default: '#' }}">
+          {{ section.settings.button_label }}
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="dwg-rd-elevate__media">
+      <div class="dwg-rd-elevate__media-accent">
+        {% if section.settings.accent_image != blank %}
+          {{ section.settings.accent_image | image_url: width: 600 | image_tag: class: 'dwg-rd-elevate__accent-img', widths: '300, 450, 600', loading: 'lazy', alt: '' }}
+        {% else %}
+          <img class="dwg-rd-elevate__accent-img" src="{{ 'dwg-rd-elevate-1.png' | asset_url }}" alt="" width="600" height="600" loading="lazy">
+        {% endif %}
+      </div>
+      <div class="dwg-rd-elevate__media-bottle">
+        {% if section.settings.product_image != blank %}
+          {{ section.settings.product_image | image_url: width: 800 | image_tag: class: 'dwg-rd-elevate__bottle-img', widths: '400, 600, 800', loading: 'lazy', alt: 'DWG chilli oil' }}
+        {% else %}
+          <img class="dwg-rd-elevate__bottle-img" src="{{ 'dwg-rd-elevate-bottle.png' | asset_url }}" alt="DWG chilli oil" width="658" height="1086" loading="lazy">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-elevate {
+    background-color: var(--rd-el-bg);
+    padding-block: clamp(40px, 7vw, 88px);
+  }
+
+  .dwg-rd-elevate__wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 5vw, 56px);
+    align-items: center;
+  }
+
+  @media screen and (min-width: 900px) {
+    .dwg-rd-elevate__wrap {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+  }
+
+  .dwg-rd-elevate__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--rd-el-eyebrow);
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-elevate__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.05;
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    color: var(--rd-el-text);
+    margin: 0 0 20px;
+  }
+
+  .dwg-rd-elevate__heading-accent {
+    color: var(--rd-el-accent);
+  }
+
+  .dwg-rd-elevate__body {
+    font-family: 'Manjari', sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.55;
+    color: var(--rd-el-text);
+    max-width: 42ch;
+    margin: 0 0 28px;
+  }
+
+  .dwg-rd-elevate__features {
+    display: grid;
+    gap: 20px;
+    margin: 0 0 32px;
+    max-width: 460px;
+  }
+
+  .dwg-rd-elevate__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-block-start: 20px;
+    border-top: 1px solid rgba(28, 28, 28, 0.15);
+  }
+
+  .dwg-rd-elevate__feature:first-child {
+    border-top: none;
+    padding-block-start: 0;
+  }
+
+  .dwg-rd-elevate__feature-icon {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dwg-rd-elevate__feature-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .dwg-rd-elevate__feature-title {
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+    color: var(--rd-el-text);
+  }
+
+  .dwg-rd-elevate__feature-desc {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: rgba(28, 28, 28, 0.72);
+    margin: 0;
+  }
+
+  .dwg-rd-elevate__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 15px 34px;
+    background: var(--rd-el-btn-bg);
+    color: var(--rd-el-btn-text);
+    transition: filter 0.2s ease;
+  }
+
+  .dwg-rd-elevate__btn:hover {
+    filter: brightness(1.08);
+  }
+
+  .dwg-rd-elevate__media {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    margin-inline: auto;
+    min-height: 360px;
+  }
+
+  .dwg-rd-elevate__media-bottle {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+  }
+
+  .dwg-rd-elevate__bottle-img {
+    width: auto;
+    max-width: 62%;
+    height: auto;
+    max-height: 520px;
+    object-fit: contain;
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.18));
+  }
+
+  .dwg-rd-elevate__media-accent {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52%;
+    aspect-ratio: 1 / 1;
+    border-radius: 100px 0 0 100px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .dwg-rd-elevate__accent-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media screen and (max-width: 899px) {
+    .dwg-rd-elevate__media {
+      max-width: 360px;
+      min-height: 300px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Elevate",
+  "tag": "section",
+  "class": "section--dwg-rd-elevate",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Made to Elevate" },
+    { "type": "text", "id": "heading_accent", "label": "Heading (accent word)", "default": "Every" },
+    { "type": "text", "id": "heading", "label": "Heading (rest)", "default": "Drop Matters" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Our chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes & spices infused in quality ingredients.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop From Us" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "image_picker", "id": "product_image", "label": "Product image (bottle)" },
+    { "type": "image_picker", "id": "accent_image", "label": "Accent image (rounded)" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "accent_color", "label": "Heading accent", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#A97E0C" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        { "type": "image_picker", "id": "icon", "label": "Icon" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Tasty Oil" },
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Infused in high-quality oils for a rich, smooth finish." }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [
+    {
+      "name": "DWG RD: Elevate",
+      "blocks": [
+        { "type": "feature", "settings": { "title": "Tasty Oil", "description": "Infused in high-quality oils for a rich, smooth finish." } },
+        { "type": "feature", "settings": { "title": "African Seasoning", "description": "Bold, authentic spice blends rooted in tradition." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

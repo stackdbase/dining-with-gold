@@ -1,0 +1,188 @@
+{% comment %}
+  DWG redesign — "Loved By You / Real flavor, Real people".
+  Centered eyebrow + heading, then a row of rounded image cards with an
+  optional play badge (links to a video). Remove this section to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+%}
+
+<section
+  class="dwg-rd-loved"
+  style="
+    --rd-lv-bg: {{ bg }};
+    --rd-lv-eyebrow: {{ eyebrow_color }};
+    --rd-lv-text: {{ text_color }};
+  "
+>
+  <div class="dwg-rd-loved__wrap page-width">
+    <div class="dwg-rd-loved__head">
+      {% if section.settings.eyebrow != blank %}
+        <p class="dwg-rd-loved__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.heading != blank %}
+        <h2 class="dwg-rd-loved__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="dwg-rd-loved__grid">
+        {% for block in section.blocks %}
+          {% liquid
+            assign has_link = false
+            if block.settings.link != blank
+              assign has_link = true
+            endif
+          %}
+          <div class="dwg-rd-loved__card" {{ block.shopify_attributes }}>
+            {% if has_link %}<a class="dwg-rd-loved__card-link" href="{{ block.settings.link }}">{% endif %}
+              <div class="dwg-rd-loved__card-media">
+                {% if block.settings.image != blank %}
+                  {{ block.settings.image | image_url: width: 1000 | image_tag: class: 'dwg-rd-loved__card-img', widths: '400, 600, 800, 1000', sizes: '(min-width: 750px) 32vw, 90vw', loading: 'lazy', alt: block.settings.image.alt | default: 'DWG customer' }}
+                {% else %}
+                  {% assign fallback = 'dwg-rd-loved-' | append: forloop.index %}
+                  {% if forloop.index == 2 %}{% assign fallback = fallback | append: '.jpg' %}{% else %}{% assign fallback = fallback | append: '.png' %}{% endif %}
+                  <img class="dwg-rd-loved__card-img" src="{{ fallback | asset_url }}" alt="DWG customer" width="509" height="707" loading="lazy">
+                {% endif %}
+                {% if block.settings.show_play %}
+                  <span class="dwg-rd-loved__play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </span>
+                {% endif %}
+              </div>
+            {% if has_link %}</a>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-loved {
+    background-color: var(--rd-lv-bg);
+    padding-block: clamp(40px, 7vw, 80px);
+  }
+
+  .dwg-rd-loved__head {
+    text-align: center;
+    margin-bottom: clamp(28px, 4vw, 48px);
+  }
+
+  .dwg-rd-loved__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--rd-lv-eyebrow);
+    margin: 0 0 10px;
+  }
+
+  .dwg-rd-loved__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.05;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    color: var(--rd-lv-text);
+    margin: 0;
+  }
+
+  .dwg-rd-loved__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(18px, 2.5vw, 28px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-rd-loved__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .dwg-rd-loved__card-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .dwg-rd-loved__card-media {
+    position: relative;
+    aspect-ratio: 509 / 707;
+    border-radius: 100px;
+    overflow: hidden;
+    background: #f2ead6;
+  }
+
+  .dwg-rd-loved__card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dwg-rd-loved__play {
+    position: absolute;
+    left: 50%;
+    top: 8%;
+    transform: translateX(-50%);
+    width: 62px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    color: #bd8c1e;
+  }
+
+  .dwg-rd-loved__play svg {
+    width: 26px;
+    height: 26px;
+    margin-left: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .dwg-rd-loved__card-media {
+      border-radius: 60px;
+      max-width: 420px;
+      margin-inline: auto;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Loved by you",
+  "tag": "section",
+  "class": "section--dwg-rd-loved",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Loved by you" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Real flavor, Real people" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Heading", "default": "#1C1C1C" }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Link (optional)" },
+        { "type": "checkbox", "id": "show_play", "label": "Show play badge", "default": true }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "DWG RD: Loved by you",
+      "blocks": [{ "type": "card" }, { "type": "card" }, { "type": "card" }]
+    }
+  ]
+}
+{% endschema %}

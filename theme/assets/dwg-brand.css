@@ -839,3 +839,20 @@ body:has(.menu-drawer-container[open]) {
   --jdgm-paginate-color: #C9882A;
   --jdgm-reviewer-name-color: #1C1C1C;
 }
+
+/* ============================================================
+   DWG page container — the custom dwg-* sections wrap their
+   content in `.page-width`, but Horizon only ships
+   `.page-width-*` variants (it centres content via a grid).
+   Define a plain container here so every DWG section gets a
+   balanced max-width + left/right gutters instead of running
+   edge to edge. Full-bleed section backgrounds are unaffected
+   because the background sits on the section, not this wrap.
+   ============================================================ */
+.page-width {
+  width: 100%;
+  max-width: var(--dwg-page-max, 1360px);
+  margin-inline: auto;
+  padding-inline: clamp(20px, 5vw, 48px);
+  box-sizing: border-box;
+}

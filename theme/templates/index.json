@@ -58,15 +58,7 @@
         "card_body": "<p>I'm Wura, founder and chef behind Dining With Gold. In Yoruba, Wura means Gold. So when you eat with DWG, you're dining at my table wherever in the world you are. And at my table, the food is always bold, always flavourful, and always made with love.</p>",
         "button_label": "Read About Page"
       }
-    },
-    "rd_newsletter": {
-      "type": "dwg-rd-newsletter",
-      "settings": {
-        "brand_text": "Dining with Gold",
-        "heading": "Subscribe to Our Newsletter",
-        "button_label": "Send"
-      }
     }
   },
-  "order": ["rd_hero", "rd_elevate", "rd_loved", "rd_story", "rd_newsletter"]
+  "order": ["rd_hero", "rd_elevate", "rd_loved", "rd_story"]
 }

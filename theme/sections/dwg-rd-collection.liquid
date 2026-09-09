@@ -1,0 +1,222 @@
+{% comment %}
+  DWG redesign — Shop (collection) grid. Real products in the Figma card
+  style: image, PRODUCT eyebrow, title, price, BUY (adds to cart -> /cart).
+  Used by the collection template. Remove that template ref to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign heading_color = section.settings.heading_color | default: '#BD8C1E'
+  assign btn_bg = section.settings.button_background | default: '#BD8C1E'
+  assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+  assign heading = section.settings.heading | default: 'Shop From Us'
+%}
+
+<section
+  class="dwg-rd-shop"
+  style="--rd-sh-bg: {{ bg }}; --rd-sh-eyebrow: {{ eyebrow_color }}; --rd-sh-text: {{ text_color }}; --rd-sh-heading: {{ heading_color }}; --rd-sh-btn-bg: {{ btn_bg }}; --rd-sh-btn-text: {{ btn_text }};"
+>
+  <div class="dwg-rd-shop__wrap page-width">
+    <h1 class="dwg-rd-shop__title">{{ heading }}</h1>
+
+    {% paginate collection.products by 12 %}
+      {% if collection.products.size > 0 %}
+        <div class="dwg-rd-shop__grid">
+          {% for product in collection.products %}
+            <article class="dwg-rd-shop__card">
+              <a class="dwg-rd-shop__media" href="{{ product.url }}">
+                {% if product.featured_image %}
+                  {{ product.featured_image | image_url: width: 600 | image_tag: class: 'dwg-rd-shop__img', widths: '200, 300, 450, 600', sizes: '(min-width: 750px) 22vw, 40vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title }}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag: 'dwg-rd-shop__img dwg-rd-shop__img--ph' }}
+                {% endif %}
+              </a>
+              <div class="dwg-rd-shop__info">
+                <p class="dwg-rd-shop__eyebrow">{{ product.type | default: 'Product' }}</p>
+                <h2 class="dwg-rd-shop__name"><a href="{{ product.url }}">{{ product.title }}</a></h2>
+                <p class="dwg-rd-shop__price-label">Price</p>
+                <p class="dwg-rd-shop__price">{{ product.price | money }}</p>
+                {% form 'product', product, class: 'dwg-rd-shop__form' %}
+                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="dwg-rd-shop__buy"{% unless product.available %} disabled{% endunless %}>
+                    {% if product.available %}Buy{% else %}Sold out{% endif %}
+                  </button>
+                {% endform %}
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <nav class="dwg-rd-shop__pagination">
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a href="{{ part.url }}">{{ part.title }}</a>
+              {% else %}
+                <span class="is-current">{{ part.title }}</span>
+              {% endif %}
+            {% endfor %}
+          </nav>
+        {% endif %}
+      {% else %}
+        <p class="dwg-rd-shop__empty">No products yet — check back soon.</p>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-shop {
+    background: var(--rd-sh-bg);
+    padding-block: clamp(32px, 5vw, 64px);
+  }
+
+  .dwg-rd-shop__title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--rd-sh-heading);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    letter-spacing: 0.01em;
+    margin: 0 0 clamp(28px, 4vw, 48px);
+  }
+
+  .dwg-rd-shop__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 48px);
+  }
+
+  @media screen and (min-width: 600px) {
+    .dwg-rd-shop__grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .dwg-rd-shop__card {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  .dwg-rd-shop__media {
+    flex: 0 0 40%;
+    display: block;
+    aspect-ratio: 3 / 4;
+    background: #f7efdc;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .dwg-rd-shop__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    mix-blend-mode: multiply;
+  }
+
+  .dwg-rd-shop__info { flex: 1 1 auto; }
+
+  .dwg-rd-shop__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: var(--rd-sh-eyebrow);
+    margin: 0 0 6px;
+  }
+
+  .dwg-rd-shop__name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    line-height: 1.1;
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-shop__name a { color: var(--rd-sh-text); text-decoration: none; }
+
+  .dwg-rd-shop__price-label {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(28, 28, 28, 0.55);
+    margin: 0 0 2px;
+  }
+
+  .dwg-rd-shop__price {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+    color: var(--rd-sh-text);
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-shop__buy {
+    border: 0;
+    cursor: pointer;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1rem;
+    padding: 12px 34px;
+    background: var(--rd-sh-btn-bg);
+    color: var(--rd-sh-btn-text);
+    transition: filter 0.2s ease;
+  }
+
+  .dwg-rd-shop__buy:hover { filter: brightness(1.08); }
+  .dwg-rd-shop__buy:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .dwg-rd-shop__pagination {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 40px;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  .dwg-rd-shop__pagination a,
+  .dwg-rd-shop__pagination .is-current {
+    color: var(--rd-sh-text);
+    text-decoration: none;
+    padding: 6px 12px;
+  }
+
+  .dwg-rd-shop__pagination .is-current {
+    color: var(--rd-sh-heading);
+    font-weight: 700;
+  }
+
+  .dwg-rd-shop__empty {
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    color: rgba(28, 28, 28, 0.6);
+  }
+
+  @media screen and (max-width: 480px) {
+    .dwg-rd-shop__card { flex-direction: column; align-items: flex-start; }
+    .dwg-rd-shop__media { flex-basis: auto; width: 60%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Shop grid",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop From Us" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "button_background", "label": "Buy button", "default": "#BD8C1E" },
+    { "type": "color", "id": "button_text_color", "label": "Buy text", "default": "#FFFFFF" }
+  ]
+}
+{% endschema %}

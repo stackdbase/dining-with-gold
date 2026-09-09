@@ -1,0 +1,204 @@
+{% comment %}
+  DWG redesign — About page. Editorial story blocks (eyebrow, heading,
+  subheading, body, optional image left/right, optional button).
+  Used by the page.about template. Remove that template ref to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign heading_color = section.settings.heading_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign btn_bg = section.settings.button_background | default: '#BD8C1E'
+  assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+%}
+
+<section
+  class="dwg-rd-about"
+  style="--rd-ab-bg: {{ bg }}; --rd-ab-heading: {{ heading_color }}; --rd-ab-text: {{ text_color }}; --rd-ab-btn-bg: {{ btn_bg }}; --rd-ab-btn-text: {{ btn_text }};"
+>
+  <div class="dwg-rd-about__wrap page-width">
+    {% for block in section.blocks %}
+      {% liquid
+        assign has_image = false
+        if block.settings.image != blank or block.settings.fallback_image != blank
+          if block.settings.image_position != 'none'
+            assign has_image = true
+          endif
+        endif
+      %}
+      <div
+        class="dwg-rd-about__row{% if has_image %} dwg-rd-about__row--split dwg-rd-about__row--img-{{ block.settings.image_position }}{% else %} dwg-rd-about__row--centered{% endif %}"
+        {{ block.shopify_attributes }}
+      >
+        {% if has_image %}
+          <div class="dwg-rd-about__media">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 900 | image_tag: class: 'dwg-rd-about__img', widths: '400, 600, 900', loading: 'lazy', alt: block.settings.heading | default: block.settings.subheading }}
+            {% else %}
+              <img class="dwg-rd-about__img" src="{{ block.settings.fallback_image | asset_url }}" alt="{{ block.settings.subheading | default: block.settings.heading }}" width="736" height="592" loading="lazy">
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div class="dwg-rd-about__content">
+          {% if block.settings.eyebrow != blank %}
+            <p class="dwg-rd-about__eyebrow">{{ block.settings.eyebrow }}</p>
+          {% endif %}
+          {% if block.settings.heading != blank %}
+            <h2 class="dwg-rd-about__heading">{{ block.settings.heading }}</h2>
+          {% endif %}
+          {% if block.settings.subheading != blank %}
+            <p class="dwg-rd-about__subheading">{{ block.settings.subheading }}</p>
+          {% endif %}
+          {% if block.settings.body != blank %}
+            <div class="dwg-rd-about__body">{{ block.settings.body }}</div>
+          {% endif %}
+          {% if block.settings.button_label != blank %}
+            <a class="dwg-rd-about__btn" href="{{ block.settings.button_url | default: '#' }}">{{ block.settings.button_label }}</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-about {
+    background: var(--rd-ab-bg);
+    padding-block: clamp(32px, 5vw, 64px);
+  }
+
+  .dwg-rd-about__row {
+    padding-block: clamp(32px, 5vw, 64px);
+  }
+
+  .dwg-rd-about__row--centered {
+    max-width: 900px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .dwg-rd-about__row--split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+  }
+
+  @media screen and (min-width: 850px) {
+    .dwg-rd-about__row--split { grid-template-columns: 1fr 1fr; }
+    .dwg-rd-about__row--img-right .dwg-rd-about__media { order: 2; }
+  }
+
+  .dwg-rd-about__media {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f2ead6;
+    aspect-ratio: 5 / 4;
+  }
+
+  .dwg-rd-about__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .dwg-rd-about__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: var(--rd-ab-heading);
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-about__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.05;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    color: var(--rd-ab-heading);
+    margin: 0 0 16px;
+  }
+
+  .dwg-rd-about__subheading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.1rem, 2vw, 1.4rem);
+    color: var(--rd-ab-text);
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-about__body {
+    font-family: 'Manjari', sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.6;
+    color: rgba(28, 28, 28, 0.82);
+  }
+
+  .dwg-rd-about__body p { margin: 0 0 1em; }
+  .dwg-rd-about__body p:last-child { margin-bottom: 0; }
+
+  .dwg-rd-about__row--centered .dwg-rd-about__body { margin-inline: auto; }
+
+  .dwg-rd-about__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 22px;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1rem;
+    padding: 13px 40px;
+    background: var(--rd-ab-btn-bg);
+    color: var(--rd-ab-btn-text);
+    text-decoration: none;
+    transition: filter 0.2s ease;
+  }
+
+  .dwg-rd-about__btn:hover { filter: brightness(1.08); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: About",
+  "settings": [
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading / eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "button_background", "label": "Button", "default": "#BD8C1E" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
+  ],
+  "blocks": [
+    {
+      "type": "story",
+      "name": "Story block",
+      "settings": [
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "text", "id": "subheading", "label": "Subheading" },
+        { "type": "richtext", "id": "body", "label": "Body" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback image asset", "info": "Theme asset filename used if no image is picked (e.g. dwg-rd-hero-chef.jpg)." },
+        { "type": "select", "id": "image_position", "label": "Image position", "options": [ { "value": "none", "label": "No image (centered)" }, { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" } ], "default": "none" },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        { "type": "url", "id": "button_url", "label": "Button URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "DWG RD: About",
+      "blocks": [
+        { "type": "story", "settings": { "eyebrow": "Our Story", "heading": "British by birth. Nigerian by blood.", "subheading": "Spice in every dish", "body": "<p>I'm Wura, the founder and chef behind Dining With Gold. In Yoruba, Wura means Gold, so when you're eating with DWG, you're dining at my table. And at my table, the food is always bold, always flavourful, and always made with love.</p>", "fallback_image": "dwg-rd-hero-chef.jpg", "image_position": "left" } },
+        { "type": "story", "settings": { "eyebrow": "Our Products", "heading": "A calling, not just a business.", "body": "<p>Dining With Gold wasn't born from a business plan. God directed me to start. My mum taught me everything growing up — she kept a pot of jollof rice in the fridge so we always had something waiting. That jollof rice still inspires me today. I'm self-taught, passion-driven, and endlessly curious about what happens when bold flavours meet unexpected dishes.</p>", "image_position": "none" } },
+        { "type": "story", "settings": { "heading": "How the oil came to life.", "subheading": "Born from a handbag.", "body": "<p>A friend brought a chilli oil on holiday. One taste and something clicked. Every time I travelled I noticed the same problem — beautiful cities, missing a kick. So I started making my own. Somewhere between Euro summers and dinner tables abroad, Dining With Gold Travel Chilli Oil was born. Small enough for your handbag. Powerful enough to transform any meal.</p>", "fallback_image": "dwg-rd-elevate-bottle.png", "image_position": "right" } },
+        { "type": "story", "settings": { "eyebrow": "What's in the bottle", "heading": "Heat with flavour.", "body": "<p>Three chillies. Salt. Seasoning. Vegetable oil. Simple ingredients — but the balance took time to get right. It's not just heat for the sake of heat. It's heat with flavour.</p>", "image_position": "none" } },
+        { "type": "story", "settings": { "eyebrow": "Who is this for?", "heading": "For everyone tired of bland.", "body": "<p>Whether you're at a restaurant in Milan, a barbecue in London, or at your kitchen table on a Tuesday night — DWG is there. Spray it, pour it, mix it in. The only rule is: no bland plates allowed.</p>", "fallback_image": "dwg-rd-hero-chef.jpg", "image_position": "left", "button_label": "Shop", "button_url": "/collections/all" } },
+        { "type": "story", "settings": { "eyebrow": "The vision", "heading": "Just getting started.", "body": "<p>In a few years I want to see Dining With Gold on supermarket shelves. A product born from a handbag, sitting next to the big names. That's the dream — and we're just getting started.</p>", "image_position": "none" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,279 @@
+{% comment %}
+  DWG redesign — site-wide header. Logo, HOME/SHOP/ABOUT links, cart icon
+  (links to the full /cart page, matching the design's cart screen).
+  Self-contained; no drawer. Remove from header-group.json to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign link_color = section.settings.link_color | default: '#1C1C1C'
+  assign active_color = section.settings.active_color | default: '#BD8C1E'
+  assign ann_bg = section.settings.announcement_background | default: '#BD8C1E'
+  assign ann_color = section.settings.announcement_color | default: '#FFFFFF'
+  assign cur_path = request.path
+%}
+
+{% if section.settings.show_announcement and section.settings.announcement_text != blank %}
+  <div class="dwg-rd-ann" style="--rd-ann-bg: {{ ann_bg }}; --rd-ann-color: {{ ann_color }};">
+    <span>{{ section.settings.announcement_text }}</span>
+  </div>
+{% endif %}
+
+<header
+  class="dwg-rd-header{% if section.settings.sticky %} dwg-rd-header--sticky{% endif %}"
+  style="--rd-hd-bg: {{ bg }}; --rd-hd-link: {{ link_color }}; --rd-hd-active: {{ active_color }};"
+>
+  <div class="dwg-rd-header__wrap page-width">
+    <a href="{{ routes.root_url }}" class="dwg-rd-header__logo" aria-label="{{ shop.name }}">
+      {% if section.settings.logo != blank %}
+        {{ section.settings.logo | image_url: width: 400 | image_tag: widths: '160, 240, 400', alt: shop.name }}
+      {% else %}
+        <img src="{{ 'dwg-rd-logo.png' | asset_url }}" alt="{{ shop.name }}" width="120" height="95">
+      {% endif %}
+    </a>
+
+    <details class="dwg-rd-header__disclosure">
+      <summary class="dwg-rd-header__toggle" aria-label="Menu">
+        <span class="dwg-rd-header__bars" aria-hidden="true"></span>
+      </summary>
+      <nav class="dwg-rd-header__nav">
+        {% for i in (1..3) %}
+          {% liquid
+            case i
+              when 1
+                assign lbl = section.settings.link1_label
+                assign url = section.settings.link1_url | default: routes.root_url
+              when 2
+                assign lbl = section.settings.link2_label
+                assign url = section.settings.link2_url | default: routes.all_products_collection_url
+              when 3
+                assign lbl = section.settings.link3_label
+                assign url = section.settings.link3_url | default: '/pages/about'
+            endcase
+            assign is_active = false
+            if url == cur_path or url contains cur_path and cur_path != '/'
+              assign is_active = true
+            endif
+            if i == 1 and cur_path == routes.root_url
+              assign is_active = true
+            endif
+          %}
+          {% if lbl != blank %}
+            <a href="{{ url }}" class="dwg-rd-header__link{% if is_active %} is-active{% endif %}">{{ lbl }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+    </details>
+
+    <a href="{{ routes.cart_url }}" class="dwg-rd-header__cart" aria-label="Cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/>
+        <path d="M2.5 3h2.2l2.1 11.2a1.6 1.6 0 0 0 1.6 1.3h8.2a1.6 1.6 0 0 0 1.6-1.3L21 6.5H6.2"/>
+      </svg>
+      <span class="dwg-rd-header__cart-count{% if cart.item_count > 0 %} is-visible{% endif %}" data-cart-count>{{ cart.item_count }}</span>
+    </a>
+  </div>
+</header>
+
+{% stylesheet %}
+  .dwg-rd-ann {
+    background: var(--rd-ann-bg);
+    color: var(--rd-ann-color);
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 9px 16px;
+  }
+
+  .dwg-rd-header {
+    background: var(--rd-hd-bg);
+    border-bottom: 1px solid rgba(28, 28, 28, 0.06);
+  }
+
+  .dwg-rd-header--sticky {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .dwg-rd-header__wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 14px;
+  }
+
+  .dwg-rd-header__logo img {
+    display: block;
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .dwg-rd-header__nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 3vw, 40px);
+  }
+
+  .dwg-rd-header__link {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--rd-hd-link);
+    transition: color 0.15s ease;
+  }
+
+  .dwg-rd-header__link:hover,
+  .dwg-rd-header__link.is-active {
+    color: var(--rd-hd-active);
+  }
+
+  .dwg-rd-header__cart {
+    position: relative;
+    color: var(--rd-hd-link);
+    display: inline-flex;
+    line-height: 0;
+  }
+
+  .dwg-rd-header__cart svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .dwg-rd-header__cart-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: #c0392b;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dwg-rd-header__cart-count.is-visible {
+    display: inline-flex;
+  }
+
+  /* Disclosure (mobile menu) — inline nav on desktop */
+  .dwg-rd-header__disclosure {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  .dwg-rd-header__toggle {
+    display: none;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .dwg-rd-header__toggle::-webkit-details-marker { display: none; }
+
+  @media screen and (max-width: 749px) {
+    .dwg-rd-header__disclosure {
+      position: static;
+      flex: 0 0 auto;
+      order: 3;
+    }
+    .dwg-rd-header__toggle {
+      display: inline-flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+    }
+    .dwg-rd-header__bars,
+    .dwg-rd-header__bars::before,
+    .dwg-rd-header__bars::after {
+      content: '';
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--rd-hd-link);
+      position: relative;
+    }
+    .dwg-rd-header__bars::before { position: absolute; top: -7px; }
+    .dwg-rd-header__bars::after { position: absolute; top: 7px; }
+    .dwg-rd-header__nav {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      flex-direction: column;
+      background: var(--rd-hd-bg);
+      padding: 16px 24px 24px;
+      gap: 18px;
+      border-bottom: 1px solid rgba(28, 28, 28, 0.08);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+      z-index: 40;
+    }
+    .dwg-rd-header__disclosure[open] .dwg-rd-header__nav {
+      display: flex;
+    }
+    .dwg-rd-header__wrap {
+      position: relative;
+      flex-wrap: wrap;
+    }
+    .dwg-rd-header__logo { order: 1; }
+    .dwg-rd-header__cart { order: 2; }
+  }
+{% endstylesheet %}
+
+<script>
+  // Keep the header cart bubble in sync after AJAX add-to-cart events.
+  document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('cart:updated', refreshCount);
+    async function refreshCount() {
+      try {
+        const r = await fetch('{{ routes.cart_url }}.js', { headers: { Accept: 'application/json' } });
+        const c = await r.json();
+        document.querySelectorAll('[data-cart-count]').forEach(function (el) {
+          el.textContent = c.item_count;
+          el.classList.toggle('is-visible', c.item_count > 0);
+        });
+      } catch (e) {}
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "DWG RD: Header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "header", "content": "Navigation links" },
+    { "type": "text", "id": "link1_label", "label": "Link 1 label", "default": "Home" },
+    { "type": "url", "id": "link1_url", "label": "Link 1 URL" },
+    { "type": "text", "id": "link2_label", "label": "Link 2 label", "default": "Shop" },
+    { "type": "url", "id": "link2_url", "label": "Link 2 URL" },
+    { "type": "text", "id": "link3_label", "label": "Link 3 label", "default": "About" },
+    { "type": "url", "id": "link3_url", "label": "Link 3 URL" },
+    { "type": "header", "content": "Announcement bar" },
+    { "type": "checkbox", "id": "show_announcement", "label": "Show announcement", "default": true },
+    { "type": "text", "id": "announcement_text", "label": "Announcement text", "default": "Free UK shipping on orders over £50" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "link_color", "label": "Link", "default": "#1C1C1C" },
+    { "type": "color", "id": "active_color", "label": "Active / hover", "default": "#BD8C1E" },
+    { "type": "color", "id": "announcement_background", "label": "Announcement background", "default": "#BD8C1E" },
+    { "type": "color", "id": "announcement_color", "label": "Announcement text", "default": "#FFFFFF" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,271 @@
+{% comment %}
+  DWG redesign — Cart page. Matches Figma cart screen: product line(s),
+  price, MOVE TO PAYMENT (-> Shopify checkout), REMOVE. Real cart.
+  Used by the cart template. Remove that template ref to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign btn_bg = section.settings.button_background | default: '#A97E0C'
+  assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+%}
+
+<section
+  class="dwg-rd-cart"
+  style="--rd-ct-bg: {{ bg }}; --rd-ct-eyebrow: {{ eyebrow_color }}; --rd-ct-text: {{ text_color }}; --rd-ct-btn-bg: {{ btn_bg }}; --rd-ct-btn-text: {{ btn_text }};"
+>
+  <div class="dwg-rd-cart__wrap page-width">
+    {% if cart.item_count > 0 %}
+      <form action="{{ routes.cart_url }}" method="post" class="dwg-rd-cart__form">
+        <p class="dwg-rd-cart__count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'product', 'products' }}</p>
+
+        <ul class="dwg-rd-cart__list">
+          {% for item in cart.items %}
+            <li class="dwg-rd-cart__item">
+              <a class="dwg-rd-cart__media" href="{{ item.url }}">
+                {% if item.image %}
+                  {{ item.image | image_url: width: 500 | image_tag: class: 'dwg-rd-cart__img', widths: '180, 300, 500', loading: 'lazy', alt: item.title }}
+                {% endif %}
+              </a>
+              <div class="dwg-rd-cart__info">
+                <h2 class="dwg-rd-cart__name"><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+                {% unless item.variant.title contains 'Default' %}
+                  <p class="dwg-rd-cart__variant">{{ item.variant.title }}</p>
+                {% endunless %}
+                <p class="dwg-rd-cart__price-label">Price</p>
+                <p class="dwg-rd-cart__price">{{ item.final_line_price | money }}</p>
+
+                <div class="dwg-rd-cart__controls">
+                  <div class="dwg-rd-cart__qty">
+                    <label class="visually-hidden" for="qty-{{ item.index | plus: 1 }}">Quantity</label>
+                    <input
+                      id="qty-{{ item.index | plus: 1 }}"
+                      type="number"
+                      name="updates[]"
+                      value="{{ item.quantity }}"
+                      min="0"
+                      inputmode="numeric"
+                      class="dwg-rd-cart__qty-input"
+                    >
+                  </div>
+                  <a class="dwg-rd-cart__remove" href="{{ routes.cart_change_url }}?line={{ item.index | plus: 1 }}&quantity=0">Remove</a>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="dwg-rd-cart__footer">
+          <div class="dwg-rd-cart__subtotal">
+            <span>Subtotal</span>
+            <strong>{{ cart.total_price | money }}</strong>
+          </div>
+          <div class="dwg-rd-cart__actions">
+            <button type="submit" name="update" class="dwg-rd-cart__update">Update</button>
+            <button type="submit" name="checkout" class="dwg-rd-cart__checkout">Move to Payment</button>
+          </div>
+          <p class="dwg-rd-cart__note">Taxes and shipping calculated at checkout.</p>
+        </div>
+      </form>
+    {% else %}
+      <div class="dwg-rd-cart__empty">
+        <h1>Your cart is empty</h1>
+        <a class="dwg-rd-cart__shop" href="{{ routes.all_products_collection_url }}">Shop From Us</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-cart {
+    background: var(--rd-ct-bg);
+    padding-block: clamp(40px, 6vw, 88px);
+    min-height: 50vh;
+  }
+
+  .dwg-rd-cart__count {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: var(--rd-ct-eyebrow);
+    margin: 0 0 24px;
+  }
+
+  .dwg-rd-cart__list { list-style: none; margin: 0; padding: 0; }
+
+  .dwg-rd-cart__item {
+    display: flex;
+    gap: clamp(20px, 4vw, 56px);
+    align-items: center;
+    padding-block: 24px;
+    border-bottom: 1px solid rgba(28, 28, 28, 0.1);
+  }
+
+  .dwg-rd-cart__media {
+    flex: 0 0 clamp(120px, 20vw, 220px);
+    aspect-ratio: 3 / 4;
+    background: #f7efdc;
+    border-radius: 8px;
+    overflow: hidden;
+    display: block;
+  }
+
+  .dwg-rd-cart__img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+
+  .dwg-rd-cart__name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    line-height: 1.05;
+    margin: 0 0 10px;
+  }
+
+  .dwg-rd-cart__name a { color: var(--rd-ct-text); text-decoration: none; }
+
+  .dwg-rd-cart__variant {
+    font-family: 'Manjari', sans-serif;
+    color: rgba(28, 28, 28, 0.65);
+    margin: 0 0 8px;
+  }
+
+  .dwg-rd-cart__price-label {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(28, 28, 28, 0.55);
+    margin: 0 0 2px;
+  }
+
+  .dwg-rd-cart__price {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    margin: 0 0 18px;
+  }
+
+  .dwg-rd-cart__controls { display: flex; align-items: center; gap: 24px; }
+
+  .dwg-rd-cart__qty-input {
+    width: 64px;
+    padding: 10px;
+    border: 1px solid rgba(28, 28, 28, 0.25);
+    border-radius: 4px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  .dwg-rd-cart__remove {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--rd-ct-text);
+    text-decoration: none;
+    border-bottom: 1px solid currentColor;
+  }
+
+  .dwg-rd-cart__footer { margin-top: 32px; }
+
+  .dwg-rd-cart__subtotal {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    align-items: baseline;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    margin-bottom: 18px;
+  }
+
+  .dwg-rd-cart__actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .dwg-rd-cart__update,
+  .dwg-rd-cart__checkout {
+    border: 0;
+    cursor: pointer;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1rem;
+    padding: 15px 34px;
+    transition: filter 0.2s ease;
+  }
+
+  .dwg-rd-cart__update {
+    background: transparent;
+    color: var(--rd-ct-text);
+    border: 1px solid rgba(28, 28, 28, 0.3);
+  }
+
+  .dwg-rd-cart__checkout {
+    background: var(--rd-ct-btn-bg);
+    color: var(--rd-ct-btn-text);
+  }
+
+  .dwg-rd-cart__checkout:hover { filter: brightness(1.08); }
+
+  .dwg-rd-cart__note {
+    text-align: right;
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(28, 28, 28, 0.6);
+    margin: 12px 0 0;
+  }
+
+  .dwg-rd-cart__empty { text-align: center; padding-block: 40px; }
+
+  .dwg-rd-cart__empty h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin: 0 0 24px;
+  }
+
+  .dwg-rd-cart__shop {
+    display: inline-block;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 15px 34px;
+    background: var(--rd-ct-btn-bg);
+    color: var(--rd-ct-btn-text);
+    text-decoration: none;
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: 600px) {
+    .dwg-rd-cart__item { flex-direction: column; align-items: flex-start; }
+    .dwg-rd-cart__actions { justify-content: stretch; }
+    .dwg-rd-cart__checkout { flex: 1 1 auto; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Cart",
+  "settings": [
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "button_background", "label": "Checkout button", "default": "#A97E0C" },
+    { "type": "color", "id": "button_text_color", "label": "Checkout text", "default": "#FFFFFF" }
+  ]
+}
+{% endschema %}

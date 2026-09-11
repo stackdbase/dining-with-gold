@@ -25,7 +25,7 @@
     --rd-hero-btn-text: {{ btn_text }};
   "
 >
-  <div class="dwg-rd-hero__wrap page-width">
+  <div class="dwg-rd-hero__wrap">
     <div class="dwg-rd-hero__content">
       {% if section.settings.heading != blank %}
         <h1 class="dwg-rd-hero__heading">{{ section.settings.heading }}</h1>
@@ -76,11 +76,20 @@
     grid-template-columns: 1fr;
     gap: clamp(24px, 5vw, 48px);
     align-items: center;
+    max-width: var(--dwg-page-max, 1360px);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 5vw, 48px);
   }
 
   @media screen and (min-width: 900px) {
     .dwg-rd-hero__wrap {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      /* Full-width row: text stays aligned to the page gutter on the left,
+         the image bleeds to the right viewport edge. */
+      max-width: none;
+      margin-inline: 0;
+      padding-left: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
+      padding-right: 0;
     }
   }
 
@@ -146,6 +155,15 @@
     max-width: 560px;
     height: auto;
     display: block;
+  }
+
+  @media screen and (min-width: 900px) {
+    .dwg-rd-hero__media {
+      justify-content: flex-end;
+    }
+    .dwg-rd-hero__media-img {
+      max-width: 620px;
+    }
   }
 
   @media screen and (max-width: 899px) {

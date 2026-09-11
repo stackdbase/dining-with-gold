@@ -1,8 +1,7 @@
 {% comment %}
-  DWG redesign — Hero. "No 1 African Chilli Oil".
-  Live text rebuild of the Figma hero (node 449:354 top region), so the
-  headline stays editable, responsive and SEO-friendly. Chef + product
-  render as separate circular images. Remove this section to revert.
+  DWG redesign — Hero slideshow. Rotating slides that cross-fade + pop in
+  over each other. Each slide = live text (left or right) + a product
+  graphic bleeding to that edge. Respects prefers-reduced-motion.
 {% endcomment %}
 
 {% liquid
@@ -12,6 +11,8 @@
   assign text_color = section.settings.text_color | default: '#1C1C1C'
   assign btn_bg = section.settings.button_background | default: '#A97E0C'
   assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+  assign speed = section.settings.autoplay_speed | default: 5
+  assign speed_ms = speed | times: 1000
 %}
 
 <section
@@ -24,84 +25,86 @@
     --rd-hero-btn-bg: {{ btn_bg }};
     --rd-hero-btn-text: {{ btn_text }};
   "
+  data-dwg-hero
+  data-autoplay="{{ speed_ms }}"
 >
-  <div class="dwg-rd-hero__wrap">
-    <div class="dwg-rd-hero__content">
-      {% if section.settings.heading != blank %}
-        <h1 class="dwg-rd-hero__heading">{{ section.settings.heading }}</h1>
-      {% endif %}
-      {% if section.settings.eyebrow != blank %}
-        <p class="dwg-rd-hero__eyebrow">{{ section.settings.eyebrow }}</p>
-      {% endif %}
-      {% if section.settings.body != blank %}
-        <div class="dwg-rd-hero__body">{{ section.settings.body }}</div>
-      {% endif %}
-      {% if section.settings.button_label != blank %}
-        <a class="dwg-rd-hero__btn" href="{{ section.settings.button_link | default: '#' }}">
-          {{ section.settings.button_label }}
-        </a>
-      {% endif %}
-    </div>
+  <div class="dwg-rd-hero__stage" id="dwg-hero-{{ section.id }}">
+    {% for block in section.blocks %}
+      {% liquid
+        assign side = block.settings.image_side | default: 'right'
+        assign mstyle = block.settings.media_style | default: 'float'
+      %}
+      <div
+        class="dwg-rd-hero__slide dwg-rd-hero__slide--img-{{ side }} dwg-rd-hero__slide--{{ mstyle }}{% if forloop.first %} is-active{% endif %}"
+        data-slide="{{ forloop.index0 }}"
+        {{ block.shopify_attributes }}
+      >
+        <div class="dwg-rd-hero__content">
+          {% if block.settings.eyebrow != blank %}
+            <p class="dwg-rd-hero__eyebrow">{{ block.settings.eyebrow }}</p>
+          {% endif %}
+          {% if block.settings.heading != blank %}
+            <h1 class="dwg-rd-hero__heading">{{ block.settings.heading }}</h1>
+          {% endif %}
+          {% if block.settings.body != blank %}
+            <div class="dwg-rd-hero__body">{{ block.settings.body }}</div>
+          {% endif %}
+          {% if block.settings.button_label != blank %}
+            <a class="dwg-rd-hero__btn" href="{{ block.settings.button_link | default: '#' }}">{{ block.settings.button_label }}</a>
+          {% endif %}
+        </div>
 
-    <div class="dwg-rd-hero__media">
-      {% if section.settings.hero_image != blank %}
-        {{
-          section.settings.hero_image
-          | image_url: width: 1200
-          | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 904, 1200', loading: 'eager', alt: section.settings.hero_image.alt | default: 'DWG founder holding a pepper beside the African Chilli Oil bottle'
-        }}
-      {% else %}
-        <img
-          class="dwg-rd-hero__media-img"
-          src="{{ 'dwg-rd-hero-cluster.png' | asset_url }}"
-          alt="DWG founder holding a pepper beside the African Chilli Oil bottle"
-          width="904"
-          height="1200"
-          loading="eager"
-        >
-      {% endif %}
-    </div>
+        <div class="dwg-rd-hero__media">
+          {% if block.settings.image != blank %}
+            {{ block.settings.image | image_url: width: 1300 | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 1000, 1300', loading: 'eager', alt: block.settings.heading | default: 'DWG African Chilli Oil' }}
+          {% elsif block.settings.fallback_image != blank %}
+            <img class="dwg-rd-hero__media-img" src="{{ block.settings.fallback_image | asset_url }}" alt="{{ block.settings.heading | default: 'DWG African Chilli Oil' }}" width="1000" height="1200" loading="eager">
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
   </div>
+
+  {% if section.blocks.size > 1 %}
+    <div class="dwg-rd-hero__dots" role="tablist" aria-label="Hero slides">
+      {% for block in section.blocks %}
+        <button class="dwg-rd-hero__dot{% if forloop.first %} is-active{% endif %}" type="button" data-goto="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}"></button>
+      {% endfor %}
+    </div>
+  {% endif %}
 </section>
 
 {% stylesheet %}
   .dwg-rd-hero {
+    position: relative;
     background-color: var(--rd-hero-bg);
-    padding-block: clamp(32px, 6vw, 72px);
-    overflow: hidden;
+    padding-block: clamp(24px, 4vw, 56px);
+    overflow-x: hidden;
   }
 
-  .dwg-rd-hero__wrap {
+  .dwg-rd-hero__stage {
+    display: grid;
+  }
+
+  .dwg-rd-hero__slide {
+    grid-area: 1 / 1;
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(24px, 5vw, 48px);
+    gap: clamp(20px, 4vw, 44px);
     align-items: center;
-    max-width: var(--dwg-page-max, 1360px);
-    margin-inline: auto;
     padding-inline: clamp(20px, 5vw, 48px);
+    opacity: 0;
+    transform: scale(0.985) translateY(8px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    pointer-events: none;
+    z-index: 1;
   }
 
-  @media screen and (min-width: 900px) {
-    .dwg-rd-hero__wrap {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      /* Full-width row: text stays aligned to the page gutter on the left,
-         the image bleeds to the right viewport edge. */
-      max-width: none;
-      margin-inline: 0;
-      padding-left: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
-      padding-right: 0;
-    }
-  }
-
-  .dwg-rd-hero__heading {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    line-height: 0.98;
-    margin: 0 0 20px;
-    font-size: clamp(2.75rem, 7vw, 5.25rem);
-    color: var(--rd-hero-heading);
-    text-transform: uppercase;
+  .dwg-rd-hero__slide.is-active {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    z-index: 2;
   }
 
   .dwg-rd-hero__eyebrow {
@@ -112,6 +115,17 @@
     font-size: clamp(0.85rem, 1.4vw, 1rem);
     color: var(--rd-hero-eyebrow);
     margin: 0 0 16px;
+  }
+
+  .dwg-rd-hero__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 0.98;
+    margin: 0 0 20px;
+    font-size: clamp(2.5rem, 6.5vw, 5rem);
+    color: var(--rd-hero-heading);
+    text-transform: uppercase;
   }
 
   .dwg-rd-hero__body {
@@ -139,11 +153,8 @@
     transition: filter 0.2s ease;
   }
 
-  .dwg-rd-hero__btn:hover {
-    filter: brightness(1.08);
-  }
+  .dwg-rd-hero__btn:hover { filter: brightness(1.08); }
 
-  /* Media — chef + bottle cluster (matches the Figma hero exactly) */
   .dwg-rd-hero__media {
     display: flex;
     justify-content: center;
@@ -151,27 +162,120 @@
   }
 
   .dwg-rd-hero__media-img {
-    width: 100%;
-    max-width: 560px;
-    height: auto;
     display: block;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+  }
+
+  /* Fill style — image covers the whole media column, bleeding to the edge
+     (used by the gold-panel jar slide). */
+  .dwg-rd-hero__slide--fill .dwg-rd-hero__media {
+    align-self: stretch;
+    min-height: 340px;
+  }
+  .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+
+  .dwg-rd-hero__dots {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .dwg-rd-hero__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(28, 28, 28, 0.22);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .dwg-rd-hero__dot.is-active {
+    background: var(--rd-hero-heading);
+    transform: scale(1.25);
   }
 
   @media screen and (min-width: 900px) {
-    .dwg-rd-hero__media {
-      justify-content: flex-end;
+    .dwg-rd-hero__stage { min-height: clamp(460px, 42vw, 580px); }
+
+    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+
+    /* Image on the right → text keeps the page gutter left, image bleeds right */
+    .dwg-rd-hero__slide--img-right {
+      padding-left: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
+      padding-right: 0;
     }
-    .dwg-rd-hero__media-img {
-      max-width: 620px;
+    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media { order: 2; justify-content: flex-end; }
+
+    /* Image on the left → image bleeds left, text keeps the page gutter right */
+    .dwg-rd-hero__slide--img-left {
+      padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
+      padding-left: 0;
     }
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
+
+    .dwg-rd-hero__media-img { max-width: 600px; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
   }
 
   @media screen and (max-width: 899px) {
-    .dwg-rd-hero__media-img {
-      max-width: 440px;
-    }
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
+    .dwg-rd-hero__media-img { max-width: 420px; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: none; height: 360px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dwg-rd-hero__slide { transition: opacity 0.2s ease; transform: none; }
   }
 {% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.currentScript.previousElementSibling;
+    while (root && !(root.hasAttribute && root.hasAttribute('data-dwg-hero'))) {
+      root = root.previousElementSibling;
+    }
+    if (!root) return;
+
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__slide'));
+    var dots = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__dot'));
+    if (slides.length < 2) return;
+
+    var i = 0;
+    var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 5000;
+    var timer = null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('is-active', idx === i); });
+    }
+    function next() { show(i + 1); }
+    function start() { if (reduce) return; stop(); timer = setInterval(next, delay); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () { show(parseInt(d.getAttribute('data-goto'), 10)); start(); });
+    });
+    root.addEventListener('mouseenter', stop);
+    root.addEventListener('mouseleave', start);
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+
+    start();
+  })();
+</script>
 
 {% schema %}
 {
@@ -179,12 +283,7 @@
   "tag": "section",
   "class": "section--dwg-rd-hero",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "No 1 African Chilli Oil" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Heat, Flavor, Gold Standard" },
-    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop From Us" },
-    { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "image_picker", "id": "hero_image", "label": "Hero image (chef + bottle)" },
+    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed (seconds)", "min": 3, "max": 10, "step": 1, "default": 5 },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },
@@ -193,6 +292,33 @@
     { "type": "color", "id": "button_background", "label": "Button background", "default": "#A97E0C" },
     { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
   ],
-  "presets": [{ "name": "DWG RD: Hero" }]
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Heat, Flavor, Gold Standard" },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "African Chilli Oil" },
+        { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
+        { "type": "text", "id": "button_label", "label": "Button label" },
+        { "type": "url", "id": "button_link", "label": "Button link" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback image asset", "info": "Theme asset filename used if no image is picked." },
+        { "type": "select", "id": "image_side", "label": "Image side", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ], "default": "right" },
+        { "type": "select", "id": "media_style", "label": "Image style", "options": [ { "value": "float", "label": "Float (product on background)" }, { "value": "fill", "label": "Fill (edge-to-edge panel)" } ], "default": "float" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "DWG RD: Hero",
+      "blocks": [
+        { "type": "slide", "settings": { "heading": "No 1 African Chilli Oil", "button_label": "Shop From Us", "fallback_image": "dwg-rd-hero-cluster.png", "image_side": "right", "media_style": "float" } },
+        { "type": "slide", "settings": { "heading": "African Chilli Oil", "fallback_image": "dwg-rd-elevate-bottle.png", "image_side": "right", "media_style": "float" } },
+        { "type": "slide", "settings": { "heading": "African Chilli Oil", "fallback_image": "dwg-rd-hero-jar-panel.jpg", "image_side": "left", "media_style": "fill" } }
+      ]
+    }
+  ]
 }
 {% endschema %}

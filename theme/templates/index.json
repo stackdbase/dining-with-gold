@@ -2,11 +2,46 @@
   "sections": {
     "rd_hero": {
       "type": "dwg-rd-hero",
+      "blocks": {
+        "s1": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heat, Flavor, Gold Standard",
+            "heading": "No 1 African Chilli Oil",
+            "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
+            "button_label": "Shop From Us",
+            "button_link": "shopify://collections/all",
+            "fallback_image": "dwg-rd-hero-cluster.png",
+            "image_side": "right",
+            "media_style": "float"
+          }
+        },
+        "s2": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heat Flavor, Gold Standard",
+            "heading": "African Chilli Oil",
+            "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
+            "fallback_image": "dwg-rd-elevate-bottle.png",
+            "image_side": "right",
+            "media_style": "float"
+          }
+        },
+        "s3": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "Heat Flavor, Gold Standard",
+            "heading": "African Chilli Oil",
+            "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
+            "fallback_image": "dwg-rd-hero-jar-panel.jpg",
+            "image_side": "left",
+            "media_style": "fill"
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3"],
       "settings": {
-        "heading": "No 1 African Chilli Oil",
-        "eyebrow": "Heat, Flavor, Gold Standard",
-        "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
-        "button_label": "Shop From Us"
+        "autoplay_speed": 5
       }
     },
     "rd_elevate": {

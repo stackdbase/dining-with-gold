@@ -41,7 +41,7 @@
       "blocks": {
         "c1": { "type": "card", "settings": { "show_play": true } },
         "c2": { "type": "card", "settings": { "show_play": true } },
-        "c3": { "type": "card", "settings": { "show_play": true } }
+        "c3": { "type": "card", "settings": { "show_play": false } }
       },
       "block_order": ["c1", "c2", "c3"],
       "settings": {

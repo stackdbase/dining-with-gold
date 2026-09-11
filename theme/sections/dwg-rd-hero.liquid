@@ -44,42 +44,22 @@
     </div>
 
     <div class="dwg-rd-hero__media">
-      <div class="dwg-rd-hero__chef">
-        {% if section.settings.chef_image != blank %}
-          {{
-            section.settings.chef_image
-            | image_url: width: 900
-            | image_tag: class: 'dwg-rd-hero__chef-img', widths: '400, 600, 900', loading: 'eager', alt: section.settings.chef_image.alt | default: 'DWG founder'
-          }}
-        {% else %}
-          <img
-            class="dwg-rd-hero__chef-img"
-            src="{{ 'dwg-rd-hero-chef.jpg' | asset_url }}"
-            alt="DWG founder"
-            width="800"
-            height="800"
-            loading="eager"
-          >
-        {% endif %}
-      </div>
-      <div class="dwg-rd-hero__product">
-        {% if section.settings.product_image != blank %}
-          {{
-            section.settings.product_image
-            | image_url: width: 600
-            | image_tag: class: 'dwg-rd-hero__product-img', widths: '300, 450, 600', loading: 'eager', alt: section.settings.product_image.alt | default: 'DWG chilli oil'
-          }}
-        {% else %}
-          <img
-            class="dwg-rd-hero__product-img"
-            src="{{ 'dwg-rd-more-bottle.png' | asset_url }}"
-            alt="DWG chilli oil"
-            width="600"
-            height="600"
-            loading="eager"
-          >
-        {% endif %}
-      </div>
+      {% if section.settings.hero_image != blank %}
+        {{
+          section.settings.hero_image
+          | image_url: width: 1200
+          | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 904, 1200', loading: 'eager', alt: section.settings.hero_image.alt | default: 'DWG founder holding a pepper beside the African Chilli Oil bottle'
+        }}
+      {% else %}
+        <img
+          class="dwg-rd-hero__media-img"
+          src="{{ 'dwg-rd-hero-cluster.png' | asset_url }}"
+          alt="DWG founder holding a pepper beside the African Chilli Oil bottle"
+          width="904"
+          height="1200"
+          loading="eager"
+        >
+      {% endif %}
     </div>
   </div>
 </section>
@@ -154,55 +134,23 @@
     filter: brightness(1.08);
   }
 
-  /* Media — chef in a large circle, product in a smaller overlapping circle */
+  /* Media — chef + bottle cluster (matches the Figma hero exactly) */
   .dwg-rd-hero__media {
-    position: relative;
-    width: 100%;
-    max-width: 520px;
-    margin-inline: auto;
-    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .dwg-rd-hero__chef {
-    position: absolute;
-    inset: 0 0 auto auto;
-    width: 78%;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f2ead6;
-  }
-
-  .dwg-rd-hero__chef-img {
+  .dwg-rd-hero__media-img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 560px;
+    height: auto;
     display: block;
-  }
-
-  .dwg-rd-hero__product {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 42%;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f7efdc;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
-  }
-
-  .dwg-rd-hero__product-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    padding: 8%;
   }
 
   @media screen and (max-width: 899px) {
-    .dwg-rd-hero__media {
-      max-width: 380px;
+    .dwg-rd-hero__media-img {
+      max-width: 440px;
     }
   }
 {% endstylesheet %}
@@ -218,8 +166,7 @@
     { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop From Us" },
     { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "image_picker", "id": "chef_image", "label": "Chef image (large circle)" },
-    { "type": "image_picker", "id": "product_image", "label": "Product image (small circle)" },
+    { "type": "image_picker", "id": "hero_image", "label": "Hero image (chef + bottle)" },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },

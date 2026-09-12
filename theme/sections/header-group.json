@@ -10,7 +10,7 @@
         "link2_label": "Shop",
         "link3_label": "About",
         "link3_url": "/pages/about",
-        "show_announcement": true,
+        "show_announcement": false,
         "announcement_text": "Free UK shipping on orders over £50"
       }
     }

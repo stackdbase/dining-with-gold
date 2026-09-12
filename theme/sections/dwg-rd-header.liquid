@@ -90,7 +90,6 @@
 
   .dwg-rd-header {
     background: var(--rd-hd-bg);
-    border-bottom: 1px solid rgba(28, 28, 28, 0.06);
   }
 
   .dwg-rd-header--sticky {
@@ -109,7 +108,7 @@
 
   .dwg-rd-header__logo img {
     display: block;
-    height: 60px;
+    height: clamp(80px, 9vw, 118px);
     width: auto;
     object-fit: contain;
   }
@@ -117,7 +116,7 @@
   .dwg-rd-header__nav {
     display: flex;
     align-items: center;
-    gap: clamp(20px, 3vw, 40px);
+    gap: clamp(24px, 3vw, 44px);
   }
 
   .dwg-rd-header__link {
@@ -170,11 +169,11 @@
     display: inline-flex;
   }
 
-  /* Disclosure (mobile menu) — inline nav on desktop */
+  /* Disclosure (mobile menu) — inline nav on desktop, pushed to the right */
   .dwg-rd-header__disclosure {
-    flex: 1 1 auto;
+    margin-left: auto;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
   }
 
   .dwg-rd-header__toggle {

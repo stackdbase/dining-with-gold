@@ -54,7 +54,7 @@
           {% endif %}
         </div>
 
-        <div class="dwg-rd-hero__media">
+        <div class="dwg-rd-hero__media{% if block.settings.compact_media %} is-nudge{% endif %}">
           {% if block.settings.image != blank %}
             {{ block.settings.image | image_url: width: 1300 | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 1000, 1300', loading: 'eager', alt: block.settings.heading | default: 'DWG African Chilli Oil' }}
           {% elsif block.settings.fallback_image != blank %}
@@ -200,6 +200,15 @@
 
     .dwg-rd-hero__media-img { max-width: 640px; }
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
+
+    /* Nudge: bring the image inward from the edge and shift it up a touch */
+    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media.is-nudge {
+      padding-right: clamp(24px, 6vw, 90px);
+    }
+    .dwg-rd-hero__media.is-nudge .dwg-rd-hero__media-img {
+      max-width: 470px;
+      transform: translateY(-32px);
+    }
   }
 
   @media screen and (max-width: 899px) {
@@ -269,7 +278,8 @@
         { "type": "image_picker", "id": "image", "label": "Image" },
         { "type": "text", "id": "fallback_image", "label": "Fallback image asset", "info": "Theme asset filename used if no image is picked." },
         { "type": "select", "id": "image_side", "label": "Image side", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ], "default": "right" },
-        { "type": "select", "id": "media_style", "label": "Image style", "options": [ { "value": "float", "label": "Float (product on background)" }, { "value": "fill", "label": "Fill (edge-to-edge panel)" } ], "default": "float" }
+        { "type": "select", "id": "media_style", "label": "Image style", "options": [ { "value": "float", "label": "Float (product on background)" }, { "value": "fill", "label": "Fill (edge-to-edge panel)" } ], "default": "float" },
+        { "type": "checkbox", "id": "compact_media", "label": "Bring image inward & up", "default": false }
       ]
     }
   ],

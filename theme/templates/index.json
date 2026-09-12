@@ -24,7 +24,8 @@
             "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
             "fallback_image": "dwg-rd-elevate-bottle.png",
             "image_side": "right",
-            "media_style": "float"
+            "media_style": "float",
+            "compact_media": true
           }
         },
         "s3": {

@@ -65,15 +65,6 @@
     {% endfor %}
   </div>
 
-  {% if section.blocks.size > 1 %}
-    <div class="dwg-rd-hero__progress" aria-label="Hero slides">
-      {% for block in section.blocks %}
-        <button class="dwg-rd-hero__bar{% if forloop.first %} is-active{% endif %}" type="button" data-goto="{{ forloop.index0 }}" aria-label="Slide {{ forloop.index }}">
-          <span class="dwg-rd-hero__bar-fill"></span>
-        </button>
-      {% endfor %}
-    </div>
-  {% endif %}
 </section>
 
 {% stylesheet %}
@@ -96,15 +87,13 @@
     align-items: center;
     padding-inline: clamp(20px, 5vw, 48px);
     opacity: 0;
-    transform: scale(0.985) translateY(8px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity 0.45s ease;
     pointer-events: none;
     z-index: 1;
   }
 
   .dwg-rd-hero__slide.is-active {
     opacity: 1;
-    transform: none;
     pointer-events: auto;
     z-index: 2;
   }
@@ -183,34 +172,6 @@
     object-fit: cover;
   }
 
-  .dwg-rd-hero__progress {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 26px;
-    position: relative;
-    z-index: 3;
-  }
-
-  .dwg-rd-hero__bar {
-    width: 64px;
-    height: 4px;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    border-radius: 999px;
-    background: rgba(28, 28, 28, 0.16);
-    overflow: hidden;
-  }
-
-  .dwg-rd-hero__bar-fill {
-    display: block;
-    height: 100%;
-    width: 0;
-    border-radius: 999px;
-    background: var(--rd-hero-heading);
-  }
 
   @media screen and (min-width: 900px) {
     .dwg-rd-hero__stage { min-height: clamp(460px, 42vw, 580px); }
@@ -256,45 +217,21 @@
     if (!root) return;
 
     var slides = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__slide'));
-    var bars = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__bar'));
-    var fills = bars.map(function (b) { return b.querySelector('.dwg-rd-hero__bar-fill'); });
     if (slides.length < 2) return;
 
     var i = 0;
-    var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 6000;
+    var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 4000;
     var timer = null;
-    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    function paint() {
+    function show(n) {
+      i = (n + slides.length) % slides.length;
       slides.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
-      bars.forEach(function (b, idx) { b.classList.toggle('is-active', idx === i); });
     }
-    // Reset every bar, then animate the active one filling over the slide duration.
-    function fillActive() {
-      fills.forEach(function (f) { if (f) { f.style.transition = 'none'; f.style.width = '0%'; } });
-      var af = fills[i];
-      if (!af) return;
-      if (reduce) { af.style.width = '100%'; return; }
-      void af.offsetWidth; // reflow so the reset applies before animating
-      af.style.transition = 'width ' + delay + 'ms linear';
-      af.style.width = '100%';
-    }
-    function freeze() {
-      var af = fills[i];
-      if (af) { var w = getComputedStyle(af).width; af.style.transition = 'none'; af.style.width = w; }
-    }
-    function show(n) { i = (n + slides.length) % slides.length; paint(); }
-    function next() { show(i + 1); fillActive(); }
-    function start() { if (reduce) { paint(); fillActive(); return; } stop(); fillActive(); timer = setInterval(next, delay); }
-    function stop() { if (timer) { clearInterval(timer); timer = null; } freeze(); }
+    function next() { show(i + 1); }
+    function start() { stop(); timer = setInterval(next, delay); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
 
-    bars.forEach(function (b) {
-      b.addEventListener('click', function () { show(parseInt(b.getAttribute('data-goto'), 10)); start(); });
-    });
-    root.addEventListener('mouseenter', stop);
-    root.addEventListener('mouseleave', start);
     document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
-
     start();
   })();
 </script>

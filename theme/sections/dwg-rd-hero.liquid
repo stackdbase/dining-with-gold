@@ -35,7 +35,7 @@
         assign mstyle = block.settings.media_style | default: 'float'
       %}
       <div
-        class="dwg-rd-hero__slide dwg-rd-hero__slide--img-{{ side }} dwg-rd-hero__slide--{{ mstyle }}{% if forloop.first %} is-active{% endif %}"
+        class="dwg-rd-hero__slide dwg-rd-hero__slide--img-{{ side }} dwg-rd-hero__slide--{{ mstyle }}{% if block.settings.compact_media %} dwg-rd-hero__slide--compact{% endif %}{% if forloop.first %} is-active{% endif %}"
         data-slide="{{ forloop.index0 }}"
         {{ block.shopify_attributes }}
       >
@@ -54,7 +54,7 @@
           {% endif %}
         </div>
 
-        <div class="dwg-rd-hero__media{% if block.settings.compact_media %} is-nudge{% endif %}">
+        <div class="dwg-rd-hero__media">
           {% if block.settings.image != blank %}
             {{ block.settings.image | image_url: width: 1300 | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 1000, 1300', loading: 'eager', alt: block.settings.heading | default: 'DWG African Chilli Oil' }}
           {% elsif block.settings.fallback_image != blank %}
@@ -201,13 +201,17 @@
     .dwg-rd-hero__media-img { max-width: 640px; }
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
 
-    /* Nudge: bring the image inward from the edge and shift it up a touch */
-    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media.is-nudge {
-      padding-right: clamp(24px, 6vw, 90px);
+    /* Compact slide: pull the image inward from the edge + up, and bring
+       the text inward from the left too, for a tighter, centred balance. */
+    .dwg-rd-hero__slide--compact.dwg-rd-hero__slide--img-right .dwg-rd-hero__media {
+      padding-right: clamp(40px, 9vw, 170px);
     }
-    .dwg-rd-hero__media.is-nudge .dwg-rd-hero__media-img {
-      max-width: 470px;
-      transform: translateY(-32px);
+    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
+      max-width: 440px;
+      transform: translateY(-36px);
+    }
+    .dwg-rd-hero__slide--compact .dwg-rd-hero__content {
+      padding-left: clamp(12px, 4vw, 72px);
     }
   }
 

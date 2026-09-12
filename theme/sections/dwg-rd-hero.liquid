@@ -98,34 +98,38 @@
     z-index: 2;
   }
 
+  .dwg-rd-hero__content {
+    max-width: 620px;
+  }
+
   .dwg-rd-hero__eyebrow {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    font-size: clamp(1rem, 1.7vw, 1.375rem);
     color: var(--rd-hero-eyebrow);
-    margin: 0 0 16px;
+    margin: 0 0 22px;
   }
 
   .dwg-rd-hero__heading {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 0.98;
-    margin: 0 0 20px;
-    font-size: clamp(2.5rem, 6.5vw, 5rem);
+    line-height: 0.95;
+    margin: 0 0 28px;
+    font-size: clamp(3rem, 7.5vw, 6.25rem);
     color: var(--rd-hero-heading);
     text-transform: uppercase;
   }
 
   .dwg-rd-hero__body {
     font-family: 'Manjari', sans-serif;
-    font-size: clamp(1rem, 1.5vw, 1.15rem);
-    line-height: 1.55;
+    font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+    line-height: 1.5;
     color: var(--rd-hero-text);
-    max-width: 34ch;
-    margin: 0 0 28px;
+    max-width: 42ch;
+    margin: 0 0 34px;
   }
 
   .dwg-rd-hero__btn {
@@ -138,7 +142,8 @@
     letter-spacing: 0.02em;
     text-transform: uppercase;
     text-decoration: none;
-    padding: 15px 34px;
+    font-size: 1.1rem;
+    padding: 17px 42px;
     background: var(--rd-hero-btn-bg);
     color: var(--rd-hero-btn-text);
     transition: filter 0.2s ease;
@@ -174,9 +179,9 @@
 
 
   @media screen and (min-width: 900px) {
-    .dwg-rd-hero__stage { min-height: clamp(460px, 42vw, 580px); }
+    .dwg-rd-hero__stage { min-height: clamp(520px, 46vw, 660px); }
 
-    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
 
     /* Image on the right → text keeps the page gutter left, image bleeds right */
     .dwg-rd-hero__slide--img-right {
@@ -193,7 +198,7 @@
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
 
-    .dwg-rd-hero__media-img { max-width: 600px; }
+    .dwg-rd-hero__media-img { max-width: 640px; }
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
   }
 

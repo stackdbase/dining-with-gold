@@ -3,7 +3,8 @@
     "dwg_rd_shop": {
       "type": "dwg-rd-collection",
       "settings": {
-        "heading": "Shop From Us"
+        "heading": "Shop From Us",
+        "use_design_images": true
       }
     }
   },

@@ -25,9 +25,24 @@
       {% if collection.products.size > 0 %}
         <div class="dwg-rd-shop__grid">
           {% for product in collection.products %}
+            {% liquid
+              assign design_img = ''
+              if section.settings.use_design_images
+                assign t = product.title | downcase
+                if t contains 'jar'
+                  assign design_img = 'dwg-rd-shop-jar.png'
+                elsif t contains 'pack' or t contains 'bundle' or t contains 'double' or t contains 'duo' or t contains 'twin'
+                  assign design_img = 'dwg-rd-shop-pack.png'
+                else
+                  assign design_img = 'dwg-rd-shop-bottle.png'
+                endif
+              endif
+            %}
             <article class="dwg-rd-shop__card">
               <a class="dwg-rd-shop__media" href="{{ product.url }}">
-                {% if product.featured_image %}
+                {% if design_img != blank %}
+                  <img class="dwg-rd-shop__img" src="{{ design_img | asset_url }}" alt="{{ product.title }}" width="600" height="600" loading="lazy">
+                {% elsif product.featured_image %}
                   {{ product.featured_image | image_url: width: 600 | image_tag: class: 'dwg-rd-shop__img', widths: '200, 300, 450, 600', sizes: '(min-width: 750px) 22vw, 40vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title }}
                 {% else %}
                   {{ 'product-1' | placeholder_svg_tag: 'dwg-rd-shop__img dwg-rd-shop__img--ph' }}
@@ -219,6 +234,7 @@
   "name": "DWG RD: Shop grid",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "Shop From Us" },
+    { "type": "checkbox", "id": "use_design_images", "label": "Use design product images", "info": "Show the Figma product photos (bottle / two-pack / jar) mapped by product title, instead of each product's own image.", "default": true },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },

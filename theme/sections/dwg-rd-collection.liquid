@@ -36,15 +36,17 @@
               <div class="dwg-rd-shop__info">
                 <p class="dwg-rd-shop__eyebrow">{{ product.type | default: 'Product' }}</p>
                 <h2 class="dwg-rd-shop__name"><a href="{{ product.url }}">{{ product.title }}</a></h2>
-                <p class="dwg-rd-shop__price-label">Price</p>
-                <p class="dwg-rd-shop__price">{{ product.price | money }}</p>
-                {% form 'product', product, class: 'dwg-rd-shop__form' %}
-                  <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                  <input type="hidden" name="quantity" value="1">
-                  <button type="submit" class="dwg-rd-shop__buy"{% unless product.available %} disabled{% endunless %}>
-                    {% if product.available %}Buy{% else %}Sold out{% endif %}
-                  </button>
-                {% endform %}
+                <p class="dwg-rd-shop__price-label">Price Tag</p>
+                <div class="dwg-rd-shop__buyrow">
+                  <p class="dwg-rd-shop__price">{{ product.price | money }}</p>
+                  {% form 'product', product, class: 'dwg-rd-shop__form' %}
+                    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="dwg-rd-shop__buy"{% unless product.available %} disabled{% endunless %}>
+                      {% if product.available %}Buy{% else %}Sold out{% endif %}
+                    </button>
+                  {% endform %}
+                </div>
               </div>
             </article>
           {% endfor %}
@@ -80,33 +82,31 @@
     text-transform: uppercase;
     text-align: center;
     color: var(--rd-sh-heading);
-    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
     letter-spacing: 0.01em;
-    margin: 0 0 clamp(28px, 4vw, 48px);
+    margin: 0 0 clamp(32px, 5vw, 64px);
   }
 
   .dwg-rd-shop__grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(24px, 4vw, 48px);
+    gap: clamp(32px, 4vw, 56px) clamp(32px, 5vw, 80px);
   }
 
-  @media screen and (min-width: 600px) {
+  @media screen and (min-width: 750px) {
     .dwg-rd-shop__grid { grid-template-columns: 1fr 1fr; }
   }
 
   .dwg-rd-shop__card {
     display: flex;
     align-items: center;
-    gap: clamp(16px, 2vw, 28px);
+    gap: clamp(16px, 2.5vw, 32px);
   }
 
   .dwg-rd-shop__media {
-    flex: 0 0 40%;
+    flex: 0 0 34%;
     display: block;
     aspect-ratio: 3 / 4;
-    background: #f7efdc;
-    border-radius: 8px;
     overflow: hidden;
   }
 
@@ -118,43 +118,52 @@
     mix-blend-mode: multiply;
   }
 
-  .dwg-rd-shop__info { flex: 1 1 auto; }
+  .dwg-rd-shop__info { flex: 1 1 auto; min-width: 0; }
 
   .dwg-rd-shop__eyebrow {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--rd-sh-eyebrow);
-    margin: 0 0 6px;
+    margin: 0 0 8px;
   }
 
   .dwg-rd-shop__name {
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
     text-transform: uppercase;
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
-    line-height: 1.1;
-    margin: 0 0 14px;
+    font-size: clamp(1.4rem, 2.4vw, 2rem);
+    line-height: 1.08;
+    margin: 0 0 18px;
   }
 
   .dwg-rd-shop__name a { color: var(--rd-sh-text); text-decoration: none; }
 
   .dwg-rd-shop__price-label {
     font-family: 'Manjari', sans-serif;
-    font-size: 0.85rem;
-    color: rgba(28, 28, 28, 0.55);
-    margin: 0 0 2px;
+    font-size: 0.95rem;
+    color: rgba(28, 28, 28, 0.5);
+    margin: 0 0 6px;
+  }
+
+  .dwg-rd-shop__buyrow {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 2vw, 32px);
+    flex-wrap: wrap;
   }
 
   .dwg-rd-shop__price {
     font-family: 'Outfit', sans-serif;
     font-weight: 500;
-    font-size: 1.5rem;
+    font-size: clamp(1.5rem, 2.2vw, 2rem);
     color: var(--rd-sh-text);
-    margin: 0 0 14px;
+    margin: 0;
   }
+
+  .dwg-rd-shop__form { margin: 0; }
 
   .dwg-rd-shop__buy {
     border: 0;
@@ -163,8 +172,8 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    font-size: 1rem;
-    padding: 12px 34px;
+    font-size: 1.05rem;
+    padding: 13px 40px;
     background: var(--rd-sh-btn-bg);
     color: var(--rd-sh-btn-text);
     transition: filter 0.2s ease;

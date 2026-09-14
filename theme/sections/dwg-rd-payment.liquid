@@ -1,0 +1,175 @@
+{% comment %}
+  DWG redesign — "Payment Successful" page (standalone/branded).
+  NOTE: Shopify's real checkout + thank-you/order-status pages are not
+  theme-editable off Shopify Plus, so this is a showcase page (assign it
+  to a page via the 'payment-successful' template). Remove that template
+  to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign heading_color = section.settings.heading_color | default: '#1C1C1C'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign label_color = section.settings.label_color | default: '#B28100'
+%}
+
+<section
+  class="dwg-rd-pay"
+  style="--rd-pay-bg: {{ bg }}; --rd-pay-heading: {{ heading_color }}; --rd-pay-text: {{ text_color }}; --rd-pay-label: {{ label_color }};"
+>
+  <div class="dwg-rd-pay__wrap page-width">
+    <div class="dwg-rd-pay__inner">
+      {% if section.settings.heading != blank %}
+        <h1 class="dwg-rd-pay__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.date_text != blank %}
+        <p class="dwg-rd-pay__date">{{ section.settings.date_text }}</p>
+      {% endif %}
+
+      <div class="dwg-rd-pay__product">
+        <div class="dwg-rd-pay__media">
+          {% if section.settings.image != blank %}
+            {{ section.settings.image | image_url: width: 600 | image_tag: class: 'dwg-rd-pay__img', widths: '250, 400, 600', loading: 'lazy', alt: section.settings.product_title }}
+          {% else %}
+            <img class="dwg-rd-pay__img" src="{{ 'dwg-rd-shop-bottle.png' | asset_url }}" alt="{{ section.settings.product_title }}" width="364" height="600" loading="lazy">
+          {% endif %}
+        </div>
+        <div class="dwg-rd-pay__info">
+          {% if section.settings.product_title != blank %}
+            <h2 class="dwg-rd-pay__name">{{ section.settings.product_title }}</h2>
+          {% endif %}
+          {% if section.settings.price_label != blank %}
+            <p class="dwg-rd-pay__price-label">{{ section.settings.price_label }}</p>
+          {% endif %}
+          {% if section.settings.price != blank %}
+            <p class="dwg-rd-pay__price">{{ section.settings.price }}</p>
+          {% endif %}
+          {% if section.settings.button_label != blank %}
+            <a class="dwg-rd-pay__again" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label }}</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-pay {
+    background: var(--rd-pay-bg);
+    padding-block: clamp(40px, 6vw, 96px);
+    min-height: 46vh;
+  }
+
+  .dwg-rd-pay__inner {
+    max-width: 860px;
+    margin-inline: auto;
+  }
+
+  .dwg-rd-pay__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 1.0;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    color: var(--rd-pay-heading);
+    margin: 0 0 20px;
+  }
+
+  .dwg-rd-pay__date {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    color: var(--rd-pay-text);
+    margin: 0 0 clamp(28px, 4vw, 48px);
+  }
+
+  .dwg-rd-pay__product {
+    display: flex;
+    align-items: center;
+    gap: clamp(24px, 4vw, 56px);
+  }
+
+  .dwg-rd-pay__media {
+    flex: 0 0 clamp(150px, 22vw, 240px);
+    height: clamp(260px, 30vw, 380px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dwg-rd-pay__img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  .dwg-rd-pay__info { flex: 1 1 auto; min-width: 0; }
+
+  .dwg-rd-pay__name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    line-height: 1.1;
+    font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+    color: var(--rd-pay-text);
+    margin: 0 0 14px;
+  }
+
+  .dwg-rd-pay__price-label {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(28, 28, 28, 0.5);
+    margin: 0 0 4px;
+  }
+
+  .dwg-rd-pay__price {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+    color: var(--rd-pay-text);
+    margin: 0 0 clamp(24px, 3vw, 40px);
+  }
+
+  .dwg-rd-pay__again {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    color: var(--rd-pay-text);
+    text-decoration: none;
+  }
+
+  .dwg-rd-pay__again:hover { color: var(--rd-pay-label); }
+
+  @media screen and (max-width: 600px) {
+    .dwg-rd-pay__product { flex-direction: column; align-items: flex-start; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Payment success",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Payment Successful" },
+    { "type": "text", "id": "date_text", "label": "Date", "default": "22nd Aug 2024" },
+    { "type": "header", "content": "Product" },
+    { "type": "image_picker", "id": "image", "label": "Product image" },
+    { "type": "text", "id": "product_title", "label": "Product title", "default": "African Chilli Oil Bottle" },
+    { "type": "text", "id": "price_label", "label": "Price label", "default": "Price Tag" },
+    { "type": "text", "id": "price", "label": "Price", "default": "€12.00" },
+    { "type": "text", "id": "button_label", "label": "Link label", "default": "Purchase Again" },
+    { "type": "url", "id": "button_link", "label": "Link" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#1C1C1C" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "label_color", "label": "Accent", "default": "#B28100" }
+  ],
+  "presets": [{ "name": "DWG RD: Payment success" }]
+}
+{% endschema %}

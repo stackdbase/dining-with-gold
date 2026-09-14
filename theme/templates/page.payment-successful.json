@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "dwg_rd_payment": {
+      "type": "dwg-rd-payment",
+      "settings": {
+        "heading": "Payment Successful",
+        "date_text": "22nd Aug 2024",
+        "product_title": "African Chilli Oil Bottle",
+        "price_label": "Price Tag",
+        "price": "€12.00",
+        "button_label": "Purchase Again"
+      }
+    }
+  },
+  "order": ["dwg_rd_payment"]
+}

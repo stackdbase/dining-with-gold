@@ -2,7 +2,9 @@
   "sections": {
     "dwg_rd_cart": {
       "type": "dwg-rd-cart",
-      "settings": {}
+      "settings": {
+        "use_design_images": true
+      }
     }
   },
   "order": ["dwg_rd_cart"]

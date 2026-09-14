@@ -19,55 +19,48 @@
   <div class="dwg-rd-cart__wrap page-width">
     {% if cart.item_count > 0 %}
       <form action="{{ routes.cart_url }}" method="post" class="dwg-rd-cart__form">
-        <p class="dwg-rd-cart__count">{{ cart.item_count }} {{ cart.item_count | pluralize: 'product', 'products' }}</p>
-
         <ul class="dwg-rd-cart__list">
           {% for item in cart.items %}
+            {% liquid
+              assign t = item.product.title | downcase
+              assign design_img = ''
+              if section.settings.use_design_images
+                if t contains 'jar'
+                  assign design_img = 'dwg-rd-shop-jar.png'
+                elsif t contains 'bundle' or t contains 'trio' or t contains 'triple'
+                  assign design_img = 'dwg-rd-shop-trio.png'
+                elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin'
+                  assign design_img = 'dwg-rd-shop-pack.png'
+                else
+                  assign design_img = 'dwg-rd-shop-bottle.png'
+                endif
+              endif
+            %}
             <li class="dwg-rd-cart__item">
               <a class="dwg-rd-cart__media" href="{{ item.url }}">
-                {% if item.image %}
-                  {{ item.image | image_url: width: 500 | image_tag: class: 'dwg-rd-cart__img', widths: '180, 300, 500', loading: 'lazy', alt: item.title }}
+                {% if design_img != blank %}
+                  <img class="dwg-rd-cart__img" src="{{ design_img | asset_url }}" alt="{{ item.product.title }}" width="600" height="600" loading="lazy">
+                {% elsif item.image %}
+                  {{ item.image | image_url: width: 600 | image_tag: class: 'dwg-rd-cart__img', widths: '250, 400, 600', loading: 'lazy', alt: item.title }}
                 {% endif %}
               </a>
               <div class="dwg-rd-cart__info">
+                <p class="dwg-rd-cart__count">{{ item.quantity }} {{ item.quantity | pluralize: 'Product', 'Products' }}</p>
                 <h2 class="dwg-rd-cart__name"><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
                 {% unless item.variant.title contains 'Default' %}
                   <p class="dwg-rd-cart__variant">{{ item.variant.title }}</p>
                 {% endunless %}
-                <p class="dwg-rd-cart__price-label">Price</p>
+                <p class="dwg-rd-cart__price-label">Price Tag</p>
                 <p class="dwg-rd-cart__price">{{ item.final_line_price | money }}</p>
 
-                <div class="dwg-rd-cart__controls">
-                  <div class="dwg-rd-cart__qty">
-                    <label class="visually-hidden" for="qty-{{ item.index | plus: 1 }}">Quantity</label>
-                    <input
-                      id="qty-{{ item.index | plus: 1 }}"
-                      type="number"
-                      name="updates[]"
-                      value="{{ item.quantity }}"
-                      min="0"
-                      inputmode="numeric"
-                      class="dwg-rd-cart__qty-input"
-                    >
-                  </div>
+                <div class="dwg-rd-cart__actions">
+                  <button type="submit" name="checkout" class="dwg-rd-cart__checkout">Move to Payment</button>
                   <a class="dwg-rd-cart__remove" href="{{ routes.cart_change_url }}?line={{ item.index | plus: 1 }}&quantity=0">Remove</a>
                 </div>
               </div>
             </li>
           {% endfor %}
         </ul>
-
-        <div class="dwg-rd-cart__footer">
-          <div class="dwg-rd-cart__subtotal">
-            <span>Subtotal</span>
-            <strong>{{ cart.total_price | money }}</strong>
-          </div>
-          <div class="dwg-rd-cart__actions">
-            <button type="submit" name="update" class="dwg-rd-cart__update">Update</button>
-            <button type="submit" name="checkout" class="dwg-rd-cart__checkout">Move to Payment</button>
-          </div>
-          <p class="dwg-rd-cart__note">Taxes and shipping calculated at checkout.</p>
-        </div>
       </form>
     {% else %}
       <div class="dwg-rd-cart__empty">
@@ -90,39 +83,46 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: clamp(0.9rem, 1.3vw, 1.05rem);
     color: var(--rd-ct-eyebrow);
-    margin: 0 0 24px;
+    margin: 0 0 16px;
   }
 
   .dwg-rd-cart__list { list-style: none; margin: 0; padding: 0; }
 
   .dwg-rd-cart__item {
     display: flex;
-    gap: clamp(20px, 4vw, 56px);
+    gap: clamp(24px, 6vw, 96px);
     align-items: center;
-    padding-block: 24px;
-    border-bottom: 1px solid rgba(28, 28, 28, 0.1);
+    padding-block: clamp(24px, 3vw, 40px);
   }
 
   .dwg-rd-cart__media {
-    flex: 0 0 clamp(120px, 20vw, 220px);
-    aspect-ratio: 3 / 4;
-    background: #f7efdc;
-    border-radius: 8px;
-    overflow: hidden;
+    flex: 0 0 clamp(160px, 26vw, 320px);
+    height: clamp(280px, 32vw, 440px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dwg-rd-cart__img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
     display: block;
   }
 
-  .dwg-rd-cart__img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+  .dwg-rd-cart__info { flex: 1 1 auto; min-width: 0; }
 
   .dwg-rd-cart__name {
     font-family: 'Outfit', sans-serif;
     font-weight: 400;
     text-transform: uppercase;
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-size: clamp(1.75rem, 4vw, 3rem);
     line-height: 1.05;
-    margin: 0 0 10px;
+    margin: 0 0 20px;
   }
 
   .dwg-rd-cart__name a { color: var(--rd-ct-text); text-decoration: none; }
@@ -135,59 +135,24 @@
 
   .dwg-rd-cart__price-label {
     font-family: 'Manjari', sans-serif;
-    font-size: 0.85rem;
-    color: rgba(28, 28, 28, 0.55);
-    margin: 0 0 2px;
+    font-size: 0.95rem;
+    color: rgba(28, 28, 28, 0.5);
+    margin: 0 0 6px;
   }
 
   .dwg-rd-cart__price {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.35rem;
-    margin: 0 0 18px;
-  }
-
-  .dwg-rd-cart__controls { display: flex; align-items: center; gap: 24px; }
-
-  .dwg-rd-cart__qty-input {
-    width: 64px;
-    padding: 10px;
-    border: 1px solid rgba(28, 28, 28, 0.25);
-    border-radius: 4px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
-    text-align: center;
-  }
-
-  .dwg-rd-cart__remove {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--rd-ct-text);
-    text-decoration: none;
-    border-bottom: 1px solid currentColor;
-  }
-
-  .dwg-rd-cart__footer { margin-top: 32px; }
-
-  .dwg-rd-cart__subtotal {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    align-items: baseline;
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.25rem;
-    margin-bottom: 18px;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    margin: 0 0 28px;
   }
 
   .dwg-rd-cart__actions {
     display: flex;
-    gap: 16px;
-    justify-content: flex-end;
+    align-items: center;
+    gap: clamp(20px, 3vw, 40px);
     flex-wrap: wrap;
   }
 
-  .dwg-rd-cart__update,
   .dwg-rd-cart__checkout {
     border: 0;
     cursor: pointer;
@@ -195,31 +160,26 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    font-size: 1rem;
-    padding: 15px 34px;
-    transition: filter 0.2s ease;
-  }
-
-  .dwg-rd-cart__update {
-    background: transparent;
-    color: var(--rd-ct-text);
-    border: 1px solid rgba(28, 28, 28, 0.3);
-  }
-
-  .dwg-rd-cart__checkout {
+    font-size: 1.05rem;
+    padding: 17px 40px;
     background: var(--rd-ct-btn-bg);
     color: var(--rd-ct-btn-text);
+    transition: filter 0.2s ease;
   }
 
   .dwg-rd-cart__checkout:hover { filter: brightness(1.08); }
 
-  .dwg-rd-cart__note {
-    text-align: right;
-    font-family: 'Manjari', sans-serif;
-    font-size: 0.85rem;
-    color: rgba(28, 28, 28, 0.6);
-    margin: 12px 0 0;
+  .dwg-rd-cart__remove {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1.05rem;
+    color: var(--rd-ct-text);
+    text-decoration: none;
   }
+
+  .dwg-rd-cart__remove:hover { color: var(--rd-ct-eyebrow); }
 
   .dwg-rd-cart__empty { text-align: center; padding-block: 40px; }
 
@@ -260,6 +220,7 @@
 {
   "name": "DWG RD: Cart",
   "settings": [
+    { "type": "checkbox", "id": "use_design_images", "label": "Use design product images", "info": "Show the Figma product photos mapped by product title instead of each product's own image.", "default": true },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },

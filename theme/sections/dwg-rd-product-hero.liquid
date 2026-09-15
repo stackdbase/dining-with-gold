@@ -27,14 +27,47 @@
       {% if section.settings.body != blank %}
         <div class="dwg-rd-phero__body">{{ section.settings.body }}</div>
       {% endif %}
-      {% if product != blank and product.available %}
-        {% form 'product', product, class: 'dwg-rd-phero__form' %}
-          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-          <input type="hidden" name="quantity" value="1">
-          <button type="submit" class="dwg-rd-phero__btn">{{ section.settings.button_label | default: 'Check Us Out' }}</button>
+      {% if product != blank %}
+        {% if product.price != blank %}
+          <p class="dwg-rd-phero__price">
+            {{ product.price | money }}
+            {% if product.compare_at_price > product.price %}
+              <s class="dwg-rd-phero__was">{{ product.compare_at_price | money }}</s>
+            {% endif %}
+          </p>
+        {% endif %}
+
+        {% form 'product', product, class: 'dwg-rd-phero__form', id: 'dwg-phero-form' %}
+          {% if product.variants.size > 1 %}
+            <label class="dwg-rd-phero__vh" for="dwg-phero-variant">Variant</label>
+            <select id="dwg-phero-variant" name="id" class="dwg-rd-phero__variants">
+              {% for v in product.variants %}
+                <option value="{{ v.id }}" {% if v == product.selected_or_first_available_variant %}selected{% endif %} {% unless v.available %}disabled{% endunless %}>
+                  {{ v.title }} · {{ v.price | money }}{% unless v.available %} (sold out){% endunless %}
+                </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          {% endif %}
+
+          <div class="dwg-rd-phero__purchase">
+            <div class="dwg-rd-phero__qty" data-qty>
+              <button type="button" class="dwg-rd-phero__qty-btn" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+              <input type="number" class="dwg-rd-phero__qty-input" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Quantity">
+              <button type="button" class="dwg-rd-phero__qty-btn" data-qty-plus aria-label="Increase quantity">&plus;</button>
+            </div>
+            <button type="submit" name="add" class="dwg-rd-phero__btn dwg-rd-phero__btn--add"{% unless product.available %} disabled{% endunless %}>
+              {% if product.available %}{{ section.settings.button_label | default: 'Add to Cart' }}{% else %}Sold Out{% endif %}
+            </button>
+          </div>
+
+          {% if product.available %}
+            {{ form | payment_button }}
+          {% endif %}
         {% endform %}
       {% else %}
-        <a class="dwg-rd-phero__btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | default: 'Check Us Out' }}</a>
+        <a class="dwg-rd-phero__btn dwg-rd-phero__btn--add" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | default: 'Check Us Out' }}</a>
       {% endif %}
     </div>
 
@@ -118,6 +151,85 @@
   }
 
   .dwg-rd-phero__btn:hover { filter: brightness(1.08); }
+  .dwg-rd-phero__btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .dwg-rd-phero__price {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    color: var(--rd-ph-text);
+    margin: 0 0 22px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .dwg-rd-phero__was { color: rgba(28,28,28,0.45); font-weight: 400; font-size: 0.7em; }
+
+  .dwg-rd-phero__variants {
+    display: block;
+    width: 100%;
+    max-width: 340px;
+    padding: 14px 16px;
+    margin: 0 0 18px;
+    border: 1.5px solid rgba(28, 28, 28, 0.25);
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    background: #fff;
+  }
+
+  .dwg-rd-phero__purchase {
+    display: flex;
+    align-items: stretch;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .dwg-rd-phero__qty {
+    display: inline-flex;
+    align-items: center;
+    border: 1.5px solid rgba(28, 28, 28, 0.25);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .dwg-rd-phero__qty-btn {
+    border: 0;
+    background: none;
+    cursor: pointer;
+    width: 46px;
+    height: 100%;
+    min-height: 52px;
+    font-size: 1.3rem;
+    color: var(--rd-ph-text);
+    font-family: 'Outfit', sans-serif;
+  }
+  .dwg-rd-phero__qty-input {
+    width: 48px;
+    border: 0;
+    text-align: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
+    -moz-appearance: textfield;
+  }
+  .dwg-rd-phero__qty-input::-webkit-outer-spin-button,
+  .dwg-rd-phero__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+  .dwg-rd-phero__btn--add { flex: 1 1 auto; min-width: 200px; }
+
+  /* Shopify dynamic checkout (Buy Now / Shop Pay) */
+  .dwg-rd-phero__form .shopify-payment-button { margin-top: 4px; max-width: 520px; }
+  .dwg-rd-phero__form .shopify-payment-button__button--unbranded {
+    background: #1c1c1c;
+    border-radius: 4px;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    padding: 16px;
+  }
+
+  .dwg-rd-phero__vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
   .dwg-rd-phero__media { display: flex; justify-content: center; align-items: center; }
 
@@ -130,6 +242,20 @@
   }
 {% endstylesheet %}
 
+<script>
+  (function () {
+    document.querySelectorAll('.dwg-rd-phero__qty[data-qty]').forEach(function (wrap) {
+      var input = wrap.querySelector('.dwg-rd-phero__qty-input');
+      wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
+        input.value = Math.max(1, (parseInt(input.value, 10) || 1) - 1);
+      });
+      wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
+        input.value = (parseInt(input.value, 10) || 1) + 1;
+      });
+    });
+  })();
+</script>
+
 {% schema %}
 {
   "name": "DWG RD: Product hero",
@@ -137,7 +263,7 @@
     { "type": "text", "id": "heading", "label": "Heading (blank = product title)" },
     { "type": "text", "id": "eyebrow", "label": "Tagline", "default": "Heat Flavor, Gold Standard" },
     { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
-    { "type": "text", "id": "button_label", "label": "Button label", "default": "Check Us Out" },
+    { "type": "text", "id": "button_label", "label": "Add to cart label", "default": "Add to Cart" },
     { "type": "url", "id": "button_link", "label": "Button link (used when out of stock)" },
     { "type": "image_picker", "id": "image", "label": "Image (blank = product image)" },
     { "type": "header", "content": "Colors" },

@@ -72,8 +72,25 @@
     </div>
 
     <div class="dwg-rd-phero__media">
+      {% liquid
+        assign design_img = ''
+        if section.settings.use_design_images
+          assign t = product.title | downcase
+          if t contains 'jar'
+            assign design_img = 'dwg-rd-shop-jar.png'
+          elsif t contains 'bundle' or t contains 'trio' or t contains 'triple'
+            assign design_img = 'dwg-rd-shop-trio.png'
+          elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin'
+            assign design_img = 'dwg-rd-shop-pack.png'
+          else
+            assign design_img = 'dwg-rd-shop-bottle.png'
+          endif
+        endif
+      %}
       {% if section.settings.image != blank %}
         {{ section.settings.image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
+      {% elsif design_img != blank %}
+        <img class="dwg-rd-phero__img" src="{{ design_img | asset_url }}" alt="{{ heading }}" width="600" height="800" loading="eager">
       {% elsif product.featured_image %}
         {{ product.featured_image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
       {% else %}
@@ -105,8 +122,8 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -0.01em;
-    line-height: 0.95;
-    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.98;
+    font-size: clamp(2.25rem, 4.4vw, 3.75rem);
     color: var(--rd-ph-heading);
     margin: 0 0 22px;
   }
@@ -268,7 +285,8 @@
     { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
     { "type": "text", "id": "button_label", "label": "Add to cart label", "default": "Add to Cart" },
     { "type": "url", "id": "button_link", "label": "Button link (used when out of stock)" },
-    { "type": "image_picker", "id": "image", "label": "Image (blank = product image)" },
+    { "type": "image_picker", "id": "image", "label": "Image (blank = design/product image)" },
+    { "type": "checkbox", "id": "use_design_images", "label": "Use design product image", "info": "Show the Figma bottle/jar (mapped by product title) instead of the product's own photo.", "default": true },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },

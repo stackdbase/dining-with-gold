@@ -22,6 +22,8 @@
           <div class="dwg-rd-ways__media">
             {% if block.settings.image != blank %}
               {{ block.settings.image | image_url: width: 500 | image_tag: class: 'dwg-rd-ways__img', widths: '200, 350, 500', loading: 'lazy', alt: block.settings.title }}
+            {% elsif block.settings.fallback_image != blank %}
+              <img class="dwg-rd-ways__img" src="{{ block.settings.fallback_image | asset_url }}" alt="{{ block.settings.title }}" width="294" height="253" loading="lazy">
             {% else %}
               {{ 'lifestyle-1' | placeholder_svg_tag: 'dwg-rd-ways__img dwg-rd-ways__img--ph' }}
             {% endif %}
@@ -113,6 +115,7 @@
       "name": "Dish",
       "settings": [
         { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "fallback_image", "label": "Fallback image asset", "info": "Theme asset filename used if no image is picked." },
         { "type": "text", "id": "title", "label": "Title", "default": "Noodles" },
         { "type": "textarea", "id": "description", "label": "Caption", "default": "A golden drizzle over your favourite bowl." }
       ]

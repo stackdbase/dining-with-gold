@@ -37,11 +37,11 @@
     "ways": {
       "type": "dwg-rd-ways",
       "blocks": {
-        "d1": { "type": "dish", "settings": { "title": "Noodles" } },
-        "d2": { "type": "dish", "settings": { "title": "Dumplings" } },
-        "d3": { "type": "dish", "settings": { "title": "Eggs" } },
-        "d4": { "type": "dish", "settings": { "title": "Grilled Meats" } },
-        "d5": { "type": "dish", "settings": { "title": "Veggies" } }
+        "d1": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-1.jpg", "title": "Noodles", "description": "A golden drizzle over a hot bowl of noodles." } },
+        "d2": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-2.jpg", "title": "Dumplings", "description": "Spoon it over dumplings for instant heat." } },
+        "d3": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-3.jpg", "title": "Eggs", "description": "Transform soft-boiled eggs in seconds." } },
+        "d4": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-4.jpg", "title": "Grilled Meats", "description": "Brush over grilled and braised meats." } },
+        "d5": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-5.jpg", "title": "Veggies", "description": "Toss with fresh, crunchy vegetables." } }
       },
       "block_order": ["d1", "d2", "d3", "d4", "d5"],
       "settings": { "eyebrow": "Ways to Enjoy", "heading": "Gold with Every Bite" }

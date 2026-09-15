@@ -30,9 +30,9 @@
             "heading": "How the Oil Came to Life.",
             "subheading": "Born from a handbag.",
             "body": "<p>A friend brought a chilli oil on holiday. One taste and something clicked. Every time I travelled I noticed the same problem — beautiful cities, missing a kick. So I started making my own. Somewhere between Euro summers and dinner tables abroad, Dining With Gold Travel Chilli Oil was born. Small enough for your handbag. Powerful enough to transform any meal.</p>",
-            "fallback_image": "dwg-rd-shop-bottle.png",
+            "fallback_image": "dwg-rd-about-bottle.jpg",
             "image_position": "right",
-            "media_style": "contain"
+            "media_style": "cover"
           }
         },
         "b_ingredients": {

@@ -92,7 +92,9 @@
         "subtext": "More products, more partnerships and more sections on our website. Constantly evolving!",
         "card_heading": "British by birth. Nigerian by blood.",
         "card_body": "<p>I'm Wura, founder and chef behind Dining With Gold. In Yoruba, Wura means Gold. So when you eat with DWG, you're dining at my table wherever in the world you are. And at my table, the food is always bold, always flavourful, and always made with love.</p>",
-        "button_label": "Read About Page"
+        "button_label": "Read About Page",
+        "button_link": "shopify://pages/about",
+        "autoplay_speed": 2
       }
     }
   },

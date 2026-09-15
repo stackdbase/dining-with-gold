@@ -142,8 +142,8 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    font-size: 1.05rem;
-    padding: 17px 44px;
+    font-size: clamp(0.9rem, 1.1vw, 1rem);
+    padding: clamp(12px, 1.4vw, 15px) clamp(20px, 2.4vw, 30px);
     background: var(--rd-ph-btn-bg);
     color: var(--rd-ph-btn-text);
     text-decoration: none;
@@ -178,55 +178,58 @@
     background: #fff;
   }
 
+  /* Purchase controls sit in one balanced, capped-width column */
+  .dwg-rd-phero__form { max-width: 440px; }
+
   .dwg-rd-phero__purchase {
     display: flex;
     align-items: stretch;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
   .dwg-rd-phero__qty {
     display: inline-flex;
     align-items: center;
-    border: 1.5px solid rgba(28, 28, 28, 0.25);
+    border: 1.5px solid rgba(28, 28, 28, 0.22);
     border-radius: 6px;
     overflow: hidden;
+    flex: 0 0 auto;
   }
   .dwg-rd-phero__qty-btn {
     border: 0;
     background: none;
     cursor: pointer;
-    width: 46px;
-    height: 100%;
-    min-height: 52px;
-    font-size: 1.3rem;
+    width: 40px;
+    align-self: stretch;
+    font-size: 1.15rem;
     color: var(--rd-ph-text);
     font-family: 'Outfit', sans-serif;
   }
   .dwg-rd-phero__qty-input {
-    width: 48px;
+    width: 40px;
     border: 0;
     text-align: center;
     font-family: 'Outfit', sans-serif;
-    font-size: 1.05rem;
+    font-size: 1rem;
     -moz-appearance: textfield;
   }
   .dwg-rd-phero__qty-input::-webkit-outer-spin-button,
   .dwg-rd-phero__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-  .dwg-rd-phero__btn--add { flex: 1 1 auto; min-width: 200px; }
+  .dwg-rd-phero__btn--add { flex: 1 1 auto; }
 
   /* Shopify dynamic checkout (Buy Now / Shop Pay) */
-  .dwg-rd-phero__form .shopify-payment-button { margin-top: 4px; max-width: 520px; }
+  .dwg-rd-phero__form .shopify-payment-button { margin-top: 0; }
   .dwg-rd-phero__form .shopify-payment-button__button--unbranded {
     background: #1c1c1c;
-    border-radius: 4px;
+    border-radius: 6px;
     font-family: 'Manjari', sans-serif;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    padding: 16px;
+    padding: 14px;
+    min-height: 0;
   }
 
   .dwg-rd-phero__vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

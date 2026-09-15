@@ -1,0 +1,152 @@
+{% comment %}
+  DWG redesign — Product hero (PDP). Title + tagline + body + CTA on the
+  left, product jar image on the right. Uses the product object; the CTA
+  adds to cart. Remove from the product template to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign heading_color = section.settings.heading_color | default: '#BD8C1E'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign btn_bg = section.settings.button_background | default: '#A97E0C'
+  assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
+  assign heading = section.settings.heading | default: product.title | default: 'African Chilli Oil'
+%}
+
+<section
+  class="dwg-rd-phero"
+  style="--rd-ph-bg: {{ bg }}; --rd-ph-heading: {{ heading_color }}; --rd-ph-eyebrow: {{ eyebrow_color }}; --rd-ph-text: {{ text_color }}; --rd-ph-btn-bg: {{ btn_bg }}; --rd-ph-btn-text: {{ btn_text }};"
+>
+  <div class="dwg-rd-phero__wrap page-width">
+    <div class="dwg-rd-phero__content">
+      <h1 class="dwg-rd-phero__heading">{{ heading }}</h1>
+      {% if section.settings.eyebrow != blank %}
+        <p class="dwg-rd-phero__eyebrow">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="dwg-rd-phero__body">{{ section.settings.body }}</div>
+      {% endif %}
+      {% if product != blank and product.available %}
+        {% form 'product', product, class: 'dwg-rd-phero__form' %}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="dwg-rd-phero__btn">{{ section.settings.button_label | default: 'Check Us Out' }}</button>
+        {% endform %}
+      {% else %}
+        <a class="dwg-rd-phero__btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | default: 'Check Us Out' }}</a>
+      {% endif %}
+    </div>
+
+    <div class="dwg-rd-phero__media">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
+      {% elsif product.featured_image %}
+        {{ product.featured_image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
+      {% else %}
+        <img class="dwg-rd-phero__img" src="{{ 'dwg-rd-shop-jar.png' | asset_url }}" alt="{{ heading }}" width="600" height="600" loading="eager">
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-phero {
+    background: var(--rd-ph-bg);
+    padding-block: clamp(24px, 4vw, 56px);
+  }
+
+  .dwg-rd-phero__wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 5vw, 56px);
+    align-items: center;
+  }
+
+  @media screen and (min-width: 900px) {
+    .dwg-rd-phero__wrap { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  }
+
+  .dwg-rd-phero__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
+    font-size: clamp(3rem, 7vw, 6rem);
+    color: var(--rd-ph-heading);
+    margin: 0 0 22px;
+  }
+
+  .dwg-rd-phero__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+    color: var(--rd-ph-eyebrow);
+    margin: 0 0 18px;
+  }
+
+  .dwg-rd-phero__body {
+    font-family: 'Manjari', sans-serif;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--rd-ph-text);
+    max-width: 42ch;
+    margin: 0 0 30px;
+  }
+
+  .dwg-rd-phero__form { margin: 0; }
+
+  .dwg-rd-phero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+    padding: 17px 44px;
+    background: var(--rd-ph-btn-bg);
+    color: var(--rd-ph-btn-text);
+    text-decoration: none;
+    transition: filter 0.2s ease;
+  }
+
+  .dwg-rd-phero__btn:hover { filter: brightness(1.08); }
+
+  .dwg-rd-phero__media { display: flex; justify-content: center; align-items: center; }
+
+  .dwg-rd-phero__img {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.16));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Product hero",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading (blank = product title)" },
+    { "type": "text", "id": "eyebrow", "label": "Tagline", "default": "Heat Flavor, Gold Standard" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Check Us Out" },
+    { "type": "url", "id": "button_link", "label": "Button link (used when out of stock)" },
+    { "type": "image_picker", "id": "image", "label": "Image (blank = product image)" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },
+    { "type": "color", "id": "eyebrow_color", "label": "Tagline", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Body text", "default": "#1C1C1C" },
+    { "type": "color", "id": "button_background", "label": "Button", "default": "#A97E0C" },
+    { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
+  ]
+}
+{% endschema %}

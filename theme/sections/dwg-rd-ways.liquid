@@ -1,0 +1,135 @@
+{% comment %}
+  DWG redesign — "Ways to Enjoy / Gold with Every Bite". Row of food cards
+  (image + title + caption). Remove from template to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+%}
+
+<section class="dwg-rd-ways" style="--rd-wy-bg: {{ bg }}; --rd-wy-eyebrow: {{ eyebrow_color }}; --rd-wy-text: {{ text_color }};">
+  <div class="dwg-rd-ways__wrap page-width">
+    <div class="dwg-rd-ways__head">
+      {% if section.settings.eyebrow != blank %}<p class="dwg-rd-ways__eyebrow">{{ section.settings.eyebrow }}</p>{% endif %}
+      {% if section.settings.heading != blank %}<h2 class="dwg-rd-ways__heading">{{ section.settings.heading }}</h2>{% endif %}
+    </div>
+
+    <div class="dwg-rd-ways__grid">
+      {% for block in section.blocks %}
+        <article class="dwg-rd-ways__card" {{ block.shopify_attributes }}>
+          <div class="dwg-rd-ways__media">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 500 | image_tag: class: 'dwg-rd-ways__img', widths: '200, 350, 500', loading: 'lazy', alt: block.settings.title }}
+            {% else %}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'dwg-rd-ways__img dwg-rd-ways__img--ph' }}
+            {% endif %}
+          </div>
+          {% if block.settings.title != blank %}<h3 class="dwg-rd-ways__title">{{ block.settings.title }}</h3>{% endif %}
+          {% if block.settings.description != blank %}<p class="dwg-rd-ways__desc">{{ block.settings.description }}</p>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-ways { background: var(--rd-wy-bg); padding-block: clamp(32px, 5vw, 64px); }
+
+  .dwg-rd-ways__head { text-align: center; margin-bottom: clamp(24px, 4vw, 44px); }
+
+  .dwg-rd-ways__eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--rd-wy-eyebrow);
+    margin: 0 0 10px;
+  }
+
+  .dwg-rd-ways__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    color: var(--rd-wy-text);
+    margin: 0;
+  }
+
+  .dwg-rd-ways__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-rd-ways__grid { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  .dwg-rd-ways__media {
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f2ead6;
+    margin-bottom: 14px;
+  }
+
+  .dwg-rd-ways__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .dwg-rd-ways__title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.9rem;
+    color: var(--rd-wy-text);
+    margin: 0 0 4px;
+  }
+
+  .dwg-rd-ways__desc {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: rgba(28, 28, 28, 0.65);
+    margin: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Ways to enjoy",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Ways to Enjoy" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Gold with Every Bite" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" }
+  ],
+  "blocks": [
+    {
+      "type": "dish",
+      "name": "Dish",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Noodles" },
+        { "type": "textarea", "id": "description", "label": "Caption", "default": "A golden drizzle over your favourite bowl." }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "DWG RD: Ways to enjoy",
+      "blocks": [
+        { "type": "dish", "settings": { "title": "Noodles" } },
+        { "type": "dish", "settings": { "title": "Dumplings" } },
+        { "type": "dish", "settings": { "title": "Eggs" } },
+        { "type": "dish", "settings": { "title": "Grilled Meats" } },
+        { "type": "dish", "settings": { "title": "Veggies" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

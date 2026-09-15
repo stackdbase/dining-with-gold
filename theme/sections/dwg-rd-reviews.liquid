@@ -1,0 +1,129 @@
+{% comment %}
+  DWG redesign — reviews band. Full-bleed image left, rating + review
+  cards right ("Loved by thousands / Real people. Real flavor.").
+  Remove from template to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg = section.settings.background | default: '#FFFFFF'
+  assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
+  assign text_color = section.settings.text_color | default: '#1C1C1C'
+  assign star_color = section.settings.star_color | default: '#BD8C1E'
+%}
+
+<section class="dwg-rd-rev" style="--rd-rv-bg: {{ bg }}; --rd-rv-eyebrow: {{ eyebrow_color }}; --rd-rv-text: {{ text_color }}; --rd-rv-star: {{ star_color }};">
+  <div class="dwg-rd-rev__wrap">
+    <div class="dwg-rd-rev__media">
+      {% if section.settings.image != blank %}
+        {{ section.settings.image | image_url: width: 1000 | image_tag: class: 'dwg-rd-rev__img', widths: '500, 750, 1000', loading: 'lazy', alt: 'DWG chilli oil' }}
+      {% else %}
+        <img class="dwg-rd-rev__img" src="{{ 'dwg-rd-elevate-1.png' | asset_url }}" alt="DWG chilli oil" width="600" height="600" loading="lazy">
+      {% endif %}
+    </div>
+
+    <div class="dwg-rd-rev__content">
+      {% if section.settings.eyebrow != blank %}<p class="dwg-rd-rev__eyebrow">{{ section.settings.eyebrow }}</p>{% endif %}
+      {% if section.settings.heading != blank %}<h2 class="dwg-rd-rev__heading">{{ section.settings.heading }}</h2>{% endif %}
+
+      {% if section.settings.rating != blank %}
+        <div class="dwg-rd-rev__rating">
+          <span class="dwg-rd-rev__stars" aria-hidden="true">★★★★★</span>
+          <span class="dwg-rd-rev__score">{{ section.settings.rating }}</span>
+        </div>
+      {% endif %}
+
+      <div class="dwg-rd-rev__cards">
+        {% for block in section.blocks %}
+          <blockquote class="dwg-rd-rev__card" {{ block.shopify_attributes }}>
+            <span class="dwg-rd-rev__cardstars" aria-hidden="true">★★★★★</span>
+            {% if block.settings.quote != blank %}<p class="dwg-rd-rev__quote">{{ block.settings.quote }}</p>{% endif %}
+            {% if block.settings.author != blank %}<cite class="dwg-rd-rev__author">— {{ block.settings.author }}</cite>{% endif %}
+          </blockquote>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-rev { background: var(--rd-rv-bg); overflow: hidden; }
+
+  .dwg-rd-rev__wrap { display: grid; grid-template-columns: 1fr; }
+
+  .dwg-rd-rev__media { min-height: clamp(240px, 50vw, 340px); overflow: hidden; }
+  .dwg-rd-rev__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .dwg-rd-rev__content { padding: clamp(28px, 5vw, 64px) clamp(20px, 5vw, 48px); }
+
+  @media screen and (min-width: 900px) {
+    .dwg-rd-rev__wrap { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: stretch; }
+    .dwg-rd-rev__media { min-height: 100%; }
+    .dwg-rd-rev__content {
+      align-self: center;
+      padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
+    }
+  }
+
+  .dwg-rd-rev__eyebrow {
+    font-family: 'Inter', sans-serif; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; font-size: 0.85rem; color: var(--rd-rv-eyebrow); margin: 0 0 8px;
+  }
+
+  .dwg-rd-rev__heading {
+    font-family: 'Outfit', sans-serif; font-weight: 400;
+    font-size: clamp(1.6rem, 3.2vw, 2.5rem); color: var(--rd-rv-text); margin: 0 0 14px;
+  }
+
+  .dwg-rd-rev__rating { display: flex; align-items: center; gap: 10px; margin: 0 0 24px; }
+  .dwg-rd-rev__stars { color: var(--rd-rv-star); letter-spacing: 2px; }
+  .dwg-rd-rev__score { font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--rd-rv-text); }
+
+  .dwg-rd-rev__cards { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media screen and (min-width: 700px) { .dwg-rd-rev__cards { grid-template-columns: repeat(3, 1fr); } }
+
+  .dwg-rd-rev__card { margin: 0; }
+  .dwg-rd-rev__cardstars { color: var(--rd-rv-star); font-size: 0.85rem; letter-spacing: 1px; }
+  .dwg-rd-rev__quote {
+    font-family: 'Manjari', sans-serif; font-size: 0.95rem; line-height: 1.5;
+    color: var(--rd-rv-text); margin: 6px 0 10px;
+  }
+  .dwg-rd-rev__author { font-family: 'Outfit', sans-serif; font-size: 0.85rem; color: rgba(28,28,28,0.6); font-style: normal; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Reviews",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Loved by thousands" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Real people. Real flavor." },
+    { "type": "text", "id": "rating", "label": "Rating text", "default": "4.9/5 (2,500+ Reviews)" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
+    { "type": "color", "id": "star_color", "label": "Stars", "default": "#BD8C1E" }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "This chilli oil is ridiculously good. Perfect balance of heat and flavor!" },
+        { "type": "text", "id": "author", "label": "Author", "default": "Adaeze, Lagos" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "DWG RD: Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "quote": "This chilli oil is ridiculously good. Perfect balance of heat and flavor!", "author": "Adaeze, Lagos" } },
+        { "type": "review", "settings": { "quote": "I put it on everything! My new kitchen essential.", "author": "Tunde, Abuja" } },
+        { "type": "review", "settings": { "quote": "You can taste the quality. Worth every drop.", "author": "Miriam, Port Harcourt" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

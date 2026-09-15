@@ -64,8 +64,10 @@
 {% stylesheet %}
   .dwg-rd-loved {
     background-color: var(--rd-lv-bg);
-    padding-block: 0 clamp(40px, 7vw, 80px);
-    margin-top: clamp(-90px, -6vw, -32px);
+    padding-block: clamp(8px, 1.5vw, 20px) clamp(40px, 7vw, 80px);
+    margin-top: clamp(-40px, -3vw, -16px);
+    position: relative;
+    z-index: 3;
   }
 
   .dwg-rd-loved__head {

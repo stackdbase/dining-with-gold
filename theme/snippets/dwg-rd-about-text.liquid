@@ -1,0 +1,16 @@
+{% comment %} Shared text block for dwg-rd-about rows. Expects: block {% endcomment %}
+{% if block.settings.eyebrow != blank %}
+  <p class="dwg-rd-about__eyebrow">{{ block.settings.eyebrow }}</p>
+{% endif %}
+{% if block.settings.heading != blank %}
+  <h2 class="dwg-rd-about__heading">{{ block.settings.heading }}</h2>
+{% endif %}
+{% if block.settings.subheading != blank %}
+  <p class="dwg-rd-about__subheading">{{ block.settings.subheading }}</p>
+{% endif %}
+{% if block.settings.body != blank %}
+  <div class="dwg-rd-about__body">{{ block.settings.body }}</div>
+{% endif %}
+{% if block.settings.button_label != blank %}
+  <a class="dwg-rd-about__btn" href="{{ block.settings.button_url | default: '#' }}">{{ block.settings.button_label }}</a>
+{% endif %}

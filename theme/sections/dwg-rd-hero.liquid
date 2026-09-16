@@ -223,18 +223,25 @@
     .dwg-rd-hero { padding-block: clamp(8px, 3vw, 20px) clamp(16px, 5vw, 28px); }
     .dwg-rd-hero__slide {
       grid-template-columns: 1fr;
-      gap: clamp(16px, 4vw, 28px);
+      gap: clamp(14px, 4vw, 24px);
+      padding-inline: 0;
       text-align: left;
     }
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
-    .dwg-rd-hero__content { max-width: none; }
-    .dwg-rd-hero__media { justify-content: center; }
-    .dwg-rd-hero__media-img { max-width: min(360px, 78vw); margin-inline: auto; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: none; width: 100%; height: clamp(220px, 55vw, 340px); }
+    /* Text always on top with its own gutter; media below */
+    .dwg-rd-hero__content,
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 1; max-width: none; padding-inline: clamp(20px, 5vw, 28px); }
+
+    /* Float slides (chef/bottle): bleed to the right edge, like desktop */
+    .dwg-rd-hero__media { order: 2; justify-content: flex-end; }
+    .dwg-rd-hero__media-img { max-width: min(430px, 92vw); margin: 0; }
+
+    /* Fill slide (jar panel): full width and FULL height — no top/bottom crop */
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media { justify-content: stretch; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: none; width: 100%; height: auto; object-fit: contain; }
   }
 
   @media screen and (max-width: 480px) {
-    .dwg-rd-hero__media-img { max-width: min(300px, 72vw); }
+    .dwg-rd-hero__media-img { max-width: min(340px, 90vw); }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -180,6 +180,16 @@
   }
 
   .dwg-rd-story__btn:hover { filter: brightness(1.06); }
+
+  /* Mobile: show each transitioning image in full (no top/bottom crop) */
+  @media screen and (max-width: 899px) {
+    .dwg-rd-story__media {
+      min-height: 0;
+      aspect-ratio: 4 / 5;
+      background: var(--rd-st-bg);
+    }
+    .dwg-rd-story__img { object-fit: contain; }
+  }
 {% endstylesheet %}
 
 <script>

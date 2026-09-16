@@ -264,10 +264,14 @@
   }
 
   @media screen and (max-width: 899px) {
+    .dwg-rd-elevate { margin-top: 0; padding-top: clamp(24px, 6vw, 40px); }
     .dwg-rd-elevate__media {
       max-width: 440px;
-      min-height: 420px;
+      min-height: 0;
+      margin-top: 8px;
     }
+    .dwg-rd-elevate__media-accent { width: 40%; }
+    .dwg-rd-elevate__features { max-width: none; }
   }
 {% endstylesheet %}
 

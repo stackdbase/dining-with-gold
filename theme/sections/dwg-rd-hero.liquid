@@ -117,11 +117,12 @@
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 0.92;
-    margin: 0 0 28px;
-    font-size: clamp(3.5rem, 9vw, 7.75rem);
+    line-height: 0.95;
+    margin: 0 0 24px;
+    font-size: clamp(2.25rem, 8vw, 7.75rem);
     color: var(--rd-hero-heading);
     text-transform: uppercase;
+    overflow-wrap: break-word;
   }
 
   .dwg-rd-hero__body {
@@ -219,9 +220,21 @@
   }
 
   @media screen and (max-width: 899px) {
+    .dwg-rd-hero { padding-block: clamp(8px, 3vw, 20px) clamp(16px, 5vw, 28px); }
+    .dwg-rd-hero__slide {
+      grid-template-columns: 1fr;
+      gap: clamp(16px, 4vw, 28px);
+      text-align: left;
+    }
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
-    .dwg-rd-hero__media-img { max-width: 420px; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: none; height: 360px; }
+    .dwg-rd-hero__content { max-width: none; }
+    .dwg-rd-hero__media { justify-content: center; }
+    .dwg-rd-hero__media-img { max-width: min(360px, 78vw); margin-inline: auto; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: none; width: 100%; height: clamp(220px, 55vw, 340px); }
+  }
+
+  @media screen and (max-width: 480px) {
+    .dwg-rd-hero__media-img { max-width: min(300px, 72vw); }
   }
 
   @media (prefers-reduced-motion: reduce) {

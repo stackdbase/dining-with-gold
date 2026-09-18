@@ -223,32 +223,35 @@
   }
 
   @media screen and (max-width: 899px) {
-    .dwg-rd-hero { padding-block: clamp(8px, 3vw, 20px) clamp(16px, 5vw, 28px); }
+    /* Height flows with content on mobile (no forced viewport gaps) */
+    .dwg-rd-hero { padding-block: clamp(16px, 5vw, 28px) clamp(24px, 7vw, 40px); }
+    .dwg-rd-hero__stage { min-height: 0; }
     .dwg-rd-hero__slide {
       grid-template-columns: 1fr;
-      gap: clamp(14px, 4vw, 24px);
-      padding-inline: 0;
-      text-align: left;
+      gap: clamp(20px, 5vw, 32px);
+      padding-inline: clamp(20px, 6vw, 32px);
+      text-align: center;
+      align-items: start;
     }
-    /* Text always on top with its own gutter; media below */
+    /* Text on top (centred), media below (centred) */
     .dwg-rd-hero__content,
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 1; max-width: none; padding-inline: clamp(20px, 5vw, 28px); }
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 1; max-width: none; margin-inline: auto; }
+    .dwg-rd-hero__body { margin-inline: auto; }
 
-    /* Float slides (chef/bottle): bleed to the right edge, like desktop */
-    .dwg-rd-hero__media { order: 2; justify-content: flex-end; }
-    .dwg-rd-hero__media-img { max-width: min(430px, 92vw); margin: 0; }
+    .dwg-rd-hero__media,
+    .dwg-rd-hero__slide--compact .dwg-rd-hero__media { order: 2; justify-content: center; }
+    .dwg-rd-hero__media-img { max-width: min(360px, 74vw); max-height: 52svh; margin-inline: auto; }
 
-    /* Compact bottle slide: cap by height so the slim bottle stays sensible + centred */
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media { justify-content: center; }
+    /* Standalone bottle: keep its size, just centred */
     .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
-      width: auto; max-width: 90vw; height: auto; max-height: clamp(300px, 60vw, 400px); transform: none;
+      width: auto; max-width: 68vw; height: auto; max-height: clamp(320px, 58vw, 420px); transform: none; margin-inline: auto;
     }
 
-    /* Fill slide (jar): whole image, contain, no crop */
+    /* Jar: whole image, contain, no crop */
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { justify-content: center; height: auto; }
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img,
     .dwg-rd-hero__slide--fill.dwg-rd-hero__slide--img-right .dwg-rd-hero__media-img {
-      max-width: min(560px, 88vw); width: auto; height: auto; max-height: 52svh; object-fit: contain; border-radius: 28px;
+      max-width: min(520px, 86vw); width: auto; height: auto; max-height: 48svh; object-fit: contain; border-radius: 28px; margin-inline: auto;
     }
   }
 

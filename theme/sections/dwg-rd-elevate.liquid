@@ -223,9 +223,9 @@
   .dwg-rd-elevate__media {
     position: relative;
     width: 100%;
-    max-width: 560px;
+    max-width: 480px;
     margin-inline: auto;
-    min-height: 520px;
+    min-height: clamp(360px, 40vw, 480px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -242,7 +242,7 @@
     width: auto;
     max-width: 100%;
     height: auto;
-    max-height: 640px;
+    max-height: clamp(340px, 38vw, 460px);
     object-fit: contain;
     filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.2));
   }

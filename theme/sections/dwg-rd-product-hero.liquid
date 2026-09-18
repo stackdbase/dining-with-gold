@@ -78,9 +78,9 @@
           assign t = product.title | downcase
           if t contains 'jar'
             assign design_img = 'dwg-rd-shop-jar.png'
-          elsif t contains 'bundle' or t contains 'trio' or t contains 'triple'
+          elsif t contains '3 pack' or t contains '3-pack' or t contains 'triple' or t contains 'trio' or t contains 'three' or t contains 'bundle'
             assign design_img = 'dwg-rd-shop-trio.png'
-          elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin'
+          elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin' or t contains '2 pack'
             assign design_img = 'dwg-rd-shop-pack.png'
           else
             assign design_img = 'dwg-rd-shop-bottle.png'

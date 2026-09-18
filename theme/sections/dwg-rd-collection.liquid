@@ -32,9 +32,9 @@
                 assign rank = 'single'
                 if t contains 'jar'
                   assign rank = 'jar'
-                elsif t contains 'bundle' or t contains 'trio' or t contains 'triple'
+                elsif t contains '3 pack' or t contains '3-pack' or t contains 'triple' or t contains 'trio' or t contains 'three' or t contains 'bundle'
                   assign rank = 'bundle'
-                elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin'
+                elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin' or t contains '2 pack'
                   assign rank = 'double'
                 endif
                 assign design_img = ''

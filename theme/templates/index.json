@@ -42,7 +42,7 @@
       },
       "block_order": ["s1", "s2", "s3"],
       "settings": {
-        "autoplay_speed": 4
+        "autoplay_speed": 6
       }
     },
     "rd_elevate": {

@@ -77,29 +77,21 @@
   }
 
   .dwg-rd-hero__stage {
-    display: grid;
+    display: flex;
+    flex-wrap: nowrap;
     /* Fill the viewport below the header so the whole hero shows without scrolling */
     min-height: calc(100svh - 120px);
-    align-content: center;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
   }
 
   .dwg-rd-hero__slide {
-    grid-area: 1 / 1;
+    flex: 0 0 100%;
     display: grid;
     grid-template-columns: 1fr;
     gap: clamp(20px, 4vw, 44px);
     align-items: center;
     padding-inline: clamp(20px, 5vw, 48px);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .dwg-rd-hero__slide.is-active {
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 2;
   }
 
   .dwg-rd-hero__content {
@@ -283,7 +275,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .dwg-rd-hero__slide { transition: opacity 0.2s ease; transform: none; }
+    .dwg-rd-hero__stage { transition: none; }
   }
 {% endstylesheet %}
 
@@ -295,8 +287,9 @@
     }
     if (!root) return;
 
+    var stage = root.querySelector('.dwg-rd-hero__stage');
     var slides = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__slide'));
-    if (slides.length < 2) return;
+    if (!stage || slides.length < 2) return;
 
     var i = 0;
     var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 4000;
@@ -304,7 +297,7 @@
 
     function show(n) {
       i = (n + slides.length) % slides.length;
-      slides.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
+      stage.style.transform = 'translateX(' + (-i * 100) + '%)';
     }
     function next() { show(i + 1); }
     function start() { stop(); timer = setInterval(next, delay); }

@@ -203,16 +203,17 @@
     .dwg-rd-hero__media-img { max-width: 640px; }
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
 
-    /* Compact slide: pull the image inward from the edge + up, and bring
-       the text inward from the left too, for a tighter, centred balance. */
+    /* Compact slide (standalone bottle): the bottle is tall/slim, so size
+       it by HEIGHT and centre it — no width blow-up. */
     .dwg-rd-hero__slide--compact.dwg-rd-hero__slide--img-right .dwg-rd-hero__media {
-      justify-content: flex-start;
-      padding-left: clamp(0px, 3vw, 48px);
-      padding-right: 0;
+      justify-content: center;
     }
     .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
-      max-width: 560px;
-      transform: translate(-90px, -44px);
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: clamp(360px, 42vw, 520px);
+      transform: translateY(-10px);
     }
     .dwg-rd-hero__slide--compact .dwg-rd-hero__content {
       padding-left: clamp(24px, 7vw, 130px);
@@ -234,6 +235,12 @@
     /* Float slides (chef/bottle): bleed to the right edge, like desktop */
     .dwg-rd-hero__media { order: 2; justify-content: flex-end; }
     .dwg-rd-hero__media-img { max-width: min(430px, 92vw); margin: 0; }
+
+    /* Compact bottle slide: cap by height so the slim bottle stays sensible + centred */
+    .dwg-rd-hero__slide--compact .dwg-rd-hero__media { justify-content: center; }
+    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
+      width: auto; max-width: 90vw; height: auto; max-height: clamp(300px, 60vw, 400px); transform: none;
+    }
 
     /* Fill slide (jar panel): full width and FULL height — no top/bottom crop */
     .dwg-rd-hero__slide--fill .dwg-rd-hero__media { justify-content: stretch; }

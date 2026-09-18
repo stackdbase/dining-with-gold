@@ -254,9 +254,10 @@
   .dwg-rd-phero__media { display: flex; justify-content: center; align-items: center; }
 
   .dwg-rd-phero__img {
-    width: 100%;
-    max-width: 560px;
+    width: auto;
+    max-width: 100%;
     height: auto;
+    max-height: clamp(340px, 46vw, 480px);
     object-fit: contain;
     filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.16));
   }

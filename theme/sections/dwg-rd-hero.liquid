@@ -78,6 +78,9 @@
 
   .dwg-rd-hero__stage {
     display: grid;
+    /* Fill the viewport below the header so the whole hero shows without scrolling */
+    min-height: calc(100svh - 120px);
+    align-content: center;
   }
 
   .dwg-rd-hero__slide {
@@ -164,6 +167,9 @@
     width: 100%;
     max-width: 520px;
     height: auto;
+    max-height: 60svh;
+    object-fit: contain;
+    margin-inline: auto;
   }
 
   /* Fill style — image covers the whole media column, bleeding to the edge
@@ -176,12 +182,15 @@
     width: 100%;
     height: 100%;
     max-width: none;
+    max-height: none;
     object-fit: cover;
   }
 
 
   @media screen and (min-width: 900px) {
-    .dwg-rd-hero__stage { min-height: clamp(520px, 46vw, 660px); }
+    /* Whole hero fits the screen: viewport minus the desktop header */
+    .dwg-rd-hero__stage { min-height: calc(100svh - 160px); }
+    .dwg-rd-hero__media-img { max-height: 68svh; }
 
     .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
 

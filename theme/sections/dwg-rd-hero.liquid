@@ -112,9 +112,9 @@
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 0.95;
-    margin: 0 0 24px;
-    font-size: clamp(2.25rem, 8vw, 7.75rem);
+    line-height: 0.98;
+    margin: 0 0 22px;
+    font-size: clamp(2.15rem, 6.2vw, 6rem);
     color: var(--rd-hero-heading);
     text-transform: uppercase;
     overflow-wrap: break-word;
@@ -157,9 +157,9 @@
   .dwg-rd-hero__media-img {
     display: block;
     width: 100%;
-    max-width: 520px;
+    max-width: 600px;
     height: auto;
-    max-height: 60svh;
+    max-height: 66svh;
     object-fit: contain;
     margin-inline: auto;
   }
@@ -182,9 +182,9 @@
   @media screen and (min-width: 900px) {
     /* Whole hero fits the screen: viewport minus the desktop header */
     .dwg-rd-hero__stage { min-height: calc(100svh - 160px); }
-    .dwg-rd-hero__media-img { max-height: 68svh; }
+    .dwg-rd-hero__media-img { max-height: 82svh; }
 
-    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); }
+    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
 
     /* Image on the right → text keeps the page gutter left, image bleeds right */
     .dwg-rd-hero__slide--img-right {
@@ -201,9 +201,9 @@
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
 
-    .dwg-rd-hero__media-img { max-width: 640px; }
+    .dwg-rd-hero__media-img { max-width: 760px; }
     /* Jar-panel (fill) slide: whole image, capped height, no crop */
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 64svh; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 66svh; }
 
     /* Compact slide (standalone bottle): the bottle is tall/slim, so size
        it by HEIGHT and centre it — no width blow-up. */
@@ -214,7 +214,7 @@
       width: auto;
       max-width: 100%;
       height: auto;
-      max-height: clamp(360px, 42vw, 520px);
+      max-height: clamp(440px, 56vw, 640px);
       transform: translateY(-10px);
     }
     .dwg-rd-hero__slide--compact .dwg-rd-hero__content {

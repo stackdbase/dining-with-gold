@@ -182,16 +182,16 @@
   @media screen and (min-width: 900px) {
     /* Whole hero fits the screen: viewport minus the desktop header */
     .dwg-rd-hero__stage { min-height: calc(100svh - 160px); }
-    .dwg-rd-hero__media-img { max-height: 82svh; }
+    .dwg-rd-hero__media-img { max-height: 90svh; }
 
-    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(0px, 1.5vw, 20px); }
 
     /* Image on the right → text keeps the page gutter left, image bleeds right */
     .dwg-rd-hero__slide--img-right {
       padding-left: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
       padding-right: 0;
     }
-    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media { order: 2; justify-content: flex-end; }
+    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media { order: 2; justify-content: flex-start; }
 
     /* Image on the left → image bleeds left, text keeps the page gutter right */
     .dwg-rd-hero__slide--img-left {
@@ -208,7 +208,7 @@
     /* Compact slide (standalone bottle): the bottle is tall/slim, so size
        it by HEIGHT and centre it — no width blow-up. */
     .dwg-rd-hero__slide--compact.dwg-rd-hero__slide--img-right .dwg-rd-hero__media {
-      justify-content: center;
+      justify-content: flex-start;
     }
     .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
       width: auto;

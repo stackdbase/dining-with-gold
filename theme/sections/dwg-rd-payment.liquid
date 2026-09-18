@@ -31,7 +31,7 @@
           {% if section.settings.image != blank %}
             {{ section.settings.image | image_url: width: 600 | image_tag: class: 'dwg-rd-pay__img', widths: '250, 400, 600', loading: 'lazy', alt: section.settings.product_title }}
           {% else %}
-            <img class="dwg-rd-pay__img" src="{{ 'dwg-rd-shop-bottle.png' | asset_url }}" alt="{{ section.settings.product_title }}" width="364" height="600" loading="lazy">
+            <img class="dwg-rd-pay__img" src="{{ 'dwg-rd-shop-bottle.png' | asset_url }}" alt="{{ section.settings.product_title }}" width="380" height="1451" loading="lazy">
           {% endif %}
         </div>
         <div class="dwg-rd-pay__info">

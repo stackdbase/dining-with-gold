@@ -210,7 +210,15 @@
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
 
     .dwg-rd-hero__media-img { max-width: 640px; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media { min-height: 0; }
+    /* Jar-panel (fill) slide: bounded height like the others, not full-stage */
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media {
+      align-self: center;
+      min-height: 0;
+      height: 68svh;
+      max-height: 560px;
+      border-radius: 0 40px 40px 0;
+      overflow: hidden;
+    }
 
     /* Compact slide (standalone bottle): the bottle is tall/slim, so size
        it by HEIGHT and centre it — no width blow-up. */

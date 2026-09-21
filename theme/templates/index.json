@@ -72,40 +72,29 @@
         "button_label": "Shop From Us"
       }
     },
-    "ugc_teaser": {
-      "type": "dwg-ugc-teaser",
+    "ugc_reviews": {
+      "type": "dwg-ugc-reviews",
       "blocks": {
-        "teaser_1": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
-            "customer_name": "Honestly transformed my dinner. The flavour is unreal.",
-            "rating": 5
-          }
-        },
-        "teaser_2": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
-            "customer_name": "A drizzle on my eggs and I'm never going back.",
-            "rating": 5
-          }
-        },
-        "teaser_3": {
-          "type": "review",
-          "settings": {
-            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
-            "customer_name": "Jollof rice with DWG on top? Game changer.",
-            "rating": 5
-          }
-        }
+        "review_1": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov", "customer_name": "@diningwithgold", "location": "London, UK", "rating": 5, "quote": "Honestly transformed my dinner. The flavour is unreal." } },
+        "review_2": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4", "customer_name": "@thatchillilover", "location": "Manchester, UK", "rating": 5, "quote": "A drizzle on my eggs and I'm never going back." } },
+        "review_3": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov", "customer_name": "@kitchenlagos", "location": "Lagos, NG", "rating": 5, "quote": "Jollof rice with DWG on top? Game changer." } },
+        "review_4": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/2127cb2a23ae428b83f9adcbf16160c6.mov", "customer_name": "@spicequeen", "location": "Birmingham, UK", "rating": 5, "quote": "I carry it everywhere — small bottle, huge upgrade." } },
+        "review_5": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/a3306f7e61c440f69f4e200b1be84348.mov", "customer_name": "@chefonthego", "location": "Bristol, UK", "rating": 5, "quote": "Hands down the best chilli oil I've ever tasted." } },
+        "review_6": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/9f52da1ba51e42b49cb65b188ba21c34.mov", "customer_name": "@flavourhouse", "location": "Edinburgh, UK", "rating": 5, "quote": "Bold, balanced, addictive. The DWG hype is real." } },
+        "review_7": { "type": "review", "settings": { "video_asset": "dwg-rv-1.mp4", "customer_name": "@diningwithgold", "rating": 5, "quote": "The DWG chilli oil in action." } },
+        "review_8": { "type": "review", "settings": { "video_asset": "dwg-rv-2.mp4", "customer_name": "@diningwithgold", "rating": 5, "quote": "Real flavour, real people." } },
+        "review_9": { "type": "review", "settings": { "video_asset": "dwg-rv-3.mp4", "customer_name": "@diningwithgold", "rating": 5, "quote": "Heat with flavour." } },
+        "review_10": { "type": "review", "settings": { "video_asset": "dwg-rv-4.mp4", "customer_name": "@diningwithgold", "rating": 5, "quote": "Gold on every plate." } },
+        "review_11": { "type": "review", "settings": { "video_asset": "dwg-rv-5.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Dining with gold." } }
       },
-      "block_order": ["teaser_1", "teaser_2", "teaser_3"],
+      "block_order": ["review_1", "review_2", "review_3", "review_4", "review_5", "review_6", "review_7", "review_8", "review_9", "review_10", "review_11"],
       "settings": {
         "eyebrow": "LOVED BY YOU",
         "heading": "Real flavour, real people.",
-        "view_all_label": "SEE ALL REVIEWS",
-        "view_all_url": "/pages/reviews",
+        "subheading": "<p>Real people, real flavour — tap any clip to play with sound.</p>",
+        "columns_desktop": "4",
+        "cta_label": "SEE ALL REVIEWS",
+        "cta_link": "/pages/reviews",
         "background_color": "#ffffff",
         "accent_color": "#c9882a",
         "text_color": "#1c1c1c"
@@ -124,5 +113,5 @@
       }
     }
   },
-  "order": ["rd_hero", "rd_elevate", "ugc_teaser", "rd_story"]
+  "order": ["rd_hero", "rd_elevate", "ugc_reviews", "rd_story"]
 }

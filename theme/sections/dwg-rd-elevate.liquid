@@ -248,10 +248,13 @@
     width: auto;
     max-width: 100%;
     height: auto;
-    max-height: clamp(340px, 38vw, 460px);
+    max-height: clamp(360px, 42vw, 520px);
     object-fit: contain;
-    filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.18));
   }
+
+  /* Bowl is baked into the combo image now — hide the separate accent */
+  .dwg-rd-elevate__media-accent { display: none; }
 
   /* Bowl of chilli oil tucked at the bottle's lower-left, BEHIND the bottle */
   .dwg-rd-elevate__media-accent {

@@ -87,7 +87,7 @@
         "review_10": { "type": "review", "settings": { "video_asset": "dwg-rv-4.mp4", "customer_name": "@diningwithgold", "rating": 5, "quote": "Gold on every plate." } },
         "review_11": { "type": "review", "settings": { "video_asset": "dwg-rv-5.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Dining with gold." } }
       },
-      "block_order": ["review_1", "review_2", "review_3", "review_4", "review_5", "review_6", "review_7", "review_8", "review_9", "review_10", "review_11"],
+      "block_order": ["review_7", "review_8", "review_9", "review_10", "review_11", "review_1", "review_2", "review_3", "review_4", "review_5", "review_6"],
       "settings": {
         "eyebrow": "LOVED BY YOU",
         "heading": "Real flavour, real people.",

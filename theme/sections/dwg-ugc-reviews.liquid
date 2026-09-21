@@ -28,7 +28,11 @@
     {%- endif -%}
 
     {%- if section.blocks.size > 0 -%}
-      <div class="dwg-ugc__grid">
+      <div class="dwg-ugc__slider" data-ugc-slider>
+      <button type="button" class="dwg-ugc__arrow dwg-ugc__arrow--prev" data-ugc-prev aria-label="Previous reviews">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="dwg-ugc__grid" data-ugc-track>
         {%- for block in section.blocks -%}
           {%- assign idx = forloop.index -%}
           {%- if block.settings.video_asset != blank -%}
@@ -55,6 +59,7 @@
                     data-ugc-video
                     src="{{ video_src }}"
                     {% if block.settings.poster != blank %}poster="{{ block.settings.poster | image_url: width: 600 }}"{% endif %}
+                    autoplay
                     muted
                     loop
                     playsinline
@@ -110,6 +115,10 @@
             </template>
           </article>
         {%- endfor -%}
+      </div>
+      <button type="button" class="dwg-ugc__arrow dwg-ugc__arrow--next" data-ugc-next aria-label="Next reviews">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       </div>
     {%- endif -%}
 
@@ -191,6 +200,33 @@
   .dwg-ugc__subheading > * {
     margin: 0;
   }
+
+  /* Slider wrapper + arrows */
+  .dwg-ugc__slider { position: relative; }
+
+  .dwg-ugc__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 4;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #1c1c1c;
+    box-shadow: 0 6px 20px rgba(28,28,28,0.18);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: filter 0.2s ease, opacity 0.2s ease;
+  }
+  .dwg-ugc__arrow svg { width: 22px; height: 22px; }
+  .dwg-ugc__arrow:hover { filter: brightness(0.95); }
+  .dwg-ugc__arrow--prev { left: -6px; }
+  .dwg-ugc__arrow--next { right: -6px; }
+  .dwg-ugc__arrow[hidden] { display: none; }
 
   /* Slider: small video cards on a horizontal scroll-snap track */
   .dwg-ugc__grid {
@@ -550,6 +586,29 @@
 
     sections.forEach(function (root) {
       var tiles = root.querySelectorAll('[data-ugc-tile]');
+
+      // ── Slider arrows ──
+      var track = root.querySelector('[data-ugc-track]');
+      var prevBtn = root.querySelector('[data-ugc-prev]');
+      var nextBtn = root.querySelector('[data-ugc-next]');
+      if (track && prevBtn && nextBtn) {
+        function step() {
+          var card = track.querySelector('.dwg-ugc__tile');
+          var w = card ? card.getBoundingClientRect().width + 16 : 220;
+          return w * 2;
+        }
+        function updateArrows() {
+          var maxScroll = track.scrollWidth - track.clientWidth - 2;
+          prevBtn.hidden = track.scrollLeft <= 2;
+          nextBtn.hidden = track.scrollLeft >= maxScroll;
+        }
+        prevBtn.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+        nextBtn.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+        track.addEventListener('scroll', updateArrows, { passive: true });
+        window.addEventListener('resize', updateArrows);
+        updateArrows();
+      }
+
       var modal = root.querySelector('[data-ugc-modal]');
       if (!modal) return;
       var modalVideo = modal.querySelector('[data-ugc-modal-video]');

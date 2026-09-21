@@ -96,8 +96,8 @@
 {% stylesheet %}
   .dwg-rd-elevate {
     background-color: var(--rd-el-bg);
-    padding-block: 0 clamp(32px, 5vw, 64px);
-    margin-top: clamp(-110px, -7vw, -48px);
+    padding-block: clamp(28px, 5vw, 64px) clamp(32px, 5vw, 64px);
+    margin-top: clamp(24px, 4vw, 64px);
     position: relative;
     z-index: 2;
   }
@@ -234,8 +234,8 @@
   @media screen and (min-width: 900px) {
     /* Shift the product bottle to the right within its column */
     .dwg-rd-elevate__media { margin-left: auto; margin-right: 0; justify-content: flex-end; }
-    /* Move the bowl accent to tuck at the shifted bottle's lower-left */
-    .dwg-rd-elevate__media-accent { left: auto; right: 42%; bottom: 2%; width: 40%; }
+    /* Tuck the bowl right at the bottle's lower-left, overlapping (together) */
+    .dwg-rd-elevate__media-accent { left: auto; right: 18%; bottom: 0; width: 46%; }
   }
 
   .dwg-rd-elevate__media-bottle {

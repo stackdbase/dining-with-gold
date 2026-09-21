@@ -223,7 +223,7 @@
   .dwg-rd-elevate__media {
     position: relative;
     width: 100%;
-    max-width: 480px;
+    max-width: 540px;
     margin-inline: auto;
     min-height: clamp(360px, 40vw, 480px);
     display: flex;
@@ -232,10 +232,9 @@
   }
 
   @media screen and (min-width: 900px) {
-    /* Shift the product bottle to the right within its column */
-    .dwg-rd-elevate__media { margin-left: auto; margin-right: 0; justify-content: flex-end; }
-    /* Bowl at the bottle's lower-left, overlapping behind the bottle base */
-    .dwg-rd-elevate__media-accent { left: auto; right: 22%; bottom: 4%; width: 52%; }
+    /* Bottle sits bottom-right; bowl sits beside it (lower-left), slight overlap */
+    .dwg-rd-elevate__media { margin-left: auto; margin-right: 0; justify-content: flex-end; align-items: flex-end; }
+    .dwg-rd-elevate__media-accent { left: auto; right: 12%; bottom: 6%; width: 40%; }
   }
 
   .dwg-rd-elevate__media-bottle {

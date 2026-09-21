@@ -72,17 +72,43 @@
         "button_label": "Shop From Us"
       }
     },
-    "rd_loved": {
-      "type": "dwg-rd-loved",
+    "ugc_teaser": {
+      "type": "dwg-ugc-teaser",
       "blocks": {
-        "c1": { "type": "card", "settings": { "show_play": true } },
-        "c2": { "type": "card", "settings": { "show_play": true } },
-        "c3": { "type": "card", "settings": { "show_play": false } }
+        "teaser_1": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "Honestly transformed my dinner. The flavour is unreal.",
+            "rating": 5
+          }
+        },
+        "teaser_2": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "A drizzle on my eggs and I'm never going back.",
+            "rating": 5
+          }
+        },
+        "teaser_3": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "Jollof rice with DWG on top? Game changer.",
+            "rating": 5
+          }
+        }
       },
-      "block_order": ["c1", "c2", "c3"],
+      "block_order": ["teaser_1", "teaser_2", "teaser_3"],
       "settings": {
-        "eyebrow": "Loved by you",
-        "heading": "Real flavor, Real people"
+        "eyebrow": "LOVED BY YOU",
+        "heading": "Real flavour, real people.",
+        "view_all_label": "SEE ALL REVIEWS",
+        "view_all_url": "/pages/reviews",
+        "background_color": "#fccf8a",
+        "accent_color": "#c9882a",
+        "text_color": "#1c1c1c"
       }
     },
     "rd_story": {
@@ -98,5 +124,5 @@
       }
     }
   },
-  "order": ["rd_hero", "rd_elevate", "rd_loved", "rd_story"]
+  "order": ["rd_hero", "rd_elevate", "ugc_teaser", "rd_story"]
 }

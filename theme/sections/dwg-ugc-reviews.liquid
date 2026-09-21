@@ -31,6 +31,11 @@
       <div class="dwg-ugc__grid">
         {%- for block in section.blocks -%}
           {%- assign idx = forloop.index -%}
+          {%- if block.settings.video_asset != blank -%}
+            {%- assign video_src = block.settings.video_asset | asset_url -%}
+          {%- else -%}
+            {%- assign video_src = block.settings.video_url -%}
+          {%- endif -%}
           <article
             class="dwg-ugc__tile"
             data-ugc-tile
@@ -44,11 +49,11 @@
               data-ugc-open
             >
               <div class="dwg-ugc__media">
-                {%- if block.settings.video_url != blank -%}
+                {%- if video_src != blank -%}
                   <video
                     class="dwg-ugc__video"
                     data-ugc-video
-                    src="{{ block.settings.video_url }}"
+                    src="{{ video_src }}"
                     {% if block.settings.poster != blank %}poster="{{ block.settings.poster | image_url: width: 600 }}"{% endif %}
                     muted
                     loop
@@ -94,7 +99,7 @@
             {%- comment -%} Hidden data the modal will read {%- endcomment -%}
             <template data-ugc-data>
               <div
-                data-video-url="{{ block.settings.video_url }}"
+                data-video-url="{{ video_src }}"
                 data-customer="{{ block.settings.customer_name | escape }}"
                 data-location="{{ block.settings.location | escape }}"
                 data-rating="{{ block.settings.rating }}"
@@ -187,24 +192,33 @@
     margin: 0;
   }
 
+  /* Slider: small video cards on a horizontal scroll-snap track */
   .dwg-ugc__grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(10px, 1.5vw, 18px);
+    display: flex;
+    flex-wrap: nowrap;
+    gap: clamp(12px, 1.5vw, 18px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    scrollbar-width: thin;
+  }
+  .dwg-ugc__grid > .dwg-ugc__tile {
+    flex: 0 0 auto;
+    width: 150px;
+    scroll-snap-align: start;
   }
 
   @media screen and (min-width: 750px) {
-    .dwg-ugc__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-    }
+    .dwg-ugc__grid > .dwg-ugc__tile { width: 180px; }
   }
 
   @media screen and (min-width: 990px) {
-    .dwg-ugc[data-columns-desktop="4"] .dwg-ugc__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+    .dwg-ugc__grid > .dwg-ugc__tile { width: 200px; }
   }
+
+  .dwg-ugc__grid::-webkit-scrollbar { height: 6px; }
+  .dwg-ugc__grid::-webkit-scrollbar-thumb { background: rgba(28,28,28,0.2); border-radius: 3px; }
 
   .dwg-ugc__tile {
     position: relative;
@@ -712,6 +726,12 @@
           "type": "url",
           "id": "video_url",
           "label": "Video URL (.mp4 / .mov)"
+        },
+        {
+          "type": "text",
+          "id": "video_asset",
+          "label": "Video asset filename",
+          "info": "Theme asset filename (e.g. dwg-rv-1.mp4). Overrides the Video URL when set."
         },
         {
           "type": "image_picker",

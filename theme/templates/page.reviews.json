@@ -89,6 +89,66 @@
             "cta_label": "",
             "cta_link": ""
           }
+        },
+        "review_7": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-1.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "The DWG chilli oil in action.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
+          }
+        },
+        "review_8": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-2.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Real flavour, real people.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
+          }
+        },
+        "review_9": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-3.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Heat with flavour.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
+          }
+        },
+        "review_10": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-4.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Gold on every plate.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
+          }
+        },
+        "review_11": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-5.mov",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Dining with gold.",
+            "product": "",
+            "cta_label": "",
+            "cta_link": ""
+          }
         }
       },
       "block_order": [
@@ -97,7 +157,12 @@
         "review_3",
         "review_4",
         "review_5",
-        "review_6"
+        "review_6",
+        "review_7",
+        "review_8",
+        "review_9",
+        "review_10",
+        "review_11"
       ],
       "settings": {
         "eyebrow": "LOVED BY YOU",

@@ -234,8 +234,8 @@
   @media screen and (min-width: 900px) {
     /* Shift the product bottle to the right within its column */
     .dwg-rd-elevate__media { margin-left: auto; margin-right: 0; justify-content: flex-end; }
-    /* Tuck the bowl right at the bottle's lower-left, overlapping (together) */
-    .dwg-rd-elevate__media-accent { left: auto; right: 18%; bottom: 0; width: 46%; }
+    /* Bowl at the bottle's lower-left, overlapping behind the bottle base */
+    .dwg-rd-elevate__media-accent { left: auto; right: 22%; bottom: 4%; width: 52%; }
   }
 
   .dwg-rd-elevate__media-bottle {
@@ -254,13 +254,13 @@
     filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.2));
   }
 
-  /* Bowl of chilli oil tucked at the bottle's lower-left */
+  /* Bowl of chilli oil tucked at the bottle's lower-left, BEHIND the bottle */
   .dwg-rd-elevate__media-accent {
     position: absolute;
     left: 0;
     bottom: 4%;
-    width: 44%;
-    z-index: 3;
+    width: 46%;
+    z-index: 1;
   }
 
   .dwg-rd-elevate__accent-img {

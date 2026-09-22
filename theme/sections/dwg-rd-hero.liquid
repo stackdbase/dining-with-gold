@@ -71,8 +71,8 @@
   .dwg-rd-hero {
     position: relative;
     background-color: var(--rd-hero-bg);
-    padding-block: 0 clamp(4px, 1vw, 12px);
-    margin-top: -16px;
+    padding-block: clamp(6px, 1vw, 14px) clamp(4px, 1vw, 12px);
+    margin-top: 0;
     overflow-x: hidden;
   }
 
@@ -180,9 +180,9 @@
 
 
   @media screen and (min-width: 900px) {
-    /* Pull the hero up close to the nav; stage hugs the content (little extra space) */
-    .dwg-rd-hero { margin-top: -58px; }
-    .dwg-rd-hero__stage { min-height: 62svh; }
+    /* Stage hugs the content (little extra space); no header overlap */
+    .dwg-rd-hero { margin-top: 0; }
+    .dwg-rd-hero__stage { min-height: 60svh; }
     .dwg-rd-hero__media-img { max-height: 60svh; }
 
     .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 0; }

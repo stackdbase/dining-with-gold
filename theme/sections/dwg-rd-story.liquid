@@ -77,20 +77,20 @@
     grid-template-columns: 1fr;
   }
 
+  /* Media is a horizontal slide track (like the hero) */
   .dwg-rd-story__media {
     position: relative;
-    min-height: clamp(320px, 60vw, 460px);
+    min-height: clamp(260px, 42vw, 380px);
     overflow: hidden;
+    display: flex;
+    flex-wrap: nowrap;
+    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
   }
 
   .dwg-rd-story__slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.4s ease;
+    flex: 0 0 100%;
   }
-
-  .dwg-rd-story__slide.is-active { opacity: 1; }
 
   .dwg-rd-story__img {
     width: 100%;
@@ -100,7 +100,7 @@
   }
 
   .dwg-rd-story__content {
-    padding: clamp(32px, 6vw, 72px) clamp(20px, 5vw, 48px);
+    padding: clamp(24px, 4.5vw, 52px) clamp(20px, 5vw, 48px);
   }
 
   @media screen and (min-width: 900px) {
@@ -110,7 +110,7 @@
     }
     .dwg-rd-story__media { min-height: 100%; }
     .dwg-rd-story__content {
-      padding-block: clamp(48px, 6vw, 88px);
+      padding-block: clamp(32px, 4vw, 60px);
       padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
       padding-left: clamp(32px, 4vw, 64px);
       align-self: center;
@@ -205,10 +205,11 @@
     if (slides.length < 2) return;
 
     var i = 0;
-    var delay = parseInt(media.getAttribute('data-autoplay'), 10) || 2000;
+    var delay = parseInt(media.getAttribute('data-autoplay'), 10) || 4000;
+    if (delay < 3500) delay = 4000;
     function tick() {
       i = (i + 1) % slides.length;
-      slides.forEach(function (s, idx) { s.classList.toggle('is-active', idx === i); });
+      media.style.transform = 'translateX(' + (-i * 100) + '%)';
     }
     setInterval(tick, delay);
   })();

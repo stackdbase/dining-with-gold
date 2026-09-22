@@ -11,21 +11,76 @@
     "feat": {
       "type": "dwg-rd-features",
       "blocks": {
-        "f1": { "type": "feature", "settings": { "icon": "leaf", "title": "Quality Ingredients", "description": "Carefully selected chillies and spices for bold flavor." } },
-        "f2": { "type": "feature", "settings": { "icon": "garlic", "title": "Crispy Garlic", "description": "Golden, flavorful garlic for that irresistible crunch." } },
-        "f3": { "type": "feature", "settings": { "icon": "drop", "title": "Premium Oil", "description": "Infused in high-quality oil for a rich, smooth finish." } },
-        "f4": { "type": "feature", "settings": { "icon": "chilli", "title": "Bold & Versatile", "description": "Perfect for any dish that deserves more flavor." } }
+        "f1": {
+          "type": "feature",
+          "settings": {
+            "icon": "leaf",
+            "title": "Quality Ingredients",
+            "description": "Carefully selected chillies and spices for bold flavor."
+          }
+        },
+        "f2": {
+          "type": "feature",
+          "settings": {
+            "icon": "garlic",
+            "title": "Crispy Garlic",
+            "description": "Golden, flavorful garlic for that irresistible crunch."
+          }
+        },
+        "f3": {
+          "type": "feature",
+          "settings": {
+            "icon": "drop",
+            "title": "Premium Oil",
+            "description": "Infused in high-quality oil for a rich, smooth finish."
+          }
+        },
+        "f4": {
+          "type": "feature",
+          "settings": {
+            "icon": "chilli",
+            "title": "Bold & Versatile",
+            "description": "Perfect for any dish that deserves more flavor."
+          }
+        }
       },
-      "block_order": ["f1", "f2", "f3", "f4"]
+      "block_order": [
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ]
     },
     "elevate": {
       "type": "dwg-rd-elevate",
       "blocks": {
-        "e1": { "type": "feature", "settings": { "title": "Vegetable Oil", "description": "Infused in high-quality oil for a rich, smooth finish." } },
-        "e2": { "type": "feature", "settings": { "title": "Scotch Bonnet", "description": "Bold heat with authentic African character." } },
-        "e3": { "type": "feature", "settings": { "title": "Ginger", "description": "Warm, aromatic depth in every spoonful." } }
+        "e1": {
+          "type": "feature",
+          "settings": {
+            "title": "Vegetable Oil",
+            "description": "Infused in high-quality oil for a rich, smooth finish."
+          }
+        },
+        "e2": {
+          "type": "feature",
+          "settings": {
+            "title": "Scotch Bonnet",
+            "description": "Bold heat with authentic African character."
+          }
+        },
+        "e3": {
+          "type": "feature",
+          "settings": {
+            "title": "Ginger",
+            "description": "Warm, aromatic depth in every spoonful."
+          }
+        }
       },
-      "block_order": ["e1", "e2", "e3"],
+      "block_order": [
+        "e1",
+        "e2",
+        "e3"
+      ],
       "settings": {
         "eyebrow": "Made to Elevate",
         "heading_accent": "Every",
@@ -37,25 +92,199 @@
     "ways": {
       "type": "dwg-rd-ways",
       "blocks": {
-        "d1": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-1.jpg", "title": "Noodles", "description": "A golden drizzle over a hot bowl of noodles." } },
-        "d2": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-2.jpg", "title": "Dumplings", "description": "Spoon it over dumplings for instant heat." } },
-        "d3": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-3.jpg", "title": "Eggs", "description": "Transform soft-boiled eggs in seconds." } },
-        "d4": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-4.jpg", "title": "Grilled Meats", "description": "Brush over grilled and braised meats." } },
-        "d5": { "type": "dish", "settings": { "fallback_image": "dwg-rd-dish-5.jpg", "title": "Veggies", "description": "Toss with fresh, crunchy vegetables." } }
+        "d1": {
+          "type": "dish",
+          "settings": {
+            "fallback_image": "dwg-rd-dish-1.jpg",
+            "title": "Noodles",
+            "description": "A golden drizzle over a hot bowl of noodles."
+          }
+        },
+        "d2": {
+          "type": "dish",
+          "settings": {
+            "fallback_image": "dwg-rd-dish-2.jpg",
+            "title": "Dumplings",
+            "description": "Spoon it over dumplings for instant heat."
+          }
+        },
+        "d3": {
+          "type": "dish",
+          "settings": {
+            "fallback_image": "dwg-rd-dish-3.jpg",
+            "title": "Eggs",
+            "description": "Transform soft-boiled eggs in seconds."
+          }
+        },
+        "d4": {
+          "type": "dish",
+          "settings": {
+            "fallback_image": "dwg-rd-dish-4.jpg",
+            "title": "Grilled Meats",
+            "description": "Brush over grilled and braised meats."
+          }
+        },
+        "d5": {
+          "type": "dish",
+          "settings": {
+            "fallback_image": "dwg-rd-dish-5.jpg",
+            "title": "Veggies",
+            "description": "Toss with fresh, crunchy vegetables."
+          }
+        }
       },
-      "block_order": ["d1", "d2", "d3", "d4", "d5"],
-      "settings": { "eyebrow": "Ways to Enjoy", "heading": "Gold with Every Bite" }
+      "block_order": [
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5"
+      ],
+      "settings": {
+        "eyebrow": "Ways to Enjoy",
+        "heading": "Gold with Every Bite"
+      }
     },
     "reviews": {
-      "type": "dwg-rd-reviews",
+      "type": "dwg-ugc-reviews",
       "blocks": {
-        "r1": { "type": "review", "settings": { "quote": "This chilli oil is ridiculously good. Perfect balance of heat and flavor!", "author": "Adaeze, Lagos" } },
-        "r2": { "type": "review", "settings": { "quote": "I put it on everything! My new kitchen essential.", "author": "Tunde, Abuja" } },
-        "r3": { "type": "review", "settings": { "quote": "You can taste the quality. Worth every drop.", "author": "Miriam, Port Harcourt" } }
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/ef423b3cde774dd7ba6e038afa0928e5.mov",
+            "customer_name": "@diningwithgold",
+            "location": "London, UK",
+            "rating": 5,
+            "quote": "Honestly transformed my dinner. The flavour is unreal."
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/8ce357348dcc41c4ab28a7a3daf393bb.mp4",
+            "customer_name": "@thatchillilover",
+            "location": "Manchester, UK",
+            "rating": 5,
+            "quote": "A drizzle on my eggs and I'm never going back."
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/3eaf4bf498354b45b759cb3509f48b2b.mov",
+            "customer_name": "@kitchenlagos",
+            "location": "Lagos, NG",
+            "rating": 5,
+            "quote": "Jollof rice with DWG on top? Game changer."
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/2127cb2a23ae428b83f9adcbf16160c6.mov",
+            "customer_name": "@spicequeen",
+            "location": "Birmingham, UK",
+            "rating": 5,
+            "quote": "I carry it everywhere — small bottle, huge upgrade."
+          }
+        },
+        "review_5": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/a3306f7e61c440f69f4e200b1be84348.mov",
+            "customer_name": "@chefonthego",
+            "location": "Bristol, UK",
+            "rating": 5,
+            "quote": "Hands down the best chilli oil I've ever tasted."
+          }
+        },
+        "review_6": {
+          "type": "review",
+          "settings": {
+            "video_url": "https://cdn.shopify.com/videos/c/o/v/9f52da1ba51e42b49cb65b188ba21c34.mov",
+            "customer_name": "@flavourhouse",
+            "location": "Edinburgh, UK",
+            "rating": 5,
+            "quote": "Bold, balanced, addictive. The DWG hype is real."
+          }
+        },
+        "review_7": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-1.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "The DWG chilli oil in action."
+          }
+        },
+        "review_8": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-2.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Real flavour, real people."
+          }
+        },
+        "review_9": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-3.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Heat with flavour."
+          }
+        },
+        "review_10": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-4.mp4",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Gold on every plate."
+          }
+        },
+        "review_11": {
+          "type": "review",
+          "settings": {
+            "video_asset": "dwg-rv-5.mov",
+            "customer_name": "@diningwithgold",
+            "rating": 5,
+            "quote": "Dining with gold."
+          }
+        }
       },
-      "block_order": ["r1", "r2", "r3"],
-      "settings": { "eyebrow": "Loved by thousands", "heading": "Real people. Real flavor.", "rating": "4.9/5 (2,500+ Reviews)" }
+      "block_order": [
+        "review_7",
+        "review_8",
+        "review_9",
+        "review_10",
+        "review_11",
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4",
+        "review_5",
+        "review_6"
+      ],
+      "settings": {
+        "eyebrow": "LOVED BY YOU",
+        "heading": "Real flavour, real people.",
+        "subheading": "<p>Real people, real flavour — tap any clip to play with sound.</p>",
+        "columns_desktop": "4",
+        "cta_label": "SEE ALL REVIEWS",
+        "cta_link": "/pages/reviews",
+        "background_color": "#ffffff",
+        "accent_color": "#c9882a",
+        "text_color": "#1c1c1c"
+      }
     }
   },
-  "order": ["ph", "feat", "elevate", "ways", "reviews"]
+  "order": [
+    "ph",
+    "feat",
+    "elevate",
+    "ways",
+    "reviews"
+  ]
 }

@@ -24,19 +24,21 @@
 >
   <div class="dwg-rd-story__wrap">
     <div class="dwg-rd-story__media" data-story-media data-autoplay="{{ speed_ms }}">
-      <div class="dwg-rd-story__slide is-active">
-        {% if section.settings.image != blank %}
-          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'dwg-rd-story__img', widths: '500, 800, 1200', loading: 'lazy', alt: 'DWG chilli oil' }}
-        {% else %}
-          <img class="dwg-rd-story__img" src="{{ 'dwg-rd-more-bottle.png' | asset_url }}" alt="DWG chilli oil" width="840" height="1050" loading="lazy">
-        {% endif %}
-      </div>
-      <div class="dwg-rd-story__slide">
-        {% if section.settings.image_2 != blank %}
-          {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'dwg-rd-story__img', widths: '500, 800, 1200', loading: 'lazy', alt: 'DWG founder' }}
-        {% else %}
-          <img class="dwg-rd-story__img" src="{{ 'dwg-rd-story-chef.jpg' | asset_url }}" alt="DWG founder" width="1428" height="1186" loading="lazy">
-        {% endif %}
+      <div class="dwg-rd-story__track" data-story-track>
+        <div class="dwg-rd-story__slide">
+          {% if section.settings.image != blank %}
+            {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'dwg-rd-story__img', widths: '500, 800, 1200', loading: 'lazy', alt: 'DWG chilli oil' }}
+          {% else %}
+            <img class="dwg-rd-story__img" src="{{ 'dwg-rd-more-bottle.png' | asset_url }}" alt="DWG chilli oil" width="820" height="1024" loading="lazy">
+          {% endif %}
+        </div>
+        <div class="dwg-rd-story__slide">
+          {% if section.settings.image_2 != blank %}
+            {{ section.settings.image_2 | image_url: width: 1200 | image_tag: class: 'dwg-rd-story__img', widths: '500, 800, 1200', loading: 'lazy', alt: 'DWG founder' }}
+          {% else %}
+            <img class="dwg-rd-story__img" src="{{ 'dwg-rd-story-chef.jpg' | asset_url }}" alt="DWG founder" width="933" height="1400" loading="lazy">
+          {% endif %}
+        </div>
       </div>
     </div>
 
@@ -77,25 +79,32 @@
     grid-template-columns: 1fr;
   }
 
-  /* Media is a horizontal slide track (like the hero) */
+  /* Media clips; the inner track slides (parent clips, child transforms) */
   .dwg-rd-story__media {
     position: relative;
     min-height: clamp(260px, 42vw, 380px);
     overflow: hidden;
+    background: var(--rd-st-bg);
+  }
+
+  .dwg-rd-story__track {
     display: flex;
     flex-wrap: nowrap;
+    height: 100%;
     transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
   }
 
   .dwg-rd-story__slide {
     flex: 0 0 100%;
+    height: 100%;
   }
 
+  /* Contain = full image (no cropping), filling the section height */
   .dwg-rd-story__img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
 
@@ -201,8 +210,9 @@
     }
     if (!root) return;
     var media = root.querySelector('[data-story-media]');
-    if (!media) return;
-    var slides = Array.prototype.slice.call(media.querySelectorAll('.dwg-rd-story__slide'));
+    var track = root.querySelector('[data-story-track]');
+    if (!media || !track) return;
+    var slides = Array.prototype.slice.call(track.querySelectorAll('.dwg-rd-story__slide'));
     if (slides.length < 2) return;
 
     var i = 0;
@@ -210,7 +220,7 @@
     if (delay < 3500) delay = 4000;
     function tick() {
       i = (i + 1) % slides.length;
-      media.style.transform = 'translateX(' + (-i * 100) + '%)';
+      track.style.transform = 'translateX(' + (-i * 100) + '%)';
     }
     setInterval(tick, delay);
   })();

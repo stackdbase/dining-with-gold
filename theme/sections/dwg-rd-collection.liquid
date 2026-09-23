@@ -68,13 +68,7 @@
                     <p class="dwg-rd-shop__price-label">Price Tag</p>
                     <div class="dwg-rd-shop__buyrow">
                       <p class="dwg-rd-shop__price">{{ product.price | money }}</p>
-                      {% form 'product', product, class: 'dwg-rd-shop__form' %}
-                        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-                        <input type="hidden" name="quantity" value="1">
-                        <button type="submit" class="dwg-rd-shop__buy"{% unless product.available %} disabled{% endunless %}>
-                          {% if product.available %}Buy{% else %}Sold out{% endif %}
-                        </button>
-                      {% endform %}
+                      <a class="dwg-rd-shop__buy" href="{{ product.url }}">Buy</a>
                     </div>
                   </div>
                 </article>
@@ -199,8 +193,11 @@
   .dwg-rd-shop__form { margin: 0; }
 
   .dwg-rd-shop__buy {
+    display: inline-block;
     border: 0;
     cursor: pointer;
+    text-decoration: none;
+    text-align: center;
     font-family: 'Manjari', sans-serif;
     font-weight: 700;
     text-transform: uppercase;

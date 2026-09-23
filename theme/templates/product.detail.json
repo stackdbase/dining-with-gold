@@ -123,22 +123,13 @@
             "title": "Grilled Meats",
             "description": "Brush over grilled and braised meats."
           }
-        },
-        "d5": {
-          "type": "dish",
-          "settings": {
-            "fallback_image": "dwg-rd-dish-5.jpg",
-            "title": "Veggies",
-            "description": "Toss with fresh, crunchy vegetables."
-          }
         }
       },
       "block_order": [
         "d1",
         "d2",
         "d3",
-        "d4",
-        "d5"
+        "d4"
       ],
       "settings": {
         "eyebrow": "Ways to Enjoy",

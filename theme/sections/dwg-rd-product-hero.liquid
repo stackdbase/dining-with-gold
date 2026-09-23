@@ -227,16 +227,19 @@
   }
   .dwg-rd-phero__qty-input {
     width: 40px;
-    border: 0;
     text-align: center;
     font-family: 'Outfit', sans-serif;
     font-size: 1rem;
-    background: #1c1c1c;
-    color: #ffffff;
+    background: #1c1c1c !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
     appearance: none;
     -moz-appearance: textfield;
   }
-  .dwg-rd-phero__qty-input:focus { outline: none; }
+  .dwg-rd-phero__qty-input:focus,
+  .dwg-rd-phero__qty-input:focus-visible { outline: none; background: #1c1c1c !important; }
   .dwg-rd-phero__qty-input::-webkit-outer-spin-button,
   .dwg-rd-phero__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 

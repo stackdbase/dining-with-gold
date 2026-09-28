@@ -29,8 +29,9 @@
       {% endif %}
       {% if product != blank %}
         {% if product.price != blank %}
+          <p class="dwg-rd-phero__price-label">Price Tag</p>
           <p class="dwg-rd-phero__price">
-            {{ product.price | money }}
+            <span data-price-target>{{ product.price | money }}</span>
             {% if product.compare_at_price > product.price %}
               <s class="dwg-rd-phero__was">{{ product.compare_at_price | money }}</s>
             {% endif %}
@@ -51,12 +52,20 @@
             <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
           {% endif %}
 
+          <div class="dwg-rd-phero__bundles" data-bundles>
+            <button type="button" class="dwg-rd-phero__bundle is-active" data-bundle-qty="1" data-bundle-price="{{ product.price | money }}">
+              <span class="dwg-rd-phero__bundle-name">Single Purchase</span>
+              <span class="dwg-rd-phero__bundle-price">{{ product.price | money }}</span>
+            </button>
+            <button type="button" class="dwg-rd-phero__bundle" data-bundle-qty="2" data-bundle-price="{{ product.price | times: 2 | money }}">
+              <span class="dwg-rd-phero__bundle-name">Double Pack</span>
+              <span class="dwg-rd-phero__bundle-price">{{ product.price | times: 2 | money }}</span>
+            </button>
+          </div>
+
+          <input type="hidden" name="quantity" value="1" data-qty-hidden>
+
           <div class="dwg-rd-phero__purchase">
-            <div class="dwg-rd-phero__qty" data-qty>
-              <button type="button" class="dwg-rd-phero__qty-btn" data-qty-minus aria-label="Decrease quantity">&minus;</button>
-              <input type="number" class="dwg-rd-phero__qty-input" name="quantity" value="1" min="1" inputmode="numeric" aria-label="Quantity">
-              <button type="button" class="dwg-rd-phero__qty-btn" data-qty-plus aria-label="Increase quantity">&plus;</button>
-            </div>
             <button type="submit" name="add" class="dwg-rd-phero__btn dwg-rd-phero__btn--add"{% unless product.available %} disabled{% endunless %}>
               {% if product.available %}{{ section.settings.button_label | default: 'Add to Cart' }}{% else %}Sold Out{% endif %}
             </button>
@@ -73,29 +82,57 @@
 
     <div class="dwg-rd-phero__media">
       {% liquid
-        assign design_img = ''
-        if section.settings.use_design_images
-          assign t = product.title | downcase
-          if t contains 'jar'
-            assign design_img = 'dwg-rd-shop-jar.png'
-          elsif t contains '3 pack' or t contains '3-pack' or t contains 'triple' or t contains 'trio' or t contains 'three' or t contains 'bundle'
-            assign design_img = 'dwg-rd-shop-trio.png'
-          elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin' or t contains '2 pack'
-            assign design_img = 'dwg-rd-shop-pack.png'
-          else
-            assign design_img = 'dwg-rd-shop-bottle.png'
-          endif
+        assign t = product.title | downcase
+        assign main_img = 'dwg-rd-shop-bottle.png'
+        if t contains 'jar'
+          assign main_img = 'dwg-rd-shop-jar.png'
+        elsif t contains '3 pack' or t contains '3-pack' or t contains 'triple' or t contains 'trio' or t contains 'three' or t contains 'bundle'
+          assign main_img = 'dwg-rd-shop-trio.png'
+        elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin' or t contains '2 pack'
+          assign main_img = 'dwg-rd-shop-pack.png'
+        endif
+        assign fallback_imgs = main_img | append: ',dwg-rd-hero-bottle-chillies.png,dwg-rd-more-bottle.png' | split: ','
+        assign use_product_imgs = false
+        if section.settings.use_design_images == false and product != blank and product.images.size > 0
+          assign use_product_imgs = true
         endif
       %}
-      {% if section.settings.image != blank %}
-        {{ section.settings.image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
-      {% elsif design_img != blank %}
-        <img class="dwg-rd-phero__img" src="{{ design_img | asset_url }}" alt="{{ heading }}" width="600" height="800" loading="eager">
-      {% elsif product.featured_image %}
-        {{ product.featured_image | image_url: width: 900 | image_tag: class: 'dwg-rd-phero__img', widths: '400, 600, 900', loading: 'eager', alt: heading }}
-      {% else %}
-        <img class="dwg-rd-phero__img" src="{{ 'dwg-rd-shop-jar.png' | asset_url }}" alt="{{ heading }}" width="600" height="600" loading="eager">
-      {% endif %}
+
+      <div class="dwg-rd-phero__gallery" data-gallery>
+        <button type="button" class="dwg-rd-phero__g-arrow dwg-rd-phero__g-arrow--prev" data-g-prev aria-label="Previous image">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="dwg-rd-phero__stage" data-g-stage>
+          {% if use_product_imgs %}
+            {% for img in product.images %}
+              <img class="dwg-rd-phero__img{% if forloop.first %} is-active{% endif %}" data-g-slide="{{ forloop.index0 }}" src="{{ img | image_url: width: 900 }}" alt="{{ heading }}" width="600" height="800" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+            {% endfor %}
+          {% else %}
+            {% for f in fallback_imgs %}
+              <img class="dwg-rd-phero__img{% if forloop.first %} is-active{% endif %}" data-g-slide="{{ forloop.index0 }}" src="{{ f | asset_url }}" alt="{{ heading }}" width="600" height="800" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+            {% endfor %}
+          {% endif %}
+        </div>
+        <button type="button" class="dwg-rd-phero__g-arrow dwg-rd-phero__g-arrow--next" data-g-next aria-label="Next image">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="dwg-rd-phero__thumbs" data-g-thumbs>
+        {% if use_product_imgs %}
+          {% for img in product.images %}
+            <button type="button" class="dwg-rd-phero__thumb{% if forloop.first %} is-active{% endif %}" data-g-thumb="{{ forloop.index0 }}" aria-label="View image {{ forloop.index }}">
+              <img src="{{ img | image_url: width: 220 }}" alt="" width="110" height="110" loading="lazy">
+            </button>
+          {% endfor %}
+        {% else %}
+          {% for f in fallback_imgs %}
+            <button type="button" class="dwg-rd-phero__thumb{% if forloop.first %} is-active{% endif %}" data-g-thumb="{{ forloop.index0 }}" aria-label="View image {{ forloop.index }}">
+              <img src="{{ f | asset_url }}" alt="" width="110" height="110" loading="lazy">
+            </button>
+          {% endfor %}
+        {% endif %}
+      </div>
     </div>
   </div>
 </section>
@@ -260,28 +297,96 @@
 
   .dwg-rd-phero__vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-  .dwg-rd-phero__media { display: flex; justify-content: center; align-items: center; }
+  .dwg-rd-phero__media { display: block; }
 
   .dwg-rd-phero__img {
     width: auto;
     max-width: 100%;
     height: auto;
-    max-height: clamp(340px, 46vw, 480px);
+    max-height: clamp(320px, 44vw, 460px);
     object-fit: contain;
     filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.16));
   }
+
+  /* Gallery */
+  .dwg-rd-phero__gallery { position: relative; display: flex; align-items: center; justify-content: center; gap: clamp(6px, 1.5vw, 18px); }
+  .dwg-rd-phero__stage {
+    position: relative; flex: 1 1 auto;
+    min-height: clamp(320px, 44vw, 460px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dwg-rd-phero__stage .dwg-rd-phero__img { position: absolute; opacity: 0; transition: opacity 0.35s ease; pointer-events: none; }
+  .dwg-rd-phero__stage .dwg-rd-phero__img.is-active { position: relative; opacity: 1; pointer-events: auto; }
+
+  .dwg-rd-phero__g-arrow {
+    flex: 0 0 auto; width: clamp(42px, 5vw, 54px); height: clamp(42px, 5vw, 54px);
+    border: 0; border-radius: 50%; background: #f0e2c2; color: #1c1c1c;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: filter .2s;
+  }
+  .dwg-rd-phero__g-arrow--next { background: var(--rd-ph-btn-bg); color: #fff; }
+  .dwg-rd-phero__g-arrow svg { width: 22px; height: 22px; }
+  .dwg-rd-phero__g-arrow:hover { filter: brightness(1.06); }
+
+  .dwg-rd-phero__thumbs { display: flex; gap: clamp(10px, 1.5vw, 16px); justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+  .dwg-rd-phero__thumb {
+    border: 2px solid transparent; border-radius: 14px; overflow: hidden; padding: 0;
+    background: #faf7f2; cursor: pointer; width: clamp(72px, 12vw, 120px); aspect-ratio: 1 / 1;
+  }
+  .dwg-rd-phero__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dwg-rd-phero__thumb.is-active { border-color: var(--rd-ph-btn-bg); }
+
+  /* Bundles */
+  .dwg-rd-phero__bundles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 22px; max-width: 440px; }
+  .dwg-rd-phero__bundle {
+    text-align: left; cursor: pointer; background: #fff;
+    border: 1.5px solid rgba(28,28,28,0.2); border-radius: 12px; padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, box-shadow .2s;
+  }
+  .dwg-rd-phero__bundle.is-active { border-color: var(--rd-ph-btn-bg); box-shadow: 0 0 0 1px var(--rd-ph-btn-bg); }
+  .dwg-rd-phero__bundle-name { font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: rgba(28,28,28,0.7); }
+  .dwg-rd-phero__bundle-price { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.25rem; color: var(--rd-ph-text); }
+
+  .dwg-rd-phero__price-label { font-family: 'Manjari', sans-serif; color: rgba(28,28,28,0.5); margin: 0 0 4px; }
 {% endstylesheet %}
 
 <script>
   (function () {
-    document.querySelectorAll('.dwg-rd-phero__qty[data-qty]').forEach(function (wrap) {
-      var input = wrap.querySelector('.dwg-rd-phero__qty-input');
-      wrap.querySelector('[data-qty-minus]').addEventListener('click', function () {
-        input.value = Math.max(1, (parseInt(input.value, 10) || 1) - 1);
-      });
-      wrap.querySelector('[data-qty-plus]').addEventListener('click', function () {
-        input.value = (parseInt(input.value, 10) || 1) + 1;
-      });
+    document.querySelectorAll('.dwg-rd-phero').forEach(function (root) {
+      // ── Image gallery ──
+      var stage = root.querySelector('[data-g-stage]');
+      if (stage) {
+        var slides = Array.prototype.slice.call(stage.querySelectorAll('.dwg-rd-phero__img'));
+        var thumbs = Array.prototype.slice.call(root.querySelectorAll('[data-g-thumb]'));
+        var gi = 0;
+        function goTo(n) {
+          if (!slides.length) return;
+          gi = (n + slides.length) % slides.length;
+          slides.forEach(function (s, i) { s.classList.toggle('is-active', i === gi); });
+          thumbs.forEach(function (t, i) { t.classList.toggle('is-active', i === gi); });
+        }
+        var prev = root.querySelector('[data-g-prev]');
+        var next = root.querySelector('[data-g-next]');
+        if (prev) prev.addEventListener('click', function () { goTo(gi - 1); });
+        if (next) next.addEventListener('click', function () { goTo(gi + 1); });
+        thumbs.forEach(function (t) {
+          t.addEventListener('click', function () { goTo(parseInt(t.getAttribute('data-g-thumb'), 10)); });
+        });
+      }
+
+      // ── Bundle options (sets quantity + updates price) ──
+      var bundles = root.querySelector('[data-bundles]');
+      if (bundles) {
+        var qtyHidden = root.querySelector('[data-qty-hidden]');
+        var priceTarget = root.querySelector('[data-price-target]');
+        bundles.querySelectorAll('.dwg-rd-phero__bundle').forEach(function (b) {
+          b.addEventListener('click', function () {
+            bundles.querySelectorAll('.dwg-rd-phero__bundle').forEach(function (x) { x.classList.remove('is-active'); });
+            b.classList.add('is-active');
+            if (qtyHidden) qtyHidden.value = b.getAttribute('data-bundle-qty') || '1';
+            if (priceTarget) priceTarget.textContent = b.getAttribute('data-bundle-price') || priceTarget.textContent;
+          });
+        });
+      }
     });
   })();
 </script>

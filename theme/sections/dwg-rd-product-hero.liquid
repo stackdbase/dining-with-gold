@@ -206,7 +206,7 @@
 {% stylesheet %}
   .dwg-rd-phero {
     background: var(--rd-ph-bg);
-    padding-block: clamp(24px, 4vw, 56px);
+    padding-block: clamp(16px, 3vw, 40px);
   }
 
   .dwg-rd-phero__wrap {
@@ -226,10 +226,10 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: -0.01em;
-    line-height: 0.98;
-    font-size: clamp(2.25rem, 4.4vw, 3.75rem);
+    line-height: 1.0;
+    font-size: clamp(1.8rem, 3.2vw, 2.75rem);
     color: var(--rd-ph-heading);
-    margin: 0 0 22px;
+    margin: 0 0 12px;
   }
 
   .dwg-rd-phero__eyebrow {
@@ -237,18 +237,18 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+    font-size: clamp(0.82rem, 1.2vw, 0.95rem);
     color: var(--rd-ph-eyebrow);
-    margin: 0 0 18px;
+    margin: 0 0 12px;
   }
 
   .dwg-rd-phero__body {
     font-family: 'Manjari', sans-serif;
-    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-    line-height: 1.5;
+    font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+    line-height: 1.45;
     color: var(--rd-ph-text);
-    max-width: 42ch;
-    margin: 0 0 30px;
+    max-width: 44ch;
+    margin: 0 0 16px;
   }
 
   .dwg-rd-phero__form { margin: 0; }
@@ -263,8 +263,8 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.02em;
-    font-size: clamp(0.9rem, 1.1vw, 1rem);
-    padding: clamp(12px, 1.4vw, 15px) clamp(20px, 2.4vw, 30px);
+    font-size: clamp(0.85rem, 1vw, 0.95rem);
+    padding: clamp(10px, 1.1vw, 13px) clamp(18px, 2vw, 26px);
     background: var(--rd-ph-btn-bg);
     color: var(--rd-ph-btn-text);
     text-decoration: none;
@@ -278,9 +278,9 @@
   .dwg-rd-phero__price {
     font-family: 'Outfit', sans-serif;
     font-weight: 600;
-    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
     color: var(--rd-ph-text);
-    margin: 0 0 22px;
+    margin: 0 0 10px;
     display: flex;
     align-items: baseline;
     gap: 12px;
@@ -315,23 +315,23 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    font-size: 0.95rem;
+    font-size: 0.82rem;
     color: var(--rd-ph-text);
-    margin: 18px 0 10px;
+    margin: 10px 0 6px;
   }
 
   /* Pack chooser */
-  .dwg-rd-phero__packs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 440px; }
+  .dwg-rd-phero__packs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 440px; }
   @media screen and (min-width: 600px) { .dwg-rd-phero__packs { grid-template-columns: 1fr 1fr 1fr; } }
   .dwg-rd-phero__pack {
     position: relative; text-align: left; cursor: pointer; background: #fff;
-    border: 1.5px solid rgba(28,28,28,0.18); border-radius: 12px; padding: 14px 14px 12px;
-    display: flex; flex-direction: column; gap: 3px; transition: border-color .2s, box-shadow .2s;
+    border: 1.5px solid rgba(28,28,28,0.18); border-radius: 10px; padding: 10px 11px 9px;
+    display: flex; flex-direction: column; gap: 2px; transition: border-color .2s, box-shadow .2s;
   }
   .dwg-rd-phero__pack.is-active { border-color: var(--rd-ph-btn-bg); box-shadow: 0 0 0 1px var(--rd-ph-btn-bg); background: #fdf7ec; }
-  .dwg-rd-phero__pack-name { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--rd-ph-text); }
-  .dwg-rd-phero__pack-price { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--rd-ph-text); }
-  .dwg-rd-phero__pack-each { font-family: 'Manjari', sans-serif; font-size: 0.8rem; color: rgba(28,28,28,0.5); }
+  .dwg-rd-phero__pack-name { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.85rem; color: var(--rd-ph-text); }
+  .dwg-rd-phero__pack-price { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem; color: var(--rd-ph-text); }
+  .dwg-rd-phero__pack-each { font-family: 'Manjari', sans-serif; font-size: 0.72rem; color: rgba(28,28,28,0.5); }
   .dwg-rd-phero__pack-badge {
     position: absolute; top: -10px; right: 8px; background: #1c1c1c; color: #fff;
     font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.6rem; letter-spacing: 0.04em;
@@ -342,21 +342,22 @@
   .dwg-rd-phero__qty {
     display: flex; align-items: center; justify-content: space-between;
     max-width: 440px; border: 1.5px solid rgba(28,28,28,0.18);
-    border-radius: 16px; padding: 8px 14px;
+    border-radius: 12px; padding: 5px 10px;
   }
   .dwg-rd-phero__qty-btn {
-    width: 42px; height: 42px; border-radius: 50%;
+    width: 34px; height: 34px; border-radius: 50%;
     border: 1.5px solid rgba(28,28,28,0.35); background: #fff; color: #1c1c1c;
-    font-size: 1.4rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
     transition: background .2s, color .2s;
   }
   .dwg-rd-phero__qty-btn:hover { background: #1c1c1c; color: #fff; border-color: #1c1c1c; }
   .dwg-rd-phero__qty-num {
-    min-width: 44px; height: 44px; border-radius: 50%; background: var(--rd-ph-btn-bg); color: #fff;
-    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;
+    min-width: 36px; height: 36px; border-radius: 50%; background: var(--rd-ph-btn-bg); color: #fff;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem;
     display: flex; align-items: center; justify-content: center;
   }
 
+  .dwg-rd-phero__purchase { margin-bottom: 10px; }
   .dwg-rd-phero__btn--add { flex: 1 1 auto; gap: 10px; }
   .dwg-rd-phero__btn-sep { opacity: 0.55; }
 
@@ -418,13 +419,13 @@
   /* Ingredients accordion */
   .dwg-rd-phero__acc {
     max-width: 440px; border: 1.5px solid rgba(28,28,28,0.18);
-    border-radius: 40px; padding: 4px 8px; margin-top: 20px;
+    border-radius: 40px; padding: 2px 6px; margin-top: 12px;
   }
-  .dwg-rd-phero__acc[open] { border-radius: 20px; }
+  .dwg-rd-phero__acc[open] { border-radius: 18px; }
   .dwg-rd-phero__acc-head {
     list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
     font-family: 'Outfit', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
-    font-size: 1rem; color: var(--rd-ph-text); padding: 14px 16px;
+    font-size: 0.9rem; color: var(--rd-ph-text); padding: 10px 14px;
   }
   .dwg-rd-phero__acc-head::-webkit-details-marker { display: none; }
   .dwg-rd-phero__acc-icon { position: relative; width: 20px; height: 20px; flex: 0 0 auto; }
@@ -440,9 +441,9 @@
 
   /* Buy It With */
   .dwg-rd-phero__bwith {
-    max-width: 440px; margin-top: 18px; display: flex; align-items: center; gap: 16px;
+    max-width: 440px; margin-top: 12px; display: flex; align-items: center; gap: 14px;
     background: #f7ecd9;
-    border-radius: 18px; padding: 18px 20px;
+    border-radius: 16px; padding: 12px 16px;
   }
   .dwg-rd-phero__bwith-info { flex: 1 1 auto; min-width: 0; }
   .dwg-rd-phero__bwith-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; margin: 0 0 4px; color: var(--rd-ph-text); }
@@ -457,13 +458,13 @@
   .dwg-rd-phero__bwith-img { flex: 0 0 auto; width: clamp(72px, 16vw, 110px); height: auto; object-fit: contain; }
 
   /* Trust badges */
-  .dwg-rd-phero__badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; max-width: 440px; margin-top: 18px; }
+  .dwg-rd-phero__badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; max-width: 440px; margin-top: 12px; }
   .dwg-rd-phero__badge {
-    background: var(--rd-ph-btn-bg); color: #fff; border-radius: 14px; padding: 16px 8px;
-    display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+    background: var(--rd-ph-btn-bg); color: #fff; border-radius: 12px; padding: 10px 6px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
   }
-  .dwg-rd-phero__badge svg { width: 30px; height: 30px; }
-  .dwg-rd-phero__badge span { font-family: 'Manjari', sans-serif; font-weight: 700; font-size: 0.8rem; line-height: 1.2; }
+  .dwg-rd-phero__badge svg { width: 24px; height: 24px; }
+  .dwg-rd-phero__badge span { font-family: 'Manjari', sans-serif; font-weight: 700; font-size: 0.72rem; line-height: 1.15; }
 {% endstylesheet %}
 
 <script>

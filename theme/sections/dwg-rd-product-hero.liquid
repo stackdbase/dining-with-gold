@@ -20,7 +20,13 @@
 >
   <div class="dwg-rd-phero__wrap page-width">
     <div class="dwg-rd-phero__content">
-      <h1 class="dwg-rd-phero__heading">{{ heading }}</h1>
+      {%- assign title_parts = heading | split: ' - ' -%}
+      <h1 class="dwg-rd-phero__heading">
+        {{ title_parts[0] }}
+        {%- if title_parts.size > 1 -%}
+          <span class="dwg-rd-phero__heading-sub">{{ title_parts | slice: 1, title_parts.size | join: ' - ' }}</span>
+        {%- endif -%}
+      </h1>
       {% if section.settings.eyebrow != blank %}
         <p class="dwg-rd-phero__eyebrow">{{ section.settings.eyebrow }}</p>
       {% endif %}
@@ -232,6 +238,7 @@
     color: var(--rd-ph-heading);
     margin: 0 0 12px;
   }
+  .dwg-rd-phero__heading-sub { display: block; }
 
   .dwg-rd-phero__eyebrow {
     font-family: 'Inter', sans-serif;

@@ -1,0 +1,145 @@
+{% comment %}
+  DWG redesign — bundle promo banner. Warm gradient card with a product
+  stack on the right, heading + subtext + Add-to-Cart on the left.
+  Place anywhere (product templates by default). Remove to revert.
+{% endcomment %}
+
+{% liquid
+  assign bg1 = section.settings.bg_start | default: '#f6e7da'
+  assign bg2 = section.settings.bg_end | default: '#f2c7b6'
+  assign btn_bg = section.settings.button_bg | default: '#e8543f'
+  assign btn_text = section.settings.button_text | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#1c1c1c'
+  assign prod = section.settings.product
+%}
+
+<section class="dwg-rd-promo" style="--p1: {{ bg1 }}; --p2: {{ bg2 }}; --pbtn: {{ btn_bg }}; --pbtn-text: {{ btn_text }}; --ptext: {{ text_color }};">
+  <div class="dwg-rd-promo__wrap page-width">
+    <div class="dwg-rd-promo__card">
+      <div class="dwg-rd-promo__text">
+        {% if section.settings.heading != blank %}
+          <h2 class="dwg-rd-promo__heading">{{ section.settings.heading }}</h2>
+        {% endif %}
+        {% if section.settings.subtext != blank %}
+          <p class="dwg-rd-promo__subtext">{{ section.settings.subtext }}</p>
+        {% endif %}
+        {% if prod != blank and prod.available %}
+          <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="dwg-rd-promo__form">
+            <input type="hidden" name="id" value="{{ prod.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="dwg-rd-promo__btn">
+              {{ section.settings.button_label | default: 'Add to Cart' }}
+              <span class="dwg-rd-promo__btn-sep">|</span>
+              {{ prod.price | money }}
+            </button>
+          </form>
+        {% else %}
+          <a class="dwg-rd-promo__btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+            {{ section.settings.button_label | default: 'Shop Now' }}
+            {% if section.settings.price_text != blank %}<span class="dwg-rd-promo__btn-sep">|</span> {{ section.settings.price_text }}{% endif %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="dwg-rd-promo__media">
+        {% if section.settings.image != blank %}
+          {{ section.settings.image | image_url: width: 1200 | image_tag: class: 'dwg-rd-promo__img', widths: '500, 800, 1200', loading: 'lazy', alt: section.settings.heading }}
+        {% else %}
+          <img class="dwg-rd-promo__img" src="{{ 'dwg-rd-flavor-stack.png' | asset_url }}" alt="{{ section.settings.heading | default: 'DWG bundle' }}" width="1179" height="812" loading="lazy">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .dwg-rd-promo { padding-block: clamp(16px, 3vw, 36px); }
+
+  .dwg-rd-promo__card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background: linear-gradient(105deg, var(--p1) 0%, var(--p2) 100%);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 3vw, 32px);
+    align-items: center;
+    padding: clamp(24px, 4vw, 44px);
+  }
+
+  @media screen and (min-width: 750px) {
+    .dwg-rd-promo__card { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+  }
+
+  .dwg-rd-promo__heading {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.02;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    color: var(--ptext);
+    margin: 0 0 12px;
+  }
+
+  .dwg-rd-promo__subtext {
+    font-family: 'Manjari', sans-serif;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.4;
+    color: rgba(28, 28, 28, 0.6);
+    max-width: 34ch;
+    margin: 0 0 22px;
+  }
+
+  .dwg-rd-promo__form { margin: 0; }
+
+  .dwg-rd-promo__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
+    letter-spacing: 0.01em;
+    padding: 15px 34px;
+    border-radius: 12px;
+    background: var(--pbtn);
+    color: var(--pbtn-text);
+    text-decoration: none;
+    transition: filter 0.2s ease;
+  }
+  .dwg-rd-promo__btn:hover { filter: brightness(1.06); }
+  .dwg-rd-promo__btn-sep { opacity: 0.6; }
+
+  .dwg-rd-promo__media { display: flex; align-items: center; justify-content: center; }
+  .dwg-rd-promo__img {
+    width: 100%;
+    max-width: 560px;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.18));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "DWG RD: Bundle promo",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "The Full Flavour Bundle" },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "Stock up on the No.1 African Chilli Oil — bold, fiery flavour for every meal." },
+    { "type": "product", "id": "product", "label": "Product to add", "info": "Renders an Add-to-Cart button with this product's price. Leave blank to use a link instead." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Add to Cart" },
+    { "type": "url", "id": "button_link", "label": "Button link (used when no product set)" },
+    { "type": "text", "id": "price_text", "label": "Price text (used when no product set)" },
+    { "type": "image_picker", "id": "image", "label": "Product stack image (blank = fanned bottles)" },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "bg_start", "label": "Gradient start", "default": "#f6e7da" },
+    { "type": "color", "id": "bg_end", "label": "Gradient end", "default": "#f2c7b6" },
+    { "type": "color", "id": "button_bg", "label": "Button", "default": "#e8543f" },
+    { "type": "color", "id": "button_text", "label": "Button text", "default": "#ffffff" },
+    { "type": "color", "id": "text_color", "label": "Heading text", "default": "#1c1c1c" }
+  ],
+  "presets": [{ "name": "DWG RD: Bundle promo" }]
+}
+{% endschema %}

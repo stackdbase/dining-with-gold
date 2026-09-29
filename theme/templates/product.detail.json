@@ -145,6 +145,14 @@
         "show_form": true,
         "review_pool": "all"
       }
+    },
+    "promo": {
+      "type": "dwg-rd-promo",
+      "settings": {
+        "heading": "The Full Flavour Bundle",
+        "subtext": "Stock up on the No.1 African Chilli Oil — bold, fiery flavour for every meal.",
+        "button_label": "Add to Cart"
+      }
     }
   },
   "order": [
@@ -152,6 +160,7 @@
     "feat",
     "elevate",
     "ways",
+    "promo",
     "reviews"
   ]
 }

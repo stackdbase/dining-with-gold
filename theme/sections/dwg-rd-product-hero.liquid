@@ -106,6 +106,32 @@
           {% endif %}
         {% endform %}
 
+        {% if section.settings.show_promo %}
+          {%- assign promo_prod = section.settings.promo_product -%}
+          <div class="dwg-rd-phero__promo" style="--promo1: {{ section.settings.promo_bg_start | default: '#efe7dd' }}; --promo2: {{ section.settings.promo_bg_end | default: '#f2c7b6' }}; --promobtn: {{ section.settings.promo_btn | default: '#e8543f' }};">
+            <div class="dwg-rd-phero__promo-text">
+              <p class="dwg-rd-phero__promo-heading">{{ section.settings.promo_heading | default: 'The Full Flavour Bundle' }}</p>
+              {% if section.settings.promo_subtext != blank %}
+                <p class="dwg-rd-phero__promo-sub">{{ section.settings.promo_subtext }}</p>
+              {% endif %}
+              {% if promo_prod != blank and promo_prod.available %}
+                <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="dwg-rd-phero__promo-form">
+                  <input type="hidden" name="id" value="{{ promo_prod.selected_or_first_available_variant.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="dwg-rd-phero__promo-btn">Add to Cart <span class="dwg-rd-phero__btn-sep">|</span> {{ promo_prod.price | money }}</button>
+                </form>
+              {% else %}
+                <a class="dwg-rd-phero__promo-btn" href="{{ section.settings.promo_link | default: routes.all_products_collection_url }}">Shop Now{% if section.settings.promo_price_text != blank %} <span class="dwg-rd-phero__btn-sep">|</span> {{ section.settings.promo_price_text }}{% endif %}</a>
+              {% endif %}
+            </div>
+            {% if section.settings.promo_image != blank %}
+              {{ section.settings.promo_image | image_url: width: 800 | image_tag: class: 'dwg-rd-phero__promo-img', widths: '400, 600, 800', loading: 'lazy', alt: section.settings.promo_heading }}
+            {% else %}
+              <img class="dwg-rd-phero__promo-img" src="{{ 'dwg-rd-flavor-stack.png' | asset_url }}" alt="{{ section.settings.promo_heading | default: 'DWG bundle' }}" width="1179" height="812" loading="lazy">
+            {% endif %}
+          </div>
+        {% endif %}
+
         {% if section.settings.ingredients != blank %}
           <details class="dwg-rd-phero__acc">
             <summary class="dwg-rd-phero__acc-head">{{ section.settings.ingredients_title | default: 'Ingredients' }}<span class="dwg-rd-phero__acc-icon" aria-hidden="true"></span></summary>
@@ -479,6 +505,32 @@
   }
   .dwg-rd-phero__badge svg { width: 24px; height: 24px; }
   .dwg-rd-phero__badge span { font-family: 'Manjari', sans-serif; font-weight: 700; font-size: 0.72rem; line-height: 1.15; }
+
+  /* Bundle promo card (inside the pricing column, under Add to Cart) */
+  .dwg-rd-phero__promo {
+    position: relative; overflow: hidden; max-width: 440px; margin-top: 16px;
+    border-radius: 18px; padding: 20px;
+    background: linear-gradient(105deg, var(--promo1) 0%, var(--promo2) 100%);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .dwg-rd-phero__promo-text { flex: 1 1 auto; min-width: 0; }
+  .dwg-rd-phero__promo-heading {
+    font-family: 'Outfit', sans-serif; font-weight: 800; text-transform: uppercase;
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem); line-height: 1.05; color: #1c1c1c; margin: 0 0 8px;
+  }
+  .dwg-rd-phero__promo-sub {
+    font-family: 'Manjari', sans-serif; font-size: 0.9rem; line-height: 1.35;
+    color: rgba(28,28,28,0.6); margin: 0 0 14px;
+  }
+  .dwg-rd-phero__promo-form { margin: 0; }
+  .dwg-rd-phero__promo-btn {
+    display: inline-flex; align-items: center; gap: 8px; border: 0; cursor: pointer;
+    font-family: 'Manjari', sans-serif; font-weight: 700; font-size: 0.9rem;
+    padding: 11px 22px; border-radius: 10px; background: var(--promobtn); color: #fff; text-decoration: none;
+    transition: filter 0.2s ease;
+  }
+  .dwg-rd-phero__promo-btn:hover { filter: brightness(1.06); }
+  .dwg-rd-phero__promo-img { flex: 0 0 auto; width: clamp(120px, 30%, 200px); height: auto; object-fit: contain; }
 {% endstylesheet %}
 
 <script>
@@ -586,6 +638,17 @@
     { "type": "text", "id": "badge_1", "label": "Badge 1", "default": "Free Shipping Over £49" },
     { "type": "text", "id": "badge_2", "label": "Badge 2", "default": "Shelf Stable" },
     { "type": "text", "id": "badge_3", "label": "Badge 3", "default": "Do Not Freeze" },
+    { "type": "header", "content": "Bundle promo card" },
+    { "type": "checkbox", "id": "show_promo", "label": "Show bundle promo card", "default": true },
+    { "type": "text", "id": "promo_heading", "label": "Promo heading", "default": "The Full Flavour Bundle" },
+    { "type": "textarea", "id": "promo_subtext", "label": "Promo subtext", "default": "Stock up on the No.1 African Chilli Oil." },
+    { "type": "product", "id": "promo_product", "label": "Promo product (Add to Cart)", "info": "e.g. the 3-Pack. Leave blank to use a link." },
+    { "type": "url", "id": "promo_link", "label": "Promo link (used when no product set)" },
+    { "type": "text", "id": "promo_price_text", "label": "Promo price text (used when no product set)" },
+    { "type": "image_picker", "id": "promo_image", "label": "Promo image (blank = fanned bottles)" },
+    { "type": "color", "id": "promo_bg_start", "label": "Promo gradient start", "default": "#efe7dd" },
+    { "type": "color", "id": "promo_bg_end", "label": "Promo gradient end", "default": "#f2c7b6" },
+    { "type": "color", "id": "promo_btn", "label": "Promo button", "default": "#e8543f" },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },

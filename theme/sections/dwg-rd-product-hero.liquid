@@ -531,6 +531,17 @@
   }
   .dwg-rd-phero__promo-btn:hover { filter: brightness(1.06); }
   .dwg-rd-phero__promo-img { flex: 0 0 auto; width: clamp(110px, 32%, 180px); height: auto; object-fit: contain; }
+
+  /* Mobile/tablet: purchase controls span full width (no 440px left-cap) */
+  @media screen and (max-width: 899px) {
+    .dwg-rd-phero__form,
+    .dwg-rd-phero__packs,
+    .dwg-rd-phero__qty,
+    .dwg-rd-phero__acc,
+    .dwg-rd-phero__bwith,
+    .dwg-rd-phero__badges,
+    .dwg-rd-phero__promo { max-width: none; }
+  }
 {% endstylesheet %}
 
 <script>

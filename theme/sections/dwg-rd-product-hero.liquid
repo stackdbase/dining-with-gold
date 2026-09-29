@@ -52,22 +52,46 @@
             <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
           {% endif %}
 
-          <div class="dwg-rd-phero__bundles" data-bundles>
-            <button type="button" class="dwg-rd-phero__bundle is-active" data-bundle-qty="1" data-bundle-price="{{ product.price | money }}">
-              <span class="dwg-rd-phero__bundle-name">Single Purchase</span>
-              <span class="dwg-rd-phero__bundle-price">{{ product.price | money }}</span>
-            </button>
-            <button type="button" class="dwg-rd-phero__bundle" data-bundle-qty="2" data-bundle-price="{{ product.price | times: 2 | money }}">
-              <span class="dwg-rd-phero__bundle-name">Double Pack</span>
-              <span class="dwg-rd-phero__bundle-price">{{ product.price | times: 2 | money }}</span>
-            </button>
-          </div>
+          {% if section.settings.show_packs %}
+            <p class="dwg-rd-phero__label">Choose your pack</p>
+            <div class="dwg-rd-phero__packs"
+                 data-packs
+                 data-unit-cents="{{ product.price }}"
+                 data-money-sample="{{ product.price | money }}">
+              <button type="button" class="dwg-rd-phero__pack is-active" data-pack-qty="1">
+                <span class="dwg-rd-phero__pack-name">Single</span>
+                <span class="dwg-rd-phero__pack-price">{{ product.price | money }}</span>
+                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
+              </button>
+              <button type="button" class="dwg-rd-phero__pack" data-pack-qty="2">
+                <span class="dwg-rd-phero__pack-name">Double Pack</span>
+                <span class="dwg-rd-phero__pack-price">{{ product.price | times: 2 | money }}</span>
+                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
+              </button>
+              <button type="button" class="dwg-rd-phero__pack" data-pack-qty="3">
+                {% if section.settings.popular_badge != blank %}<span class="dwg-rd-phero__pack-badge">{{ section.settings.popular_badge }}</span>{% endif %}
+                <span class="dwg-rd-phero__pack-name">3-Pack</span>
+                <span class="dwg-rd-phero__pack-price">{{ product.price | times: 3 | money }}</span>
+                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
+              </button>
+            </div>
+          {% endif %}
 
+          <p class="dwg-rd-phero__label">Quantity</p>
+          <div class="dwg-rd-phero__qty" data-qty>
+            <button type="button" class="dwg-rd-phero__qty-btn" data-qty-minus aria-label="Decrease quantity">&minus;</button>
+            <span class="dwg-rd-phero__qty-num" data-qty-num>1</span>
+            <button type="button" class="dwg-rd-phero__qty-btn" data-qty-plus aria-label="Increase quantity">&plus;</button>
+          </div>
           <input type="hidden" name="quantity" value="1" data-qty-hidden>
 
           <div class="dwg-rd-phero__purchase">
             <button type="submit" name="add" class="dwg-rd-phero__btn dwg-rd-phero__btn--add"{% unless product.available %} disabled{% endunless %}>
-              {% if product.available %}{{ section.settings.button_label | default: 'Add to Cart' }}{% else %}Sold Out{% endif %}
+              {% if product.available %}
+                <span>{{ section.settings.button_label | default: 'Add to Cart' }}</span>
+                <span class="dwg-rd-phero__btn-sep">|</span>
+                <span data-total-target>{{ product.price | money }}</span>
+              {% else %}Sold Out{% endif %}
             </button>
           </div>
 
@@ -75,6 +99,48 @@
             {{ form | payment_button }}
           {% endif %}
         {% endform %}
+
+        {% if section.settings.ingredients != blank %}
+          <details class="dwg-rd-phero__acc">
+            <summary class="dwg-rd-phero__acc-head">{{ section.settings.ingredients_title | default: 'Ingredients' }}<span class="dwg-rd-phero__acc-icon" aria-hidden="true"></span></summary>
+            <div class="dwg-rd-phero__acc-body">{{ section.settings.ingredients }}</div>
+          </details>
+        {% endif %}
+
+        {%- assign comp = section.settings.companion_product -%}
+        {% if comp != blank and comp.available %}
+          <div class="dwg-rd-phero__bwith">
+            <div class="dwg-rd-phero__bwith-info">
+              <p class="dwg-rd-phero__bwith-title">Buy It With</p>
+              <p class="dwg-rd-phero__bwith-name">{{ comp.title }}</p>
+              <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="dwg-rd-phero__bwith-form">
+                <input type="hidden" name="id" value="{{ comp.selected_or_first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="dwg-rd-phero__bwith-btn">Add to Cart <span class="dwg-rd-phero__btn-sep">|</span> {{ comp.price | money }}</button>
+              </form>
+            </div>
+            {% if comp.featured_image %}
+              <img class="dwg-rd-phero__bwith-img" src="{{ comp.featured_image | image_url: width: 240 }}" alt="{{ comp.title }}" width="120" height="120" loading="lazy">
+            {% endif %}
+          </div>
+        {% endif %}
+
+        {% if section.settings.show_badges %}
+          <div class="dwg-rd-phero__badges">
+            <div class="dwg-rd-phero__badge">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7zM7 18a2 2 0 100-4 2 2 0 000 4zM18 18a2 2 0 100-4 2 2 0 000 4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              <span>{{ section.settings.badge_1 | default: 'Free Shipping Over £49' }}</span>
+            </div>
+            <div class="dwg-rd-phero__badge">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 8l2-3h12l2 3M4 8v11h16V8M9 12h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+              <span>{{ section.settings.badge_2 | default: 'Shelf Stable' }}</span>
+            </div>
+            <div class="dwg-rd-phero__badge">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4 6l16 12M20 6L4 18M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M3 9l4 1M3 15l4-1M21 9l-4 1M21 15l-4-1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              <span>{{ section.settings.badge_3 | default: 'Do Not Freeze' }}</span>
+            </div>
+          </div>
+        {% endif %}
       {% else %}
         <a class="dwg-rd-phero__btn dwg-rd-phero__btn--add" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | default: 'Check Us Out' }}</a>
       {% endif %}
@@ -243,44 +309,55 @@
     margin-bottom: 12px;
   }
 
+  .dwg-rd-phero__label {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.95rem;
+    color: var(--rd-ph-text);
+    margin: 18px 0 10px;
+  }
+
+  /* Pack chooser */
+  .dwg-rd-phero__packs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 440px; }
+  @media screen and (min-width: 600px) { .dwg-rd-phero__packs { grid-template-columns: 1fr 1fr 1fr; } }
+  .dwg-rd-phero__pack {
+    position: relative; text-align: left; cursor: pointer; background: #fff;
+    border: 1.5px solid rgba(28,28,28,0.18); border-radius: 12px; padding: 14px 14px 12px;
+    display: flex; flex-direction: column; gap: 3px; transition: border-color .2s, box-shadow .2s;
+  }
+  .dwg-rd-phero__pack.is-active { border-color: var(--rd-ph-btn-bg); box-shadow: 0 0 0 1px var(--rd-ph-btn-bg); background: #fdf7ec; }
+  .dwg-rd-phero__pack-name { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.95rem; color: var(--rd-ph-text); }
+  .dwg-rd-phero__pack-price { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.15rem; color: var(--rd-ph-text); }
+  .dwg-rd-phero__pack-each { font-family: 'Manjari', sans-serif; font-size: 0.8rem; color: rgba(28,28,28,0.5); }
+  .dwg-rd-phero__pack-badge {
+    position: absolute; top: -10px; right: 8px; background: #1c1c1c; color: #fff;
+    font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.6rem; letter-spacing: 0.04em;
+    padding: 3px 8px; border-radius: 6px; text-transform: uppercase;
+  }
+
+  /* Circular quantity stepper */
   .dwg-rd-phero__qty {
-    display: inline-flex;
-    align-items: center;
-    border: 1.5px solid #1c1c1c;
-    border-radius: 40px;
-    overflow: hidden;
-    flex: 0 0 auto;
-    background: #1c1c1c;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 440px; border: 1.5px solid rgba(28,28,28,0.18);
+    border-radius: 16px; padding: 8px 14px;
   }
   .dwg-rd-phero__qty-btn {
-    border: 0;
-    background: #1c1c1c;
-    cursor: pointer;
-    width: 40px;
-    align-self: stretch;
-    font-size: 1.15rem;
-    color: #ffffff;
-    font-family: 'Outfit', sans-serif;
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1.5px solid rgba(28,28,28,0.35); background: #fff; color: #1c1c1c;
+    font-size: 1.4rem; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .2s, color .2s;
   }
-  .dwg-rd-phero__qty-input {
-    width: 40px;
-    text-align: center;
-    font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
-    background: #1c1c1c !important;
-    color: #ffffff !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    appearance: none;
-    -moz-appearance: textfield;
+  .dwg-rd-phero__qty-btn:hover { background: #1c1c1c; color: #fff; border-color: #1c1c1c; }
+  .dwg-rd-phero__qty-num {
+    min-width: 44px; height: 44px; border-radius: 50%; background: var(--rd-ph-btn-bg); color: #fff;
+    font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
   }
-  .dwg-rd-phero__qty-input:focus,
-  .dwg-rd-phero__qty-input:focus-visible { outline: none; background: #1c1c1c !important; }
-  .dwg-rd-phero__qty-input::-webkit-outer-spin-button,
-  .dwg-rd-phero__qty-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-  .dwg-rd-phero__btn--add { flex: 1 1 auto; }
+  .dwg-rd-phero__btn--add { flex: 1 1 auto; gap: 10px; }
+  .dwg-rd-phero__btn-sep { opacity: 0.55; }
 
   /* Shopify dynamic checkout (Buy Now / Shop Pay) */
   .dwg-rd-phero__form .shopify-payment-button { margin-top: 0; }
@@ -335,18 +412,57 @@
   .dwg-rd-phero__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .dwg-rd-phero__thumb.is-active { border-color: var(--rd-ph-btn-bg); }
 
-  /* Bundles */
-  .dwg-rd-phero__bundles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 0 0 22px; max-width: 440px; }
-  .dwg-rd-phero__bundle {
-    text-align: left; cursor: pointer; background: #fff;
-    border: 1.5px solid rgba(28,28,28,0.2); border-radius: 12px; padding: 16px 18px;
-    display: flex; flex-direction: column; gap: 6px; transition: border-color .2s, box-shadow .2s;
-  }
-  .dwg-rd-phero__bundle.is-active { border-color: var(--rd-ph-btn-bg); box-shadow: 0 0 0 1px var(--rd-ph-btn-bg); }
-  .dwg-rd-phero__bundle-name { font-family: 'Outfit', sans-serif; font-size: 0.95rem; color: rgba(28,28,28,0.7); }
-  .dwg-rd-phero__bundle-price { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 1.25rem; color: var(--rd-ph-text); }
-
   .dwg-rd-phero__price-label { font-family: 'Manjari', sans-serif; color: rgba(28,28,28,0.5); margin: 0 0 4px; }
+
+  /* Ingredients accordion */
+  .dwg-rd-phero__acc {
+    max-width: 440px; border: 1.5px solid rgba(28,28,28,0.18);
+    border-radius: 40px; padding: 4px 8px; margin-top: 20px;
+  }
+  .dwg-rd-phero__acc[open] { border-radius: 20px; }
+  .dwg-rd-phero__acc-head {
+    list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    font-family: 'Outfit', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    font-size: 1rem; color: var(--rd-ph-text); padding: 14px 16px;
+  }
+  .dwg-rd-phero__acc-head::-webkit-details-marker { display: none; }
+  .dwg-rd-phero__acc-icon { position: relative; width: 20px; height: 20px; flex: 0 0 auto; }
+  .dwg-rd-phero__acc-icon::before,
+  .dwg-rd-phero__acc-icon::after { content: ''; position: absolute; background: var(--rd-ph-text); }
+  .dwg-rd-phero__acc-icon::before { top: 9px; left: 2px; width: 16px; height: 2px; }
+  .dwg-rd-phero__acc-icon::after { top: 2px; left: 9px; width: 2px; height: 16px; transition: transform .2s; }
+  .dwg-rd-phero__acc[open] .dwg-rd-phero__acc-icon::after { transform: scaleY(0); }
+  .dwg-rd-phero__acc-body {
+    font-family: 'Manjari', sans-serif; font-size: 1rem; line-height: 1.55;
+    color: rgba(28,28,28,0.8); padding: 0 16px 16px;
+  }
+
+  /* Buy It With */
+  .dwg-rd-phero__bwith {
+    max-width: 440px; margin-top: 18px; display: flex; align-items: center; gap: 16px;
+    background: #f7ecd9;
+    border-radius: 18px; padding: 18px 20px;
+  }
+  .dwg-rd-phero__bwith-info { flex: 1 1 auto; min-width: 0; }
+  .dwg-rd-phero__bwith-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.05rem; margin: 0 0 4px; color: var(--rd-ph-text); }
+  .dwg-rd-phero__bwith-name { font-family: 'Manjari', sans-serif; font-size: 0.95rem; color: rgba(28,28,28,0.7); margin: 0 0 12px; }
+  .dwg-rd-phero__bwith-btn {
+    border: 0; cursor: pointer; width: 100%;
+    font-family: 'Manjari', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;
+    font-size: 0.95rem; padding: 12px 18px; border-radius: 40px;
+    background: var(--rd-ph-btn-bg); color: #fff; transition: filter .2s;
+  }
+  .dwg-rd-phero__bwith-btn:hover { filter: brightness(1.06); }
+  .dwg-rd-phero__bwith-img { flex: 0 0 auto; width: clamp(72px, 16vw, 110px); height: auto; object-fit: contain; }
+
+  /* Trust badges */
+  .dwg-rd-phero__badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; max-width: 440px; margin-top: 18px; }
+  .dwg-rd-phero__badge {
+    background: var(--rd-ph-btn-bg); color: #fff; border-radius: 14px; padding: 16px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
+  }
+  .dwg-rd-phero__badge svg { width: 30px; height: 30px; }
+  .dwg-rd-phero__badge span { font-family: 'Manjari', sans-serif; font-weight: 700; font-size: 0.8rem; line-height: 1.2; }
 {% endstylesheet %}
 
 <script>
@@ -373,20 +489,59 @@
         });
       }
 
-      // ── Bundle options (sets quantity + updates price) ──
-      var bundles = root.querySelector('[data-bundles]');
-      if (bundles) {
-        var qtyHidden = root.querySelector('[data-qty-hidden]');
-        var priceTarget = root.querySelector('[data-price-target]');
-        bundles.querySelectorAll('.dwg-rd-phero__bundle').forEach(function (b) {
-          b.addEventListener('click', function () {
-            bundles.querySelectorAll('.dwg-rd-phero__bundle').forEach(function (x) { x.classList.remove('is-active'); });
-            b.classList.add('is-active');
-            if (qtyHidden) qtyHidden.value = b.getAttribute('data-bundle-qty') || '1';
-            if (priceTarget) priceTarget.textContent = b.getAttribute('data-bundle-price') || priceTarget.textContent;
+      // ── Pack chooser + quantity + live total ──
+      var packsWrap = root.querySelector('[data-packs]');
+      var qtyWrap = root.querySelector('[data-qty]');
+      var qtyHidden = root.querySelector('[data-qty-hidden]');
+      var qtyNum = root.querySelector('[data-qty-num]');
+      var priceTarget = root.querySelector('[data-price-target]');
+      var totalTarget = root.querySelector('[data-total-target]');
+
+      // money formatter derived from a sample like "€12.00" / "£12.00" / "$12.00"
+      var unitCents = 0, prefix = '', suffix = '';
+      var moneySrc = packsWrap || qtyWrap;
+      if (packsWrap) {
+        unitCents = parseInt(packsWrap.getAttribute('data-unit-cents'), 10) || 0;
+        var sample = packsWrap.getAttribute('data-money-sample') || '';
+        var m = sample.match(/^([^\d]*)[\d.,]+([^\d]*)$/);
+        if (m) { prefix = m[1]; suffix = m[2]; }
+      }
+      function money(cents) {
+        return prefix + (cents / 100).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + suffix;
+      }
+
+      var qty = 1;
+      function refresh() {
+        if (qty < 1) qty = 1;
+        if (qtyHidden) qtyHidden.value = qty;
+        if (qtyNum) qtyNum.textContent = qty;
+        if (unitCents) {
+          var t = money(unitCents * qty);
+          if (priceTarget) priceTarget.textContent = t;
+          if (totalTarget) totalTarget.textContent = t;
+        }
+        if (packsWrap) {
+          packsWrap.querySelectorAll('.dwg-rd-phero__pack').forEach(function (p) {
+            p.classList.toggle('is-active', parseInt(p.getAttribute('data-pack-qty'), 10) === qty);
+          });
+        }
+      }
+
+      if (packsWrap) {
+        packsWrap.querySelectorAll('.dwg-rd-phero__pack').forEach(function (p) {
+          p.addEventListener('click', function () {
+            qty = parseInt(p.getAttribute('data-pack-qty'), 10) || 1;
+            refresh();
           });
         });
       }
+      if (qtyWrap) {
+        var minus = qtyWrap.querySelector('[data-qty-minus]');
+        var plus = qtyWrap.querySelector('[data-qty-plus]');
+        if (minus) minus.addEventListener('click', function () { qty -= 1; refresh(); });
+        if (plus) plus.addEventListener('click', function () { qty += 1; refresh(); });
+      }
+      refresh();
     });
   })();
 </script>
@@ -402,6 +557,19 @@
     { "type": "url", "id": "button_link", "label": "Button link (used when out of stock)" },
     { "type": "image_picker", "id": "image", "label": "Image (blank = design/product image)" },
     { "type": "checkbox", "id": "use_design_images", "label": "Use design product image", "info": "Show the Figma bottle/jar (mapped by product title) instead of the product's own photo.", "default": true },
+    { "type": "header", "content": "Pack chooser" },
+    { "type": "checkbox", "id": "show_packs", "label": "Show pack chooser (Single / Double / 3-Pack)", "default": true },
+    { "type": "text", "id": "popular_badge", "label": "3-Pack badge", "default": "MOST POPULAR" },
+    { "type": "header", "content": "Ingredients accordion" },
+    { "type": "text", "id": "ingredients_title", "label": "Accordion title", "default": "Ingredients" },
+    { "type": "richtext", "id": "ingredients", "label": "Ingredients content", "info": "Leave blank to hide.", "default": "<p>Three chillies. Salt. Seasoning. Vegetable oil. Simple ingredients — heat with flavour.</p>" },
+    { "type": "header", "content": "Buy It With" },
+    { "type": "product", "id": "companion_product", "label": "Companion product", "info": "Shown as a 'Buy It With' add-to-cart card. Leave blank to hide." },
+    { "type": "header", "content": "Trust badges" },
+    { "type": "checkbox", "id": "show_badges", "label": "Show trust badges", "default": true },
+    { "type": "text", "id": "badge_1", "label": "Badge 1", "default": "Free Shipping Over £49" },
+    { "type": "text", "id": "badge_2", "label": "Badge 2", "default": "Shelf Stable" },
+    { "type": "text", "id": "badge_3", "label": "Badge 3", "default": "Do Not Freeze" },
     { "type": "header", "content": "Colors" },
     { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },

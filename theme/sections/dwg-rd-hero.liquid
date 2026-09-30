@@ -391,8 +391,8 @@
     (function () {
       var origin = root.querySelector('[data-fall-origin]');
       var fly = root.querySelector('[data-fall]');
-      var dest = document.querySelector('.dwg-rd-elevate__bottle-img');
-      if (!origin || !fly || !dest) return;
+      if (!origin || !fly) return;
+      var dest = null; // resolved lazily — the Elevate section parses after the hero
 
       var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
       var active = false, range = 1, ticking = false;
@@ -434,15 +434,20 @@
         if (!ticking) { ticking = true; requestAnimationFrame(frame); }
       }
       function setup() {
-        var on = window.innerWidth >= 900 && !reduce.matches;
+        dest = document.querySelector('.dwg-rd-elevate__bottle-img');
+        var on = dest && window.innerWidth >= 900 && !reduce.matches;
         if (on) { enable(); measure(); frame(); }
         else { disable(); }
       }
-      // wait for images/layout so measurements are correct
-      window.addEventListener('load', setup);
-      setup();
+      // Elevate section parses after the hero, so defer setup until the DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setup);
+      } else {
+        setup();
+      }
+      window.addEventListener('load', function () { measure(); frame(); });
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', function () { measure(); setup(); });
+      window.addEventListener('resize', function () { setup(); });
     })();
   })();
 </script>

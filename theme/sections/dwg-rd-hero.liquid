@@ -65,6 +65,12 @@
     {% endfor %}
   </div>
 
+  {%- comment -%} Scroll-scrubbed bottle that "falls" from the hero into the Elevate section (homepage only, desktop). {%- endcomment -%}
+  <div class="dwg-hero-fall-origin" data-fall-origin aria-hidden="true"></div>
+  <div class="dwg-hero-fall" data-fall aria-hidden="true">
+    <img src="{{ 'dwg-rd-elevate-bottle.png' | asset_url }}" alt="" width="813" height="1400" loading="eager">
+  </div>
+
 </section>
 
 {% stylesheet %}
@@ -314,7 +320,23 @@
     50%      { transform: scale(1.06); }
   }
 
+  /* Scroll-fall bottle: origin marker (hero product area) + fixed flyer */
+  .dwg-hero-fall-origin {
+    position: absolute; pointer-events: none; z-index: -1;
+    top: 20%; right: 6%; width: min(340px, 34vw); height: 60%;
+  }
+  .dwg-hero-fall {
+    position: fixed; z-index: 6; pointer-events: none; opacity: 0;
+    will-change: transform, top, left, width;
+    display: none;
+  }
+  .dwg-hero-fall img { width: 100%; height: auto; display: block; }
+  @media screen and (min-width: 900px) {
+    .dwg-hero-fall { display: block; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .dwg-hero-fall { display: none !important; }
     .dwg-rd-hero__stage { transition: none; }
     .dwg-rd-hero__eyebrow,
     .dwg-rd-hero__heading,
@@ -364,6 +386,64 @@
     mark();
     document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
     start();
+
+    // ── Scroll-scrubbed "falling" bottle: hero product area -> Elevate section ──
+    (function () {
+      var origin = root.querySelector('[data-fall-origin]');
+      var fly = root.querySelector('[data-fall]');
+      var dest = document.querySelector('.dwg-rd-elevate__bottle-img');
+      if (!origin || !fly || !dest) return;
+
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var active = false, range = 1, ticking = false;
+
+      function enable() {
+        if (active) return;
+        active = true;
+        dest.style.visibility = 'hidden';   // flyer stands in for the Elevate bottle
+        fly.style.opacity = '0';
+      }
+      function disable() {
+        if (!active) return;
+        active = false;
+        dest.style.visibility = '';
+        fly.style.opacity = '0';
+        fly.style.transform = 'none';
+        fly.style.left = fly.style.top = fly.style.width = '';
+      }
+      function measure() {
+        var y = window.pageYOffset || document.documentElement.scrollTop;
+        var oTop = origin.getBoundingClientRect().top + y;
+        var dTop = dest.getBoundingClientRect().top + y;
+        range = Math.max(1, dTop - oTop);
+      }
+      function lerp(a, b, p) { return a + (b - a) * p; }
+      function frame() {
+        ticking = false;
+        if (!active) return;
+        var y = window.pageYOffset || document.documentElement.scrollTop;
+        var p = Math.min(1, Math.max(0, y / range));
+        var o = origin.getBoundingClientRect();
+        var d = dest.getBoundingClientRect();
+        fly.style.left = lerp(o.left, d.left, p) + 'px';
+        fly.style.top = lerp(o.top, d.top, p) + 'px';
+        fly.style.width = lerp(o.width || d.width, d.width || o.width, p) + 'px';
+        fly.style.opacity = Math.min(1, p / 0.08); // hidden at the very top so the carousel is clean
+      }
+      function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(frame); }
+      }
+      function setup() {
+        var on = window.innerWidth >= 900 && !reduce.matches;
+        if (on) { enable(); measure(); frame(); }
+        else { disable(); }
+      }
+      // wait for images/layout so measurements are correct
+      window.addEventListener('load', setup);
+      setup();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', function () { measure(); setup(); });
+    })();
   })();
 </script>
 

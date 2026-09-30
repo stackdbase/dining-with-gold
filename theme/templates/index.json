@@ -30,7 +30,8 @@
       },
       "block_order": ["s1", "s3"],
       "settings": {
-        "autoplay_speed": 6
+        "autoplay_speed": 6,
+        "background": "#FBF7EF"
       }
     },
     "rd_elevate": {

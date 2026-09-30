@@ -16,18 +16,6 @@
             "media_style": "float"
           }
         },
-        "s2": {
-          "type": "slide",
-          "settings": {
-            "eyebrow": "Heat Flavor, Gold Standard",
-            "heading": "African Chilli Oil",
-            "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
-            "fallback_image": "dwg-rd-shop-bottle.png",
-            "image_side": "right",
-            "media_style": "float",
-            "compact_media": true
-          }
-        },
         "s3": {
           "type": "slide",
           "settings": {
@@ -40,7 +28,7 @@
           }
         }
       },
-      "block_order": ["s1", "s2", "s3"],
+      "block_order": ["s1", "s3"],
       "settings": {
         "autoplay_speed": 6
       }

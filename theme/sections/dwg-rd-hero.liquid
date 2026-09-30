@@ -325,15 +325,18 @@
     position: absolute; pointer-events: none; z-index: -1;
     top: 20%; right: 6%; width: min(340px, 34vw); height: 60%;
   }
+  @media screen and (max-width: 899px) {
+    .dwg-hero-fall-origin {
+      top: 30%; right: auto; left: 50%; transform: translateX(-50%);
+      width: min(320px, 66vw); height: 46%;
+    }
+  }
   .dwg-hero-fall {
     position: fixed; z-index: 6; pointer-events: none; opacity: 0;
     will-change: transform, top, left, width;
-    display: none;
+    display: block;
   }
   .dwg-hero-fall img { width: 100%; height: auto; display: block; }
-  @media screen and (min-width: 900px) {
-    .dwg-hero-fall { display: block; }
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .dwg-hero-fall { display: none !important; }
@@ -428,14 +431,15 @@
         fly.style.left = lerp(o.left, d.left, p) + 'px';
         fly.style.top = lerp(o.top, d.top, p) + 'px';
         fly.style.width = lerp(o.width || d.width, d.width || o.width, p) + 'px';
-        fly.style.opacity = Math.min(1, p / 0.08); // hidden at the very top so the carousel is clean
+        // Hard cutoff, never semi-transparent: hidden only at the very top, else full opacity
+        fly.style.opacity = p > 0.02 ? '1' : '0';
       }
       function onScroll() {
         if (!ticking) { ticking = true; requestAnimationFrame(frame); }
       }
       function setup() {
         dest = document.querySelector('.dwg-rd-elevate__bottle-img');
-        var on = dest && window.innerWidth >= 900 && !reduce.matches;
+        var on = dest && !reduce.matches;
         if (on) { enable(); measure(); frame(); }
         else { disable(); }
       }

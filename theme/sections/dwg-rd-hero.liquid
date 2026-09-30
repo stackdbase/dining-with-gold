@@ -189,7 +189,7 @@
     /* Stage hugs the content (little extra space); no header overlap */
     .dwg-rd-hero { margin-top: 0; }
     .dwg-rd-hero__stage { min-height: 60svh; }
-    .dwg-rd-hero__media-img { max-height: 60svh; }
+    .dwg-rd-hero__media-img { max-height: 50svh; }
 
     .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 0; }
 
@@ -205,12 +205,12 @@
       padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
       padding-left: 0;
     }
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; }
+    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; padding-left: clamp(32px, 6vw, 96px); }
     .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
 
     .dwg-rd-hero__media-img { max-width: 760px; }
     /* Jar-panel (fill) slide: whole image, capped height, no crop */
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 52svh; }
+    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 44svh; }
 
     /* Compact slide (standalone bottle): the bottle is tall/slim, so size
        it by HEIGHT and centre it — no width blow-up. */
@@ -323,7 +323,7 @@
   /* Scroll-fall bottle: origin marker (hero product area) + fixed flyer */
   .dwg-hero-fall-origin {
     position: absolute; pointer-events: none; z-index: -1;
-    top: 20%; right: 6%; width: min(340px, 34vw); height: 60%;
+    top: 16%; right: 4%; width: min(500px, 46vw); height: 68%;
   }
   @media screen and (max-width: 899px) {
     .dwg-hero-fall-origin {

@@ -145,8 +145,17 @@
       gap: clamp(32px, 5vw, 72px);
       align-items: center;
     }
-    .dwg-rd-hero__panel { order: 1; justify-content: flex-start; }
-    .dwg-rd-hero__panel-img { max-height: min(56svh, 520px); border-radius: clamp(24px, 3vw, 40px); }
+    /* Photo anchored flush to the left page edge, rounded on the right only */
+    .dwg-rd-hero__panel {
+      order: 1;
+      justify-content: flex-start;
+      margin-left: calc((100% - 100vw) / 2);
+      padding-left: calc((100vw - 100%) / 2);
+    }
+    .dwg-rd-hero__panel-img {
+      max-height: min(58svh, 540px);
+      border-radius: 0 clamp(24px, 3vw, 40px) clamp(24px, 3vw, 40px) 0;
+    }
     .dwg-rd-hero__content { order: 2; align-self: center; }
     .dwg-rd-hero__content {
       order: 2;

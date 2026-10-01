@@ -70,18 +70,19 @@
 
   .dwg-rd-hero__panel {
     position: relative;
-    overflow: hidden;
-    border-radius: clamp(20px, 3vw, 36px);
     line-height: 0;
-    background: linear-gradient(180deg, #D9481E 0%, #C53A12 48%, #7C1308 100%);
+    display: flex;
+    justify-content: center;
   }
 
   .dwg-rd-hero__panel-img {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 46svh;
     object-fit: contain;
-    object-position: center;
+    border-radius: clamp(20px, 3vw, 36px);
   }
 
   .dwg-rd-hero__content {
@@ -142,20 +143,11 @@
     .dwg-rd-hero__inner {
       grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
       gap: clamp(32px, 5vw, 72px);
-      min-height: min(56svh, 520px);
-      align-items: stretch;
+      align-items: center;
     }
-    /* Panel bleeds to the left page edge, rounded on the right only */
-    .dwg-rd-hero__panel {
-      order: 1;
-      align-self: stretch;
-      height: 100%;
-      max-height: min(56svh, 520px);
-      border-radius: 0 clamp(28px, 3vw, 44px) clamp(28px, 3vw, 44px) 0;
-      margin-left: calc((100% - 100vw) / 2);
-      padding-left: calc((100vw - 100%) / 2);
-    }
-    .dwg-rd-hero__content { align-self: center; }
+    .dwg-rd-hero__panel { order: 1; justify-content: flex-start; }
+    .dwg-rd-hero__panel-img { max-height: min(56svh, 520px); border-radius: clamp(24px, 3vw, 40px); }
+    .dwg-rd-hero__content { order: 2; align-self: center; }
     .dwg-rd-hero__content {
       order: 2;
       padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
@@ -165,7 +157,7 @@
 
   @media screen and (max-width: 899px) {
     .dwg-rd-hero__inner { gap: clamp(18px, 5vw, 28px); padding-inline: clamp(14px, 4vw, 24px); }
-    .dwg-rd-hero__panel { order: 1; max-height: 44svh; }
+    .dwg-rd-hero__panel-img { order: 1; max-height: 44svh; }
     .dwg-rd-hero__content { order: 2; text-align: center; padding-inline: clamp(16px, 5vw, 28px); }
     .dwg-rd-hero__subhead,
     .dwg-rd-hero__body { margin-inline: auto; }

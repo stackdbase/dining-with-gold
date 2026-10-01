@@ -11,9 +11,12 @@
         "link3_label": "About",
         "link3_url": "/pages/about",
         "show_announcement": false,
-        "announcement_text": "Free UK shipping on orders over £50"
+        "announcement_text": "Free UK shipping on orders over £50",
+        "background": "#FBF7EF"
       }
     }
   },
-  "order": ["dwg_rd_header"]
+  "order": [
+    "dwg_rd_header"
+  ]
 }

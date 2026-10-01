@@ -58,7 +58,8 @@
         "heading_accent": "Every",
         "heading": "Drop Matters",
         "body": "<p>Our chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes & spices infused in quality ingredients.</p>",
-        "button_label": "Shop From Us"
+        "button_label": "Shop From Us",
+        "background": "#FBF7EF"
       }
     },
     "ugc_reviews": {

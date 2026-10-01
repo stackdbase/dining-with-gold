@@ -53,7 +53,7 @@
         {% if section.settings.product_image != blank %}
           {{ section.settings.product_image | image_url: width: 1300 | image_tag: class: 'dwg-rd-elevate__bottle-img', widths: '600, 900, 1300', loading: 'lazy', alt: 'DWG chilli oil' }}
         {% else %}
-          <img class="dwg-rd-elevate__bottle-img" src="{{ 'dwg-rd-elevate-trio-bowl.png' | asset_url }}" alt="DWG chilli oil — three bottles and chilli bowl" width="1176" height="1200" loading="lazy">
+          <img class="dwg-rd-elevate__bottle-img" src="{{ 'dwg-rd-elevate-trio-bowl.png' | asset_url }}" alt="DWG chilli oil — three bottles and chilli bowl" width="942" height="951" loading="lazy">
         {% endif %}
         {%- comment -%} Landing target for the bottle flying in from the hero (over the centre bottle). {%- endcomment -%}
         <span class="dwg-rd-elevate__land" data-land aria-hidden="true"></span>
@@ -187,10 +187,10 @@
   /* Landing box over the CENTRE bottle of the cluster image (matches bottle aspect) */
   .dwg-rd-elevate__land {
     position: absolute;
-    left: 22.7%;
-    top: 0;
-    width: 61.8%;
-    height: 100%;
+    left: 28.03%;
+    top: -9.99%;
+    width: 77.18%;
+    height: 126.18%;
     pointer-events: none;
   }
 

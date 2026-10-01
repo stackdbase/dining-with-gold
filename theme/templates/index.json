@@ -62,9 +62,9 @@
         "columns_desktop": "4",
         "cta_label": "SEE ALL REVIEWS",
         "cta_link": "/pages/reviews",
-        "background_color": "#ffffff",
-        "accent_color": "#c9882a",
-        "text_color": "#1c1c1c"
+        "background_color": "#141414",
+        "accent_color": "#D7AF46",
+        "text_color": "#FFFFFF"
       }
     },
     "rd_story": {

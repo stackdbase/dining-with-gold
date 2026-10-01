@@ -116,12 +116,12 @@
   @media screen and (min-width: 900px) {
     .dwg-rd-story__wrap {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-      align-items: center;
+      align-items: stretch;
     }
-    /* Short fixed media height so the section stays compact */
-    .dwg-rd-story__media { min-height: 0; height: clamp(300px, 32vw, 400px); }
+    /* Taller cover band so the section breathes (was a short 400px) */
+    .dwg-rd-story__media { min-height: 0; height: clamp(500px, 42vw, 620px); }
     .dwg-rd-story__content {
-      padding-block: clamp(14px, 2vw, 26px);
+      padding-block: clamp(36px, 4vw, 64px);
       padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
       padding-left: clamp(28px, 3.5vw, 56px);
       align-self: center;

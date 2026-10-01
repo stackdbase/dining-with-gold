@@ -1,15 +1,17 @@
 {% comment %}
-  DWG redesign — "Made to Elevate / Every Drop Matters".
-  Left: eyebrow, split-color heading, body, feature rows, CTA.
-  Right: product imagery. Remove this section to revert.
+  DWG redesign — "Made to Elevate / Every Drop Matters" (v2).
+  Left: eyebrow, split-color heading, body, CTA.
+  Centre: three bottles + chilli bowl that DROP in from above on scroll
+          (scroll-scrubbed, reverses on scroll up; disabled for reduced-motion).
+  Right: feature rows. Remove this section to revert.
 {% endcomment %}
 
 {% liquid
-  assign bg = section.settings.background | default: '#FFFFFF'
+  assign bg = section.settings.background | default: '#FBF7EF'
   assign eyebrow_color = section.settings.eyebrow_color | default: '#B28100'
   assign accent = section.settings.accent_color | default: '#B28100'
   assign text_color = section.settings.text_color | default: '#1C1C1C'
-  assign btn_bg = section.settings.button_background | default: '#A97E0C'
+  assign btn_bg = section.settings.button_background | default: '#E0531E'
   assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
 %}
 
@@ -23,6 +25,7 @@
     --rd-el-btn-bg: {{ btn_bg }};
     --rd-el-btn-text: {{ btn_text }};
   "
+  data-dwg-elevate
 >
   <div class="dwg-rd-elevate__wrap page-width">
     <div class="dwg-rd-elevate__content">
@@ -38,12 +41,21 @@
       {% if section.settings.body != blank %}
         <div class="dwg-rd-elevate__body">{{ section.settings.body }}</div>
       {% endif %}
-
       {% if section.settings.button_label != blank %}
         <a class="dwg-rd-elevate__btn" href="{{ section.settings.button_link | default: '#' }}">
           {{ section.settings.button_label }}
         </a>
       {% endif %}
+    </div>
+
+    <div class="dwg-rd-elevate__media">
+      <div class="dwg-rd-elevate__media-bottle" data-drop>
+        {% if section.settings.product_image != blank %}
+          {{ section.settings.product_image | image_url: width: 1300 | image_tag: class: 'dwg-rd-elevate__bottle-img', widths: '600, 900, 1300', loading: 'lazy', alt: 'DWG chilli oil' }}
+        {% else %}
+          <img class="dwg-rd-elevate__bottle-img" src="{{ 'dwg-rd-elevate-trio-bowl.png' | asset_url }}" alt="DWG chilli oil — three bottles and chilli bowl" width="1887" height="1180" loading="lazy">
+        {% endif %}
+      </div>
     </div>
 
     {% if section.blocks.size > 0 %}
@@ -73,23 +85,6 @@
         {% endfor %}
       </div>
     {% endif %}
-
-    <div class="dwg-rd-elevate__media">
-      <div class="dwg-rd-elevate__media-accent">
-        {% if section.settings.accent_image != blank %}
-          {{ section.settings.accent_image | image_url: width: 600 | image_tag: class: 'dwg-rd-elevate__accent-img', widths: '300, 450, 600', loading: 'lazy', alt: '' }}
-        {% else %}
-          <img class="dwg-rd-elevate__accent-img" src="{{ 'dwg-rd-elevate-1.png' | asset_url }}" alt="" width="600" height="600" loading="lazy">
-        {% endif %}
-      </div>
-      <div class="dwg-rd-elevate__media-bottle">
-        {% if section.settings.product_image != blank %}
-          {{ section.settings.product_image | image_url: width: 800 | image_tag: class: 'dwg-rd-elevate__bottle-img', widths: '400, 600, 800', loading: 'lazy', alt: 'DWG chilli oil' }}
-        {% else %}
-          <img class="dwg-rd-elevate__bottle-img" src="{{ 'dwg-rd-elevate-bottle.png' | asset_url }}" alt="DWG chilli oil" width="380" height="1451" loading="lazy">
-        {% endif %}
-      </div>
-    </div>
   </div>
 </section>
 
@@ -101,18 +96,19 @@
     margin-bottom: clamp(8px, 1vw, 16px);
     position: relative;
     z-index: 2;
+    overflow: hidden;
   }
 
   .dwg-rd-elevate__wrap {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(28px, 5vw, 56px);
+    gap: clamp(24px, 4vw, 48px);
     align-items: center;
   }
 
   @media screen and (min-width: 900px) {
     .dwg-rd-elevate__wrap {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.5fr) minmax(0, 0.85fr);
     }
   }
 
@@ -135,9 +131,7 @@
     margin: 0 0 20px;
   }
 
-  .dwg-rd-elevate__heading-accent {
-    color: var(--rd-el-accent);
-  }
+  .dwg-rd-elevate__heading-accent { color: var(--rd-el-accent); }
 
   .dwg-rd-elevate__body {
     font-family: 'Manjari', sans-serif;
@@ -146,59 +140,6 @@
     color: var(--rd-el-text);
     max-width: 42ch;
     margin: 0 0 28px;
-  }
-
-  .dwg-rd-elevate__features {
-    display: grid;
-    gap: 20px;
-    align-self: center;
-    max-width: 340px;
-  }
-
-  .dwg-rd-elevate__feature {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding-block-start: 20px;
-    border-top: 1px solid rgba(28, 28, 28, 0.15);
-  }
-
-  .dwg-rd-elevate__feature:first-child {
-    border-top: none;
-    padding-block-start: 0;
-  }
-
-  .dwg-rd-elevate__feature-icon {
-    flex: 0 0 auto;
-    width: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .dwg-rd-elevate__feature-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .dwg-rd-elevate__feature-title {
-    font-family: 'Manjari', sans-serif;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    font-size: 1.05rem;
-    margin: 0 0 4px;
-    color: var(--rd-el-text);
-  }
-
-  .dwg-rd-elevate__feature-desc {
-    font-family: 'Manjari', sans-serif;
-    font-size: 0.95rem;
-    line-height: 1.45;
-    color: rgba(28, 28, 28, 0.72);
-    margin: 0;
   }
 
   .dwg-rd-elevate__btn {
@@ -214,76 +155,127 @@
     padding: 15px 34px;
     background: var(--rd-el-btn-bg);
     color: var(--rd-el-btn-text);
-    transition: filter 0.2s ease;
+    border-radius: 4px;
+    transition: filter 0.2s ease, transform 0.2s ease;
   }
+  .dwg-rd-elevate__btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
-  .dwg-rd-elevate__btn:hover {
-    filter: brightness(1.08);
-  }
-
+  /* Centre cluster */
   .dwg-rd-elevate__media {
     position: relative;
     width: 100%;
-    max-width: 540px;
-    margin-inline: auto;
-    min-height: clamp(360px, 40vw, 480px);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
   }
-
-  @media screen and (min-width: 900px) {
-    /* Composite (bottle + bowl) shifted further to the left */
-    .dwg-rd-elevate__media { margin-inline: auto; justify-content: flex-start; align-items: flex-end; }
-    .dwg-rd-elevate__media-accent { left: auto; right: 12%; bottom: 6%; width: 40%; }
-  }
-
   .dwg-rd-elevate__media-bottle {
     position: relative;
     z-index: 2;
     display: flex;
     justify-content: center;
-  }
-
-  .dwg-rd-elevate__bottle-img {
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: clamp(480px, 50vw, 640px);
-    object-fit: contain;
-    filter: drop-shadow(0 20px 44px rgba(0, 0, 0, 0.18));
-  }
-
-  /* Bowl is baked into the combo image now — hide the separate accent */
-  .dwg-rd-elevate__media-accent { display: none; }
-
-  /* Bowl of chilli oil tucked at the bottle's lower-left, BEHIND the bottle */
-  .dwg-rd-elevate__media-accent {
-    position: absolute;
-    left: 0;
-    bottom: 4%;
-    width: 46%;
-    z-index: 1;
-  }
-
-  .dwg-rd-elevate__accent-img {
     width: 100%;
+    will-change: transform, opacity;
+  }
+  .dwg-rd-elevate__bottle-img {
+    width: 100%;
+    max-width: 640px;
     height: auto;
     object-fit: contain;
-    filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.16));
+    filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.16));
+  }
+
+  /* Features */
+  .dwg-rd-elevate__features {
+    display: grid;
+    gap: 20px;
+    align-self: center;
+    max-width: 340px;
+  }
+  .dwg-rd-elevate__feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-block-start: 20px;
+    border-top: 1px solid rgba(28, 28, 28, 0.15);
+  }
+  .dwg-rd-elevate__feature:first-child { border-top: none; padding-block-start: 0; }
+  .dwg-rd-elevate__feature-icon {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dwg-rd-elevate__feature-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .dwg-rd-elevate__feature-title {
+    font-family: 'Manjari', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+    color: var(--rd-el-text);
+  }
+  .dwg-rd-elevate__feature-desc {
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: rgba(28, 28, 28, 0.72);
+    margin: 0;
   }
 
   @media screen and (max-width: 899px) {
     .dwg-rd-elevate { margin-top: 0; padding-top: clamp(24px, 6vw, 40px); }
-    .dwg-rd-elevate__media {
-      max-width: 440px;
-      min-height: 0;
-      margin-top: 8px;
-    }
-    .dwg-rd-elevate__media-accent { width: 40%; }
+    .dwg-rd-elevate__content { text-align: center; }
+    .dwg-rd-elevate__body { margin-inline: auto; }
+    .dwg-rd-elevate__media { margin-block: 4px 8px; }
+    .dwg-rd-elevate__bottle-img { max-width: min(480px, 88vw); }
     .dwg-rd-elevate__features { max-width: none; }
   }
+
+  /* ── Drop-in motion (scroll-scrubbed; JS sets --drop 1→0 as it settles) ── */
+  .dwg-rd-elevate__media-bottle[data-drop] {
+    transform: translateY(calc(var(--drop, 1) * -22%));
+    opacity: calc(1 - var(--drop, 1) * 0.9);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dwg-rd-elevate__media-bottle[data-drop] { transform: none !important; opacity: 1 !important; }
+  }
 {% endstylesheet %}
+
+<script>
+  (function () {
+    var root = document.currentScript.previousElementSibling;
+    while (root && !(root.hasAttribute && root.hasAttribute('data-dwg-elevate'))) {
+      root = root.previousElementSibling;
+    }
+    if (!root) return;
+    var drop = root.querySelector('[data-drop]');
+    if (!drop) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { drop.style.setProperty('--drop', '0'); return; }
+
+    var ticking = false;
+    function frame() {
+      ticking = false;
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      var r = drop.getBoundingClientRect();
+      // p = 0 when the cluster first appears at the bottom of the viewport,
+      // p = 1 once it has risen to ~35% from the top (settled).
+      var start = vh;            // element top at viewport bottom
+      var end = vh * 0.32;       // element top settled near upper third
+      var p = (start - r.top) / (start - end);
+      p = Math.max(0, Math.min(1, p));
+      // --drop goes 1 (up & faded) -> 0 (settled) as p 0 -> 1
+      drop.style.setProperty('--drop', String(1 - p));
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+    frame();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    window.addEventListener('load', frame);
+  })();
+</script>
 
 {% schema %}
 {
@@ -297,14 +289,13 @@
     { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Our chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes & spices infused in quality ingredients.</p>" },
     { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop From Us" },
     { "type": "url", "id": "button_link", "label": "Button link" },
-    { "type": "image_picker", "id": "product_image", "label": "Product image (bottle)" },
-    { "type": "image_picker", "id": "accent_image", "label": "Accent image (rounded)" },
+    { "type": "image_picker", "id": "product_image", "label": "Product image (bottles + bowl)", "info": "Defaults to dwg-rd-elevate-trio-bowl.png theme asset." },
     { "type": "header", "content": "Colors" },
-    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FBF7EF" },
     { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#B28100" },
     { "type": "color", "id": "accent_color", "label": "Heading accent", "default": "#B28100" },
     { "type": "color", "id": "text_color", "label": "Text", "default": "#1C1C1C" },
-    { "type": "color", "id": "button_background", "label": "Button background", "default": "#A97E0C" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#E0531E" },
     { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
   ],
   "blocks": [

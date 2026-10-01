@@ -1,18 +1,18 @@
 {% comment %}
-  DWG redesign — Hero slideshow. Rotating slides that cross-fade + pop in
-  over each other. Each slide = live text (left or right) + a product
-  graphic bleeding to that edge. Respects prefers-reduced-motion.
+  DWG redesign — Hero (v2, static). Left: bottle-on-orange lifestyle panel that
+  bleeds to the page edge with rounded inner corners. Right: heading, gold
+  sub-heading, body and CTA on the ivory background. Respects reduced-motion.
+  (The previous rotating carousel + scroll-fall lives on branch
+  redesign-v1-carousel-scrollfall.)
 {% endcomment %}
 
 {% liquid
-  assign bg = section.settings.background | default: '#FFFFFF'
+  assign bg = section.settings.background | default: '#FBF7EF'
   assign heading_color = section.settings.heading_color | default: '#BD8C1E'
-  assign eyebrow_color = section.settings.eyebrow_color | default: '#A0341E'
+  assign sub_color = section.settings.subheading_color | default: '#BD8C1E'
   assign text_color = section.settings.text_color | default: '#1C1C1C'
-  assign btn_bg = section.settings.button_background | default: '#A97E0C'
+  assign btn_bg = section.settings.button_background | default: '#E0531E'
   assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
-  assign speed = section.settings.autoplay_speed | default: 5
-  assign speed_ms = speed | times: 1000
 %}
 
 <section
@@ -20,119 +20,102 @@
   style="
     --rd-hero-bg: {{ bg }};
     --rd-hero-heading: {{ heading_color }};
-    --rd-hero-eyebrow: {{ eyebrow_color }};
+    --rd-hero-sub: {{ sub_color }};
     --rd-hero-text: {{ text_color }};
     --rd-hero-btn-bg: {{ btn_bg }};
     --rd-hero-btn-text: {{ btn_text }};
   "
   data-dwg-hero
-  data-autoplay="{{ speed_ms }}"
 >
-  <div class="dwg-rd-hero__stage" id="dwg-hero-{{ section.id }}">
-    {% for block in section.blocks %}
-      {% liquid
-        assign side = block.settings.image_side | default: 'right'
-        assign mstyle = block.settings.media_style | default: 'float'
-      %}
-      <div
-        class="dwg-rd-hero__slide dwg-rd-hero__slide--img-{{ side }} dwg-rd-hero__slide--{{ mstyle }}{% if block.settings.compact_media %} dwg-rd-hero__slide--compact{% endif %}{% if forloop.first %} is-active{% endif %}"
-        data-slide="{{ forloop.index0 }}"
-        {{ block.shopify_attributes }}
-      >
-        <div class="dwg-rd-hero__content">
-          {% if block.settings.eyebrow != blank %}
-            <p class="dwg-rd-hero__eyebrow">{{ block.settings.eyebrow }}</p>
-          {% endif %}
-          {% if block.settings.heading != blank %}
-            <h1 class="dwg-rd-hero__heading">{{ block.settings.heading }}</h1>
-          {% endif %}
-          {% if block.settings.body != blank %}
-            <div class="dwg-rd-hero__body">{{ block.settings.body }}</div>
-          {% endif %}
-          {% if block.settings.button_label != blank %}
-            <a class="dwg-rd-hero__btn" href="{{ block.settings.button_link | default: '#' }}">{{ block.settings.button_label }}</a>
-          {% endif %}
-        </div>
+  <div class="dwg-rd-hero__inner">
+    <div class="dwg-rd-hero__panel">
+      {% if section.settings.panel_image != blank %}
+        {{ section.settings.panel_image | image_url: width: 1300 | image_tag: class: 'dwg-rd-hero__panel-img', widths: '600, 900, 1240', loading: 'eager', alt: section.settings.heading | default: 'DWG African Chilli Oil' }}
+      {% else %}
+        <img class="dwg-rd-hero__panel-img" src="{{ 'dwg-rd-hero-panel.png' | asset_url }}" alt="{{ section.settings.heading | default: 'DWG African Chilli Oil' }}" width="1240" height="1480" loading="eager">
+      {% endif %}
+    </div>
 
-        <div class="dwg-rd-hero__media">
-          {% if block.settings.image != blank %}
-            {{ block.settings.image | image_url: width: 1300 | image_tag: class: 'dwg-rd-hero__media-img', widths: '500, 750, 1000, 1300', loading: 'eager', alt: block.settings.heading | default: 'DWG African Chilli Oil' }}
-          {% elsif block.settings.fallback_image != blank %}
-            <img class="dwg-rd-hero__media-img" src="{{ block.settings.fallback_image | asset_url }}" alt="{{ block.settings.heading | default: 'DWG African Chilli Oil' }}" width="1000" height="1200" loading="eager">
-          {% endif %}
-        </div>
-      </div>
-    {% endfor %}
+    <div class="dwg-rd-hero__content">
+      {% if section.settings.heading != blank %}
+        <h1 class="dwg-rd-hero__heading">{{ section.settings.heading }}</h1>
+      {% endif %}
+      {% if section.settings.subheading != blank %}
+        <p class="dwg-rd-hero__subhead">{{ section.settings.subheading }}</p>
+      {% endif %}
+      {% if section.settings.body != blank %}
+        <div class="dwg-rd-hero__body">{{ section.settings.body }}</div>
+      {% endif %}
+      {% if section.settings.button_label != blank %}
+        <a class="dwg-rd-hero__btn" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label }}</a>
+      {% endif %}
+    </div>
   </div>
-
-  {%- comment -%} Scroll-scrubbed bottle that "falls" from the hero into the Elevate section (homepage only, desktop). {%- endcomment -%}
-  <div class="dwg-hero-fall-origin" data-fall-origin aria-hidden="true"></div>
-  <div class="dwg-hero-fall" data-fall aria-hidden="true">
-    <img src="{{ 'dwg-rd-elevate-bottle.png' | asset_url }}" alt="" width="813" height="1400" loading="eager">
-  </div>
-
 </section>
 
 {% stylesheet %}
   .dwg-rd-hero {
     position: relative;
     background-color: var(--rd-hero-bg);
-    padding-block: clamp(6px, 1vw, 14px) clamp(4px, 1vw, 12px);
-    margin-top: 0;
+    padding-block: clamp(10px, 1.6vw, 20px);
     overflow-x: hidden;
   }
 
-  .dwg-rd-hero__stage {
-    display: flex;
-    flex-wrap: nowrap;
-    /* Fill the viewport below the header so the whole hero shows without scrolling */
-    min-height: calc(100svh - 120px);
-    transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-    will-change: transform;
-  }
-
-  .dwg-rd-hero__slide {
-    flex: 0 0 100%;
+  .dwg-rd-hero__inner {
     display: grid;
     grid-template-columns: 1fr;
-    gap: clamp(20px, 4vw, 44px);
+    gap: clamp(20px, 4vw, 40px);
     align-items: center;
-    padding-inline: clamp(20px, 5vw, 48px);
+  }
+
+  .dwg-rd-hero__panel {
+    position: relative;
+    overflow: hidden;
+    border-radius: clamp(20px, 3vw, 36px);
+    line-height: 0;
+  }
+
+  .dwg-rd-hero__panel-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   .dwg-rd-hero__content {
-    max-width: 720px;
-  }
-
-  .dwg-rd-hero__eyebrow {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-size: clamp(1rem, 1.7vw, 1.375rem);
-    color: var(--rd-hero-eyebrow);
-    margin: 0 0 22px;
+    padding-inline: clamp(20px, 5vw, 48px);
   }
 
   .dwg-rd-hero__heading {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
     letter-spacing: -0.01em;
-    line-height: 0.98;
-    margin: 0 0 22px;
-    font-size: clamp(2.15rem, 6.2vw, 6rem);
+    line-height: 0.95;
+    margin: 0 0 18px;
+    font-size: clamp(2.4rem, 6.4vw, 5.6rem);
     color: var(--rd-hero-heading);
     text-transform: uppercase;
     overflow-wrap: break-word;
   }
 
+  .dwg-rd-hero__subhead {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: clamp(0.95rem, 1.5vw, 1.2rem);
+    color: var(--rd-hero-sub);
+    margin: 0 0 18px;
+  }
+
   .dwg-rd-hero__body {
     font-family: 'Manjari', sans-serif;
-    font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+    font-size: clamp(1.1rem, 1.8vw, 1.4rem);
     line-height: 1.5;
     color: var(--rd-hero-text);
-    max-width: 42ch;
-    margin: 0 0 34px;
+    max-width: 40ch;
+    margin: 0 0 30px;
   }
 
   .dwg-rd-hero__btn {
@@ -141,211 +124,67 @@
     justify-content: center;
     font-family: 'Manjari', sans-serif;
     font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.02em;
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
     text-transform: uppercase;
     text-decoration: none;
-    font-size: 1.1rem;
-    padding: 17px 42px;
+    padding: 16px 40px;
     background: var(--rd-hero-btn-bg);
     color: var(--rd-hero-btn-text);
-    transition: filter 0.2s ease;
+    border-radius: 4px;
+    transition: filter 0.2s ease, transform 0.2s ease;
   }
-
-  .dwg-rd-hero__btn:hover { filter: brightness(1.08); }
-
-  .dwg-rd-hero__media {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .dwg-rd-hero__media-img {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 58svh;
-    object-fit: contain;
-    margin-inline: auto;
-  }
-
-  /* Fill style — jar scene shown WHOLE (contain), scaled to fit, no crop. */
-  .dwg-rd-hero__slide--fill .dwg-rd-hero__media {
-    align-self: center;
-    justify-content: center;
-  }
-  .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 48svh;
-    object-fit: contain;
-    border-radius: clamp(24px, 3vw, 44px);
-  }
-
+  .dwg-rd-hero__btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
 
   @media screen and (min-width: 900px) {
-    /* Stage hugs the content (little extra space); no header overlap */
-    .dwg-rd-hero { margin-top: 0; }
-    .dwg-rd-hero__stage { min-height: 60svh; }
-    .dwg-rd-hero__media-img { max-height: 50svh; }
-
-    .dwg-rd-hero__slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 0; }
-
-    /* Image on the right → text keeps the page gutter left, image bleeds right */
-    .dwg-rd-hero__slide--img-right {
-      padding-left: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
-      padding-right: 0;
+    .dwg-rd-hero { padding-block: 0; }
+    .dwg-rd-hero__inner {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+      gap: clamp(32px, 5vw, 72px);
+      min-height: min(84svh, 760px);
     }
-    .dwg-rd-hero__slide--img-right .dwg-rd-hero__media { order: 2; justify-content: flex-start; }
-
-    /* Image on the left → image bleeds left, text keeps the page gutter right */
-    .dwg-rd-hero__slide--img-left {
+    /* Panel bleeds to the left page edge, rounded on the right only */
+    .dwg-rd-hero__panel {
+      order: 1;
+      align-self: stretch;
+      height: 100%;
+      border-radius: 0 clamp(28px, 3vw, 44px) clamp(28px, 3vw, 44px) 0;
+      margin-left: calc((100% - 100vw) / 2);
+      padding-left: calc((100vw - 100%) / 2);
+    }
+    .dwg-rd-hero__content {
+      order: 2;
       padding-right: max(clamp(20px, 5vw, 48px), calc((100% - var(--dwg-page-max, 1360px)) / 2 + 48px));
-      padding-left: 0;
-    }
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 2; padding-left: clamp(32px, 6vw, 96px); }
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__media { order: 1; justify-content: flex-start; }
-
-    .dwg-rd-hero__media-img { max-width: 760px; }
-    /* Jar-panel (fill) slide: whole image, capped height, no crop */
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 44svh; }
-
-    /* Compact slide (standalone bottle): the bottle is tall/slim, so size
-       it by HEIGHT and centre it — no width blow-up. */
-    .dwg-rd-hero__slide--compact.dwg-rd-hero__slide--img-right .dwg-rd-hero__media {
-      justify-content: flex-start;
-    }
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
-      width: auto;
-      max-width: 100%;
-      height: auto;
-      max-height: clamp(360px, 46vw, 520px);
-      transform: translateY(-10px);
-    }
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__content {
-      padding-left: clamp(24px, 7vw, 130px);
+      padding-left: clamp(8px, 2vw, 24px);
     }
   }
 
   @media screen and (max-width: 899px) {
-    /* Height flows with content on mobile (no forced viewport gaps) */
-    .dwg-rd-hero { padding-block: clamp(16px, 5vw, 28px) clamp(24px, 7vw, 40px); }
-    .dwg-rd-hero__stage { min-height: 0; }
-    .dwg-rd-hero__slide {
-      grid-template-columns: 1fr;
-      gap: clamp(4px, 2vw, 12px);
-      padding-inline: clamp(20px, 6vw, 32px);
-      text-align: center;
-      align-items: start;
-    }
-    /* Text on top (centred), media below (centred) */
-    .dwg-rd-hero__content,
-    .dwg-rd-hero__slide--img-left .dwg-rd-hero__content { order: 1; max-width: none; margin-inline: auto; }
+    .dwg-rd-hero__inner { gap: clamp(18px, 5vw, 28px); padding-inline: clamp(14px, 4vw, 24px); }
+    .dwg-rd-hero__panel { order: 1; max-height: 58svh; }
+    .dwg-rd-hero__content { order: 2; text-align: center; padding-inline: clamp(16px, 5vw, 28px); }
+    .dwg-rd-hero__subhead,
     .dwg-rd-hero__body { margin-inline: auto; }
-
-    .dwg-rd-hero__media,
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media { order: 2; justify-content: center; }
-    .dwg-rd-hero__media-img { max-width: min(360px, 74vw); max-height: 52svh; margin-inline: auto; }
-
-    /* Standalone bottle: keep its size, just centred */
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img {
-      width: auto; max-width: 68vw; height: auto; max-height: clamp(320px, 58vw, 420px); transform: none; margin-inline: auto;
-    }
-
-    /* Jar: whole image, contain, no crop */
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media { justify-content: center; height: auto; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img,
-    .dwg-rd-hero__slide--fill.dwg-rd-hero__slide--img-right .dwg-rd-hero__media-img {
-      max-width: min(520px, 86vw); width: auto; height: auto; max-height: 48svh; object-fit: contain; border-radius: 28px; margin-inline: auto;
-    }
   }
 
-  /* Tablet portrait (and small landscape): balanced, centred stack */
-  @media screen and (min-width: 700px) and (max-width: 899px) {
-    .dwg-rd-hero__stage { min-height: calc(100svh - 130px); }
-    .dwg-rd-hero__slide { gap: clamp(24px, 4vw, 40px); }
-    .dwg-rd-hero__content { max-width: 620px; }
-    .dwg-rd-hero__media { justify-content: center; }
-    .dwg-rd-hero__media-img { margin-inline: auto; max-width: min(460px, 66vw); max-height: 42svh; }
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media { justify-content: center; }
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img { max-width: none; max-height: 46svh; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media { justify-content: center; height: auto; }
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-width: min(560px, 74vw); width: auto; height: auto; max-height: 46svh; object-fit: contain; border-radius: 28px; }
-  }
-
-  /* Short landscape (phones/tablets in landscape): keep it all on screen */
-  @media screen and (max-height: 600px) and (min-width: 700px) {
-    .dwg-rd-hero__stage { min-height: calc(100svh - 90px); }
-    .dwg-rd-hero__media-img,
-    .dwg-rd-hero__slide--compact .dwg-rd-hero__media-img,
-    .dwg-rd-hero__slide--fill .dwg-rd-hero__media-img { max-height: 74svh; }
-    .dwg-rd-hero__heading { font-size: clamp(2rem, 5vw, 3.5rem); }
-  }
-
-  @media screen and (max-width: 480px) {
-    .dwg-rd-hero__media-img { max-width: min(340px, 90vw); }
-  }
-
-  /* ── Hero entrance + float animations (premium hero motion) ── */
-  .dwg-rd-hero__eyebrow,
+  /* ── Entrance motion ── */
+  .dwg-rd-hero__panel { opacity: 0; transform: scale(0.97); transition: opacity 0.7s ease, transform 0.7s ease; }
   .dwg-rd-hero__heading,
+  .dwg-rd-hero__subhead,
   .dwg-rd-hero__body,
-  .dwg-rd-hero__btn {
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  .dwg-rd-hero__slide.is-current .dwg-rd-hero__eyebrow { opacity: 1; transform: none; transition-delay: 0.08s; }
-  .dwg-rd-hero__slide.is-current .dwg-rd-hero__heading { opacity: 1; transform: none; transition-delay: 0.18s; }
-  .dwg-rd-hero__slide.is-current .dwg-rd-hero__body    { opacity: 1; transform: none; transition-delay: 0.30s; }
-  .dwg-rd-hero__slide.is-current .dwg-rd-hero__btn     { opacity: 1; transform: none; transition-delay: 0.42s; }
-
-  /* Product: bouncy pop-in (bbPlopIn) then a gentle scale pulse (slow-bounce) */
-  .dwg-rd-hero__media-img { opacity: 0; transform-origin: center bottom; }
-  .dwg-rd-hero__slide.is-current .dwg-rd-hero__media-img {
-    animation:
-      dwgPlopIn 0.7s cubic-bezier(0.2, 0.7, 0.3, 1) 0.1s both,
-      dwgSlowBounce 3.4s ease-in-out 0.85s infinite;
-  }
-  @keyframes dwgPlopIn {
-    0%   { transform: scale(0.5) translateY(10px); opacity: 0; }
-    55%  { transform: scale(1.12) translateY(-3px); opacity: 1; }
-    75%  { transform: scale(0.97); }
-    100% { transform: scale(1) translateY(0); opacity: 1; }
-  }
-  @keyframes dwgSlowBounce {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.06); }
-  }
-
-  /* Scroll-fall bottle: origin marker (hero product area) + fixed flyer */
-  .dwg-hero-fall-origin {
-    position: absolute; pointer-events: none; z-index: -1;
-    top: 12%; right: 3%; width: min(580px, 52vw); height: 76%;
-  }
-  @media screen and (max-width: 899px) {
-    .dwg-hero-fall-origin {
-      top: 30%; right: auto; left: 50%; transform: translateX(-50%);
-      width: min(320px, 66vw); height: 46%;
-    }
-  }
-  .dwg-hero-fall {
-    position: fixed; z-index: 6; pointer-events: none; opacity: 0;
-    will-change: transform, top, left, width;
-    display: block;
-  }
-  .dwg-hero-fall img { width: 100%; height: auto; display: block; }
+  .dwg-rd-hero__btn { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .dwg-rd-hero.is-in .dwg-rd-hero__panel   { opacity: 1; transform: none; }
+  .dwg-rd-hero.is-in .dwg-rd-hero__heading { opacity: 1; transform: none; transition-delay: 0.12s; }
+  .dwg-rd-hero.is-in .dwg-rd-hero__subhead { opacity: 1; transform: none; transition-delay: 0.22s; }
+  .dwg-rd-hero.is-in .dwg-rd-hero__body    { opacity: 1; transform: none; transition-delay: 0.32s; }
+  .dwg-rd-hero.is-in .dwg-rd-hero__btn     { opacity: 1; transform: none; transition-delay: 0.42s; }
 
   @media (prefers-reduced-motion: reduce) {
-    .dwg-hero-fall { display: none !important; }
-    .dwg-rd-hero__stage { transition: none; }
-    .dwg-rd-hero__eyebrow,
+    .dwg-rd-hero__panel,
     .dwg-rd-hero__heading,
+    .dwg-rd-hero__subhead,
     .dwg-rd-hero__body,
     .dwg-rd-hero__btn { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .dwg-rd-hero__media-img { opacity: 1 !important; animation: none !important; }
   }
 {% endstylesheet %}
 
@@ -356,103 +195,7 @@
       root = root.previousElementSibling;
     }
     if (!root) return;
-
-    var stage = root.querySelector('.dwg-rd-hero__stage');
-    var slides = Array.prototype.slice.call(root.querySelectorAll('.dwg-rd-hero__slide'));
-    if (!stage || !slides.length) return;
-
-    var i = 0;
-    var delay = parseInt(root.getAttribute('data-autoplay'), 10) || 4000;
-    var timer = null;
-
-    function mark() {
-      slides.forEach(function (s, idx) {
-        // toggle to retrigger the entrance animation on the active slide
-        if (idx === i) {
-          s.classList.remove('is-current');
-          void s.offsetWidth;
-          s.classList.add('is-current');
-        } else {
-          s.classList.remove('is-current');
-        }
-      });
-    }
-    function show(n) {
-      i = (n + slides.length) % slides.length;
-      stage.style.transform = 'translateX(' + (-i * 100) + '%)';
-      mark();
-    }
-    function next() { show(i + 1); }
-    function start() { if (slides.length < 2) return; stop(); timer = setInterval(next, delay); }
-    function stop() { if (timer) { clearInterval(timer); timer = null; } }
-
-    mark();
-    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
-    start();
-
-    // ── Scroll-scrubbed "falling" bottle: hero product area -> Elevate section ──
-    (function () {
-      var origin = root.querySelector('[data-fall-origin]');
-      var fly = root.querySelector('[data-fall]');
-      if (!origin || !fly) return;
-      var dest = null; // resolved lazily — the Elevate section parses after the hero
-
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-      var active = false, range = 1, ticking = false;
-
-      function enable() {
-        if (active) return;
-        active = true;
-        dest.style.visibility = 'hidden';   // flyer stands in for the Elevate bottle
-        fly.style.opacity = '0';
-      }
-      function disable() {
-        if (!active) return;
-        active = false;
-        dest.style.visibility = '';
-        fly.style.opacity = '0';
-        fly.style.transform = 'none';
-        fly.style.left = fly.style.top = fly.style.width = '';
-      }
-      function measure() {
-        var y = window.pageYOffset || document.documentElement.scrollTop;
-        var oTop = origin.getBoundingClientRect().top + y;
-        var dTop = dest.getBoundingClientRect().top + y;
-        range = Math.max(1, dTop - oTop);
-      }
-      function lerp(a, b, p) { return a + (b - a) * p; }
-      function frame() {
-        ticking = false;
-        if (!active) return;
-        var y = window.pageYOffset || document.documentElement.scrollTop;
-        var p = Math.min(1, Math.max(0, y / range));
-        var o = origin.getBoundingClientRect();
-        var d = dest.getBoundingClientRect();
-        fly.style.left = lerp(o.left, d.left, p) + 'px';
-        fly.style.top = lerp(o.top, d.top, p) + 'px';
-        fly.style.width = lerp(o.width || d.width, d.width || o.width, p) + 'px';
-        // Hard cutoff, never semi-transparent: hidden only at the very top, else full opacity
-        fly.style.opacity = p > 0.02 ? '1' : '0';
-      }
-      function onScroll() {
-        if (!ticking) { ticking = true; requestAnimationFrame(frame); }
-      }
-      function setup() {
-        dest = document.querySelector('.dwg-rd-elevate__bottle-img');
-        var on = dest && !reduce.matches;
-        if (on) { enable(); measure(); frame(); }
-        else { disable(); }
-      }
-      // Elevate section parses after the hero, so defer setup until the DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setup);
-      } else {
-        setup();
-      }
-      window.addEventListener('load', function () { measure(); frame(); });
-      window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', function () { setup(); });
-    })();
+    requestAnimationFrame(function () { root.classList.add('is-in'); });
   })();
 </script>
 
@@ -462,43 +205,20 @@
   "tag": "section",
   "class": "section--dwg-rd-hero",
   "settings": [
-    { "type": "range", "id": "autoplay_speed", "label": "Autoplay speed (seconds)", "min": 1, "max": 10, "step": 0.5, "default": 6 },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "No 1 African Chilli Oil" },
+    { "type": "text", "id": "subheading", "label": "Sub-heading", "default": "Heat Flavor, Gold Standard" },
+    { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop From Us" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "image_picker", "id": "panel_image", "label": "Panel image (bottle on orange)", "info": "Defaults to dwg-rd-hero-panel.png theme asset." },
     { "type": "header", "content": "Colors" },
-    { "type": "color", "id": "background", "label": "Background", "default": "#FFFFFF" },
+    { "type": "color", "id": "background", "label": "Background", "default": "#FBF7EF" },
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },
-    { "type": "color", "id": "eyebrow_color", "label": "Eyebrow", "default": "#A0341E" },
+    { "type": "color", "id": "subheading_color", "label": "Sub-heading", "default": "#BD8C1E" },
     { "type": "color", "id": "text_color", "label": "Body text", "default": "#1C1C1C" },
-    { "type": "color", "id": "button_background", "label": "Button background", "default": "#A97E0C" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#E0531E" },
     { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
   ],
-  "blocks": [
-    {
-      "type": "slide",
-      "name": "Slide",
-      "settings": [
-        { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Heat, Flavor, Gold Standard" },
-        { "type": "text", "id": "heading", "label": "Heading", "default": "African Chilli Oil" },
-        { "type": "richtext", "id": "body", "label": "Body", "default": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>" },
-        { "type": "text", "id": "button_label", "label": "Button label" },
-        { "type": "url", "id": "button_link", "label": "Button link" },
-        { "type": "image_picker", "id": "image", "label": "Image" },
-        { "type": "text", "id": "fallback_image", "label": "Fallback image asset", "info": "Theme asset filename used if no image is picked." },
-        { "type": "select", "id": "image_side", "label": "Image side", "options": [ { "value": "right", "label": "Right" }, { "value": "left", "label": "Left" } ], "default": "right" },
-        { "type": "select", "id": "media_style", "label": "Image style", "options": [ { "value": "float", "label": "Float (product on background)" }, { "value": "fill", "label": "Fill (edge-to-edge panel)" } ], "default": "float" },
-        { "type": "checkbox", "id": "compact_media", "label": "Bring image inward & up", "default": false }
-      ]
-    }
-  ],
-  "max_blocks": 6,
-  "presets": [
-    {
-      "name": "DWG RD: Hero",
-      "blocks": [
-        { "type": "slide", "settings": { "heading": "No 1 African Chilli Oil", "button_label": "Shop From Us", "fallback_image": "dwg-rd-hero-cluster.png", "image_side": "right", "media_style": "float" } },
-        { "type": "slide", "settings": { "heading": "African Chilli Oil", "fallback_image": "dwg-rd-elevate-bottle.png", "image_side": "right", "media_style": "float" } },
-        { "type": "slide", "settings": { "heading": "African Chilli Oil", "fallback_image": "dwg-rd-hero-jar-panel.jpg", "image_side": "left", "media_style": "fill" } }
-      ]
-    }
-  ]
+  "presets": [ { "name": "DWG RD: Hero" } ]
 }
 {% endschema %}

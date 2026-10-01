@@ -70,19 +70,19 @@
 
   .dwg-rd-hero__panel {
     position: relative;
+    overflow: hidden;
     line-height: 0;
-    display: flex;
-    justify-content: center;
+    border-radius: clamp(18px, 4vw, 28px);
+    height: 48svh;
+    max-height: 440px;
   }
 
   .dwg-rd-hero__panel-img {
     display: block;
-    width: auto;
-    max-width: 100%;
-    height: auto;
-    max-height: 46svh;
-    object-fit: contain;
-    border-radius: clamp(20px, 3vw, 36px);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
   }
 
   .dwg-rd-hero__content {
@@ -178,7 +178,7 @@
 
   @media screen and (max-width: 899px) {
     .dwg-rd-hero__inner { gap: clamp(18px, 5vw, 28px); padding-inline: clamp(14px, 4vw, 24px); }
-    .dwg-rd-hero__panel-img { order: 1; max-height: 44svh; }
+    .dwg-rd-hero__panel { order: 1; }
     .dwg-rd-hero__content { order: 2; text-align: center; padding-inline: clamp(16px, 5vw, 28px); }
     .dwg-rd-hero__subhead,
     .dwg-rd-hero__body { margin-inline: auto; }

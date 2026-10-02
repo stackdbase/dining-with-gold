@@ -12,7 +12,7 @@
   assign heading_color = section.settings.heading_color | default: '#BD8C1E'
   assign sub_color = section.settings.subheading_color | default: '#BD8C1E'
   assign text_color = section.settings.text_color | default: '#1C1C1C'
-  assign btn_bg = section.settings.button_background | default: '#E0531E'
+  assign btn_bg = section.settings.button_background | default: '#A97E0C'
   assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
 %}
 
@@ -166,7 +166,7 @@
     border-radius: 4px;
     transition: filter 0.2s ease, transform 0.2s ease;
   }
-  .dwg-rd-hero__btn:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .dwg-rd-hero__btn:hover { filter: brightness(1.08); }
 
   /* Flyer (fixed, scroll-scrubbed) */
   .dwg-hero-fly {
@@ -322,7 +322,7 @@
     { "type": "color", "id": "heading_color", "label": "Heading", "default": "#BD8C1E" },
     { "type": "color", "id": "subheading_color", "label": "Sub-heading", "default": "#BD8C1E" },
     { "type": "color", "id": "text_color", "label": "Body text", "default": "#1C1C1C" },
-    { "type": "color", "id": "button_background", "label": "Button background", "default": "#E0531E" },
+    { "type": "color", "id": "button_background", "label": "Button background", "default": "#A97E0C" },
     { "type": "color", "id": "button_text_color", "label": "Button text", "default": "#FFFFFF" }
   ],
   "presets": [ { "name": "DWG RD: Hero" } ]

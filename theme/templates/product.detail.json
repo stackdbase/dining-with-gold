@@ -51,44 +51,6 @@
         "f4"
       ]
     },
-    "elevate": {
-      "type": "dwg-rd-elevate",
-      "blocks": {
-        "e1": {
-          "type": "feature",
-          "settings": {
-            "title": "Vegetable Oil",
-            "description": "Infused in high-quality oil for a rich, smooth finish."
-          }
-        },
-        "e2": {
-          "type": "feature",
-          "settings": {
-            "title": "Scotch Bonnet",
-            "description": "Bold heat with authentic African character."
-          }
-        },
-        "e3": {
-          "type": "feature",
-          "settings": {
-            "title": "Ginger",
-            "description": "Warm, aromatic depth in every spoonful."
-          }
-        }
-      },
-      "block_order": [
-        "e1",
-        "e2",
-        "e3"
-      ],
-      "settings": {
-        "eyebrow": "Made to Elevate",
-        "heading_accent": "Every",
-        "heading": "Drop Matters",
-        "body": "<p>Dining with Gold chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes, garlic and spices slowly infused in quality ingredients.</p>",
-        "button_label": "Learn More"
-      }
-    },
     "ways": {
       "type": "dwg-rd-ways",
       "blocks": {

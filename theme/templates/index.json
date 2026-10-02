@@ -4,8 +4,8 @@
       "type": "dwg-rd-hero",
       "settings": {
         "heading": "No 1 African Chilli Oil",
-        "subheading": "Heat Flavor, Gold Standard",
-        "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
+        "subheading": "Bold Flavor for the Modern Palate.",
+        "body": "<p>The ultimate blend of bold spice and rich flavor to elevate every meal.</p>",
         "button_label": "Shop From Us",
         "button_link": "shopify://collections/all",
         "background": "#FFFFFF"
@@ -31,10 +31,10 @@
       },
       "block_order": ["f1", "f2"],
       "settings": {
-        "eyebrow": "Made to Elevate",
-        "heading_accent": "Every",
-        "heading": "Drop Matters",
-        "body": "<p>Our chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes & spices infused in quality ingredients.</p>",
+        "eyebrow": "Elevate Every Bite",
+        "heading_accent": "Drizzle.",
+        "heading": "Crunch. Repeat.",
+        "body": "<p>The African chilli oil brings the ideal harmony of smoky heat, satisfying crunch, and rich aroma. We slowly steep premium chillies, golden garlic, and warm spices into high-grade oil so every drop packs a punch.</p>",
         "button_label": "Shop From Us",
         "background": "#FFFFFF"
       }

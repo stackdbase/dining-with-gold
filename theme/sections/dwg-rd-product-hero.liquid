@@ -59,27 +59,41 @@
           {% endif %}
 
           {% if section.settings.show_packs %}
+            {% liquid
+              assign h1 = section.settings.pack_single_handle | default: 'dwg-travel-chilli-oil'
+              assign h2 = section.settings.pack_double_handle | default: 'dwg-travel-chilli-oil-2-pack'
+              assign h3 = section.settings.pack_triple_handle | default: 'dwg-travel-chilli-oil-3-pack'
+              assign p1 = all_products[h1]
+              assign p2 = all_products[h2]
+              assign p3 = all_products[h3]
+            %}
             <p class="dwg-rd-phero__label">Choose your pack</p>
             <div class="dwg-rd-phero__packs"
                  data-packs
                  data-unit-cents="{{ product.price }}"
                  data-money-sample="{{ product.price | money }}">
-              <button type="button" class="dwg-rd-phero__pack is-active" data-pack-qty="1">
-                <span class="dwg-rd-phero__pack-name">Single</span>
-                <span class="dwg-rd-phero__pack-price">{{ product.price | money }}</span>
-                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
-              </button>
-              <button type="button" class="dwg-rd-phero__pack" data-pack-qty="2">
-                <span class="dwg-rd-phero__pack-name">Double Pack</span>
-                <span class="dwg-rd-phero__pack-price">{{ product.price | times: 2 | money }}</span>
-                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
-              </button>
-              <button type="button" class="dwg-rd-phero__pack" data-pack-qty="3">
-                {% if section.settings.popular_badge != blank %}<span class="dwg-rd-phero__pack-badge">{{ section.settings.popular_badge }}</span>{% endif %}
-                <span class="dwg-rd-phero__pack-name">3-Pack</span>
-                <span class="dwg-rd-phero__pack-price">{{ product.price | times: 3 | money }}</span>
-                <span class="dwg-rd-phero__pack-each">{{ product.price | money }} each</span>
-              </button>
+              {% if p1 != empty %}
+                <a class="dwg-rd-phero__pack{% if product.handle == p1.handle %} is-active{% endif %}" href="{{ p1.url }}"{% if product.handle == p1.handle %} aria-current="true"{% endif %}>
+                  <span class="dwg-rd-phero__pack-name">Single Pack</span>
+                  <span class="dwg-rd-phero__pack-price">{{ p1.price | money }}</span>
+                  <span class="dwg-rd-phero__pack-each">{{ p1.price | money }} each</span>
+                </a>
+              {% endif %}
+              {% if p2 != empty %}
+                <a class="dwg-rd-phero__pack{% if product.handle == p2.handle %} is-active{% endif %}" href="{{ p2.url }}"{% if product.handle == p2.handle %} aria-current="true"{% endif %}>
+                  <span class="dwg-rd-phero__pack-name">Double Pack</span>
+                  <span class="dwg-rd-phero__pack-price">{{ p2.price | money }}</span>
+                  <span class="dwg-rd-phero__pack-each">{{ p2.price | divided_by: 2 | money }} each</span>
+                </a>
+              {% endif %}
+              {% if p3 != empty %}
+                <a class="dwg-rd-phero__pack{% if product.handle == p3.handle %} is-active{% endif %}" href="{{ p3.url }}"{% if product.handle == p3.handle %} aria-current="true"{% endif %}>
+                  {% if section.settings.popular_badge != blank %}<span class="dwg-rd-phero__pack-badge">{{ section.settings.popular_badge }}</span>{% endif %}
+                  <span class="dwg-rd-phero__pack-name">3-Pack</span>
+                  <span class="dwg-rd-phero__pack-price">{{ p3.price | money }}</span>
+                  <span class="dwg-rd-phero__pack-each">{{ p3.price | divided_by: 3 | money }} each</span>
+                </a>
+              {% endif %}
             </div>
           {% endif %}
 
@@ -363,10 +377,11 @@
   /* Pack chooser — always 3 across on one line */
   .dwg-rd-phero__packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 440px; }
   .dwg-rd-phero__pack {
-    position: relative; text-align: left; cursor: pointer; background: #fff;
+    position: relative; text-align: left; cursor: pointer; background: #fff; text-decoration: none;
     border: 1.5px solid rgba(28,28,28,0.18); border-radius: 10px; padding: 9px 9px 8px;
     display: flex; flex-direction: column; gap: 2px; transition: border-color .2s, box-shadow .2s;
   }
+  .dwg-rd-phero__pack:hover { border-color: var(--rd-ph-btn-bg); }
   .dwg-rd-phero__pack.is-active { border-color: var(--rd-ph-btn-bg); box-shadow: 0 0 0 1px var(--rd-ph-btn-bg); background: #fdf7ec; }
   .dwg-rd-phero__pack-name { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 0.8rem; line-height: 1.1; color: var(--rd-ph-text); }
   .dwg-rd-phero__pack-price { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--rd-ph-text); }
@@ -598,21 +613,9 @@
           if (priceTarget) priceTarget.textContent = t;
           if (totalTarget) totalTarget.textContent = t;
         }
-        if (packsWrap) {
-          packsWrap.querySelectorAll('.dwg-rd-phero__pack').forEach(function (p) {
-            p.classList.toggle('is-active', parseInt(p.getAttribute('data-pack-qty'), 10) === qty);
-          });
-        }
       }
 
-      if (packsWrap) {
-        packsWrap.querySelectorAll('.dwg-rd-phero__pack').forEach(function (p) {
-          p.addEventListener('click', function () {
-            qty = parseInt(p.getAttribute('data-pack-qty'), 10) || 1;
-            refresh();
-          });
-        });
-      }
+      // Pack tabs are links to each pack's own product page (no qty behaviour).
       if (qtyWrap) {
         var minus = qtyWrap.querySelector('[data-qty-minus]');
         var plus = qtyWrap.querySelector('[data-qty-plus]');
@@ -638,6 +641,9 @@
     { "type": "header", "content": "Pack chooser" },
     { "type": "checkbox", "id": "show_packs", "label": "Show pack chooser (Single / Double / 3-Pack)", "default": true },
     { "type": "text", "id": "popular_badge", "label": "3-Pack badge", "default": "MOST POPULAR" },
+    { "type": "text", "id": "pack_single_handle", "label": "Single pack product handle", "default": "dwg-travel-chilli-oil" },
+    { "type": "text", "id": "pack_double_handle", "label": "Double pack product handle", "default": "dwg-travel-chilli-oil-2-pack" },
+    { "type": "text", "id": "pack_triple_handle", "label": "3-Pack product handle", "default": "dwg-travel-chilli-oil-3-pack" },
     { "type": "header", "content": "Ingredients accordion" },
     { "type": "text", "id": "ingredients_title", "label": "Accordion title", "default": "Ingredients" },
     { "type": "richtext", "id": "ingredients", "label": "Ingredients content", "info": "Leave blank to hide.", "default": "<p>Three chillies. Salt. Seasoning. Vegetable oil. Simple ingredients — heat with flavour.</p>" },

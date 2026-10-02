@@ -63,6 +63,9 @@
 </section>
 
 {% stylesheet %}
+  /* Homepage sits on white — no cream page background peeking between sections */
+  body:has(.dwg-rd-hero) { background-color: #FFFFFF !important; }
+
   .dwg-rd-hero {
     position: relative;
     background-color: var(--rd-hero-bg);

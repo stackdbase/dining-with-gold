@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "ugc_reviews": {
@@ -171,7 +162,7 @@
         "columns_desktop": "4",
         "cta_label": "SHOP THE COLLECTION",
         "cta_link": "/collections/all",
-        "background_color": "#ffe2bb",
+        "background_color": "#FFFFFF",
         "accent_color": "#c9882a",
         "text_color": "#1c1c1c"
       }
@@ -189,9 +180,9 @@
         "email_subject": "DWG Community Submission",
         "email_body": "Hi DWG team, here is my video for the Loved By You wall:",
         "fineprint": "By submitting you agree to let DWG share your clip across our channels.",
-        "background_color": "#1c1c1c",
+        "background_color": "#FFFFFF",
         "accent_color": "#c9882a",
-        "text_color": "#f5efe2"
+        "text_color": "#1C1C1C"
       }
     },
     "main": {

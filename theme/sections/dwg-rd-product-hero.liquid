@@ -195,7 +195,7 @@
     <div class="dwg-rd-phero__media">
       {% liquid
         assign t = product.title | downcase
-        assign main_img = 'dwg-rd-shop-bottle.png'
+        assign main_img = 'dwg-rd-shop-single.png'
         if t contains 'jar'
           assign main_img = 'dwg-rd-shop-jar.png'
         elsif t contains '3 pack' or t contains '3-pack' or t contains 'triple' or t contains 'trio' or t contains 'three' or t contains 'bundle'

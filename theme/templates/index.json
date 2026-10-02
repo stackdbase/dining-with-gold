@@ -8,7 +8,7 @@
         "body": "<p>Premium chilli oil crafted to elevate every meal with bold, unforgettable flavor.</p>",
         "button_label": "Shop From Us",
         "button_link": "shopify://collections/all",
-        "background": "#FBF7EF"
+        "background": "#FFFFFF"
       }
     },
     "rd_elevate": {
@@ -36,7 +36,7 @@
         "heading": "Drop Matters",
         "body": "<p>Our chilli oil is a perfect balance of heat, crunch and aroma. Made with premium chilli flakes & spices infused in quality ingredients.</p>",
         "button_label": "Shop From Us",
-        "background": "#FBF7EF"
+        "background": "#FFFFFF"
       }
     },
     "ugc_reviews": {
@@ -62,9 +62,9 @@
         "columns_desktop": "4",
         "cta_label": "SEE ALL REVIEWS",
         "cta_link": "/pages/reviews",
-        "background_color": "#141414",
-        "accent_color": "#D7AF46",
-        "text_color": "#FFFFFF"
+        "background_color": "#FFFFFF",
+        "accent_color": "#C9882A",
+        "text_color": "#1C1C1C"
       }
     },
     "rd_story": {

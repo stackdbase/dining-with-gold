@@ -75,9 +75,11 @@
   .dwg-ugc-submit {
     background-color: var(--dwg-sub-bg);
     color: var(--dwg-sub-text);
-    padding-block: clamp(16px, 2.5vw, 36px) clamp(32px, 5vw, 64px);
+    padding-block: 0 clamp(28px, 4.5vw, 56px);
     text-align: center;
   }
+  /* Tighten the reviews grid above it — only on the reviews page */
+  body:has(.dwg-ugc-submit) .dwg-ugc { padding-bottom: clamp(6px, 1.4vw, 16px); }
 
   .dwg-ugc-submit__inner {
     max-width: 720px;

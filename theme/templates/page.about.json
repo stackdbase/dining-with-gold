@@ -10,7 +10,7 @@
             "heading": "British by Birth. Nigerian by Blood.",
             "subheading": "Spice in every dish",
             "body": "<p>I'm Wura, the founder and chef behind Dining With Gold. In Yoruba, Wura means Gold, so when you're eating with DWG, you're dining at my table. And at my table, the food is always bold, always flavourful, and always made with love.</p>",
-            "fallback_image": "dwg-rd-story-chef.jpg",
+            "fallback_image": "dwg-rd-about-chef.jpg",
             "image_position": "left",
             "media_style": "cover"
           }
@@ -30,9 +30,9 @@
             "heading": "How the Oil Came to Life.",
             "subheading": "Born from a handbag.",
             "body": "<p>A friend brought a chilli oil on holiday. One taste and something clicked. Every time I travelled I noticed the same problem — beautiful cities, missing a kick. So I started making my own. Somewhere between Euro summers and dinner tables abroad, Dining With Gold Travel Chilli Oil was born. Small enough for your handbag. Powerful enough to transform any meal.</p>",
-            "fallback_image": "dwg-rd-about-bottle.jpg",
+            "fallback_image": "dwg-rd-about-oil.jpg",
             "image_position": "right",
-            "media_style": "cover"
+            "media_style": "contain"
           }
         },
         "b_ingredients": {
@@ -50,7 +50,7 @@
             "heading": "Who is This For?",
             "subheading": "For everyone tired of bland.",
             "body": "<p>Whether you're at a restaurant in Milan, a barbecue in London, or at your kitchen table on a Tuesday night — DWG is there. Spray it, pour it, mix it in. The only rule is: no bland plates allowed.</p>",
-            "image": "shopify://shop_images/flipped_image.png",
+            "fallback_image": "dwg-rd-about-eating.jpg",
             "image_position": "left",
             "media_style": "cover",
             "button_label": "Shop",

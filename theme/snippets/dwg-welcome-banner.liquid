@@ -237,6 +237,9 @@
     function close() { root.classList.remove('is-visible'); root.setAttribute('aria-hidden', 'true'); document.removeEventListener('keydown', esc); }
     function esc(e) { if (e.key === 'Escape') close(); }
 
+    // Force-show for testing: add ?popup=1 to the URL (ignores the 5-day dismiss memory).
+    if (/[?&]popup=1/.test(location.search)) { setTimeout(open, 600); }
+
     // Just signed up → open immediately to show confirmation, then remember permanently.
     if (root.hasAttribute('data-dwg-open-now')) {
       open();

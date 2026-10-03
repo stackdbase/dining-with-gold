@@ -245,21 +245,18 @@
     var root = document.querySelector('[data-dwg-popup]');
     if (!root) return;
     var LKEY = 'dwg_pop_v2';        // permanent (localStorage): { signed, never }
-    var SKEY = 'dwg_pop_session';   // per-session (sessionStorage): closed this session
     var DELAY = 2500;
 
     function state() { try { return JSON.parse(localStorage.getItem(LKEY)) || {}; } catch (e) { return {}; } }
     function save(o) { try { localStorage.setItem(LKEY, JSON.stringify(o)); } catch (e) {} }
-    function sessionClosed() { try { return sessionStorage.getItem(SKEY) === '1'; } catch (e) { return false; } }
-    function markSession() { try { sessionStorage.setItem(SKEY, '1'); } catch (e) {} }
 
     function open() { root.classList.add('is-visible'); root.setAttribute('aria-hidden', 'false'); document.addEventListener('keydown', esc); }
     function close() { root.classList.remove('is-visible'); root.setAttribute('aria-hidden', 'true'); document.removeEventListener('keydown', esc); }
-    function esc(e) { if (e.key === 'Escape') { close(); markSession(); } }
+    function esc(e) { if (e.key === 'Escape') close(); }
 
-    // Close (X / overlay / No Thanks) → hide for THIS session only; shows again next session.
+    // Close (X / overlay / No Thanks) → just hide it; it shows again on the next reload.
     root.querySelectorAll('[data-dwg-close]').forEach(function (el) {
-      el.addEventListener('click', function () { close(); markSession(); });
+      el.addEventListener('click', close);
     });
     // "Don't show me this again" → hide permanently.
     root.querySelectorAll('[data-dwg-never]').forEach(function (el) {
@@ -274,7 +271,6 @@
 
     var st = state();
     if (st.signed || st.never) return;   // subscribed or permanently dismissed
-    if (sessionClosed()) return;         // already closed this session
-    setTimeout(open, DELAY);             // otherwise show every session
+    setTimeout(open, DELAY);             // otherwise show on every load/reload
   })();
 </script>

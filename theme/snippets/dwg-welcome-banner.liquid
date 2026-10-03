@@ -49,6 +49,7 @@
         <p class="dwg-pop__sub">When you sign up to our list</p>
         <p class="dwg-pop__legal">By subscribing, you agree to receive recurring marketing emails from Dining With Gold and accept our <a href="/policies/privacy-policy">Privacy Policy</a>. Consent is not a condition of any purchase. You can opt out at any time.</p>
         {{ form_html }}
+        <button type="button" class="dwg-pop__never" data-dwg-never>Don't show me this again</button>
       {%- endif -%}
     </div>
   </div>
@@ -160,6 +161,23 @@
 
   .dwg-pop__form { margin: 0; }
 
+  .dwg-pop__never {
+    display: block;
+    margin: 16px auto 0;
+    padding: 4px 6px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Manjari', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.01em;
+    color: rgba(28, 28, 28, 0.5);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+  }
+  .dwg-pop__never:hover { color: rgba(28, 28, 28, 0.85); }
+
   .dwg-pop__input {
     width: 100%;
     box-sizing: border-box;
@@ -226,38 +244,37 @@
   (function () {
     var root = document.querySelector('[data-dwg-popup]');
     if (!root) return;
-    var KEY = 'dwg_pop_v2';
+    var LKEY = 'dwg_pop_v2';        // permanent (localStorage): { signed, never }
+    var SKEY = 'dwg_pop_session';   // per-session (sessionStorage): closed this session
     var DELAY = 2500;
-    var DISMISS_DAYS = 5;
 
-    function state() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-    function save(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+    function state() { try { return JSON.parse(localStorage.getItem(LKEY)) || {}; } catch (e) { return {}; } }
+    function save(o) { try { localStorage.setItem(LKEY, JSON.stringify(o)); } catch (e) {} }
+    function sessionClosed() { try { return sessionStorage.getItem(SKEY) === '1'; } catch (e) { return false; } }
+    function markSession() { try { sessionStorage.setItem(SKEY, '1'); } catch (e) {} }
 
     function open() { root.classList.add('is-visible'); root.setAttribute('aria-hidden', 'false'); document.addEventListener('keydown', esc); }
     function close() { root.classList.remove('is-visible'); root.setAttribute('aria-hidden', 'true'); document.removeEventListener('keydown', esc); }
-    function esc(e) { if (e.key === 'Escape') close(); }
+    function esc(e) { if (e.key === 'Escape') { close(); markSession(); } }
 
-    // Force-show for testing: add ?popup=1 to the URL (ignores the 5-day dismiss memory).
-    if (/[?&]popup=1/.test(location.search)) { setTimeout(open, 600); }
-
-    // Just signed up → open immediately to show confirmation, then remember permanently.
-    if (root.hasAttribute('data-dwg-open-now')) {
-      open();
-      var s = state(); s.signed = true; save(s);
-      return;
-    }
-
-    var s = state();
-    if (s.signed) return;
-    if (s.closedAt && (Date.now() - s.closedAt) < DISMISS_DAYS * 864e5) return;
-
-    setTimeout(open, DELAY);
-
+    // Close (X / overlay / No Thanks) → hide for THIS session only; shows again next session.
     root.querySelectorAll('[data-dwg-close]').forEach(function (el) {
-      el.addEventListener('click', function () {
-        close();
-        var st = state(); st.closedAt = Date.now(); save(st);
-      });
+      el.addEventListener('click', function () { close(); markSession(); });
     });
+    // "Don't show me this again" → hide permanently.
+    root.querySelectorAll('[data-dwg-never]').forEach(function (el) {
+      el.addEventListener('click', function () { close(); var st = state(); st.never = true; save(st); });
+    });
+
+    // Force-show for testing: ?popup=1 (ignores all memory).
+    if (/[?&]popup=1/.test(location.search)) { setTimeout(open, 600); return; }
+
+    // Just signed up → confirm, then never show again.
+    if (root.hasAttribute('data-dwg-open-now')) { open(); var s = state(); s.signed = true; save(s); return; }
+
+    var st = state();
+    if (st.signed || st.never) return;   // subscribed or permanently dismissed
+    if (sessionClosed()) return;         // already closed this session
+    setTimeout(open, DELAY);             // otherwise show every session
   })();
 </script>

@@ -112,28 +112,34 @@
     margin: 0 0 clamp(32px, 5vw, 64px);
   }
 
+  /* Mobile: 2-up grid, image-on-top cards */
   .dwg-rd-shop__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: clamp(32px, 4vw, 56px) clamp(32px, 5vw, 80px);
-  }
-
-  @media screen and (min-width: 750px) {
-    .dwg-rd-shop__grid { grid-template-columns: 1fr 1fr; }
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(22px, 6vw, 36px) clamp(12px, 3.5vw, 20px);
   }
 
   .dwg-rd-shop__card {
     display: flex;
-    align-items: center;
-    gap: clamp(16px, 2.5vw, 32px);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(10px, 2.5vw, 16px);
   }
 
   .dwg-rd-shop__media {
-    flex: 0 0 44%;
+    flex: 0 0 auto;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: clamp(230px, 24vw, 350px);
+    height: clamp(150px, 42vw, 230px);
+  }
+
+  /* Desktop/tablet: 2-up with image beside text */
+  @media screen and (min-width: 750px) {
+    .dwg-rd-shop__grid { gap: clamp(32px, 4vw, 56px) clamp(32px, 5vw, 80px); }
+    .dwg-rd-shop__card { flex-direction: row; align-items: center; gap: clamp(16px, 2.5vw, 32px); }
+    .dwg-rd-shop__media { flex: 0 0 44%; width: auto; height: clamp(230px, 24vw, 350px); }
   }
 
   .dwg-rd-shop__img {
@@ -238,10 +244,6 @@
     color: rgba(28, 28, 28, 0.6);
   }
 
-  @media screen and (max-width: 480px) {
-    .dwg-rd-shop__card { flex-direction: column; align-items: flex-start; }
-    .dwg-rd-shop__media { flex-basis: auto; width: 60%; }
-  }
 {% endstylesheet %}
 
 {% schema %}

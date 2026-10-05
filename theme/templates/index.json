@@ -6,7 +6,7 @@
         "heading": "No 1 African Chilli Oil",
         "subheading": "Bold Flavor for the Modern Palate.",
         "body": "<p>The ultimate blend of bold spice and rich flavor to elevate every meal.</p>",
-        "button_label": "Shop From Us",
+        "button_label": "Buy Now",
         "button_link": "shopify://collections/all",
         "background": "#FFFFFF"
       }
@@ -18,14 +18,14 @@
           "type": "feature",
           "settings": {
             "title": "Tasty Oil",
-            "description": "Infused in high quality oils for a rich, smooth finish."
+            "description": "A light, neutral base that carries and amplifies every spice note without feeling heavy."
           }
         },
         "f2": {
           "type": "feature",
           "settings": {
             "title": "African Seasoning",
-            "description": "Bold, authentic spice blends rooted in tradition."
+            "description": "Provides a signature slow building heat paired with a bright, sweet aroma."
           }
         }
       },
@@ -35,7 +35,7 @@
         "heading_accent": "Drizzle.",
         "heading": "Crunch. Repeat.",
         "body": "<p>The African chilli oil brings the ideal harmony of smoky heat, satisfying crunch, and rich aroma. We slowly steep premium chillies, golden garlic, and warm spices into high grade oil so every drop packs a punch.</p>",
-        "button_label": "Buy Now",
+        "button_label": "Shop Bundles",
         "button_link": "shopify://collections/all",
         "background": "#FFFFFF"
       }

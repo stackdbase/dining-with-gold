@@ -183,7 +183,7 @@
             </div>
             <div class="dwg-rd-phero__badge">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v20M4 6l16 12M20 6L4 18M12 2l-3 3M12 2l3 3M12 22l-3-3M12 22l3-3M3 9l4 1M3 15l4-1M21 9l-4 1M21 15l-4-1" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-              <span>{{ section.settings.badge_3 | default: 'Do Not Freeze' }}</span>
+              <span>{{ section.settings.badge_3 | default: 'Do Not Refrigerate' }}</span>
             </div>
           </div>
         {% endif %}
@@ -653,7 +653,7 @@
     { "type": "checkbox", "id": "show_badges", "label": "Show trust badges", "default": true },
     { "type": "text", "id": "badge_1", "label": "Badge 1", "default": "Free Shipping Over £49" },
     { "type": "text", "id": "badge_2", "label": "Badge 2", "default": "Shelf Stable" },
-    { "type": "text", "id": "badge_3", "label": "Badge 3", "default": "Do Not Freeze" },
+    { "type": "text", "id": "badge_3", "label": "Badge 3", "default": "Do Not Refrigerate" },
     { "type": "header", "content": "Bundle promo card" },
     { "type": "checkbox", "id": "show_promo", "label": "Show bundle promo card", "default": true },
     { "type": "text", "id": "promo_heading", "label": "Promo heading", "default": "The Full Flavour Bundle" },

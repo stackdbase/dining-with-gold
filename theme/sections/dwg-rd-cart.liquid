@@ -23,6 +23,10 @@
           {% for item in cart.items %}
             {% liquid
               assign t = item.product.title | downcase
+              assign disp_title = item.product.title
+              unless t contains 'pack' or t contains 'jar' or t contains 'bundle' or t contains 'single'
+                assign disp_title = item.product.title | append: ' - Single'
+              endunless
               assign design_img = ''
               if section.settings.use_design_images
                 if t contains 'jar'
@@ -46,7 +50,7 @@
               </a>
               <div class="dwg-rd-cart__info">
                 <p class="dwg-rd-cart__count">{{ item.quantity }} {{ item.quantity | pluralize: 'Product', 'Products' }}</p>
-                <h2 class="dwg-rd-cart__name"><a href="{{ item.url }}">{{ item.product.title }}</a></h2>
+                <h2 class="dwg-rd-cart__name"><a href="{{ item.url }}">{{ disp_title }}</a></h2>
                 {% unless item.variant.title contains 'Default' %}
                   <p class="dwg-rd-cart__variant">{{ item.variant.title }}</p>
                 {% endunless %}

@@ -37,6 +37,10 @@
                 elsif t contains 'pack' or t contains 'double' or t contains 'duo' or t contains 'twin' or t contains '2 pack'
                   assign rank = 'double'
                 endif
+                assign disp_title = product.title
+                if rank == 'single' and t contains 'single' == false
+                  assign disp_title = product.title | append: ' - Single'
+                endif
                 assign design_img = ''
                 if section.settings.use_design_images
                   case rank
@@ -64,7 +68,7 @@
                   </a>
                   <div class="dwg-rd-shop__info">
                     <p class="dwg-rd-shop__eyebrow">Product</p>
-                    <h2 class="dwg-rd-shop__name"><a href="{{ product.url }}">{{ product.title }}</a></h2>
+                    <h2 class="dwg-rd-shop__name"><a href="{{ product.url }}">{{ disp_title }}</a></h2>
                     <p class="dwg-rd-shop__price-label">Price Tag</p>
                     <div class="dwg-rd-shop__buyrow">
                       <p class="dwg-rd-shop__price">{{ product.price | money }}</p>

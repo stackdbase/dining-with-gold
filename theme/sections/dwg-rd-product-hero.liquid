@@ -12,6 +12,10 @@
   assign btn_bg = section.settings.button_background | default: '#A97E0C'
   assign btn_text = section.settings.button_text_color | default: '#FFFFFF'
   assign heading = section.settings.heading | default: product.title | default: 'African Chilli Oil'
+  assign _ht = heading | downcase
+  unless _ht contains 'pack' or _ht contains 'jar' or _ht contains 'bundle' or _ht contains 'single' or _ht contains ' - '
+    assign heading = heading | append: ' - Single'
+  endunless
 %}
 
 <section

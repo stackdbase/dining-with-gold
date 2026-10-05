@@ -18,7 +18,7 @@
           "type": "feature",
           "settings": {
             "title": "Tasty Oil",
-            "description": "Infused in high-quality oils for a rich, smooth finish."
+            "description": "Infused in high quality oils for a rich, smooth finish."
           }
         },
         "f2": {
@@ -34,9 +34,9 @@
         "eyebrow": "Elevate Every Bite",
         "heading_accent": "Drizzle.",
         "heading": "Crunch. Repeat.",
-        "body": "<p>The African chilli oil brings the ideal harmony of smoky heat, satisfying crunch, and rich aroma. We slowly steep premium chillies, golden garlic, and warm spices into high-grade oil so every drop packs a punch.</p>",
-        "button_label": "Learn More",
-        "button_link": "shopify://pages/about",
+        "body": "<p>The African chilli oil brings the ideal harmony of smoky heat, satisfying crunch, and rich aroma. We slowly steep premium chillies, golden garlic, and warm spices into high grade oil so every drop packs a punch.</p>",
+        "button_label": "Buy Now",
+        "button_link": "shopify://collections/all",
         "background": "#FFFFFF"
       }
     },

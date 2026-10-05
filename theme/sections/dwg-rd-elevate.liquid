@@ -41,11 +41,6 @@
       {% if section.settings.body != blank %}
         <div class="dwg-rd-elevate__body">{{ section.settings.body }}</div>
       {% endif %}
-      {% if section.settings.button_label != blank %}
-        <a class="dwg-rd-elevate__btn" href="{{ section.settings.button_link | default: '#' }}">
-          {{ section.settings.button_label }}
-        </a>
-      {% endif %}
     </div>
 
     <div class="dwg-rd-elevate__media">
@@ -85,6 +80,11 @@
             </div>
           </div>
         {% endfor %}
+        {% if section.settings.button_label != blank %}
+          <a class="dwg-rd-elevate__btn" href="{{ section.settings.button_link | default: '#' }}">
+            {{ section.settings.button_label }}
+          </a>
+        {% endif %}
       </div>
     {% endif %}
   </div>
@@ -158,6 +158,8 @@
     background: var(--rd-el-btn-bg);
     color: var(--rd-el-btn-text);
     border-radius: 4px;
+    justify-self: start;
+    margin-top: 6px;
     transition: filter 0.2s ease, transform 0.2s ease;
   }
   .dwg-rd-elevate__btn:hover { filter: brightness(1.08); }
@@ -239,10 +241,10 @@
     .dwg-rd-elevate { margin-top: 0; padding-top: clamp(24px, 6vw, 40px); }
     .dwg-rd-elevate__content { text-align: center; }
     .dwg-rd-elevate__body { margin-inline: auto; }
-    .dwg-rd-elevate__btn { display: none; }
     .dwg-rd-elevate__media { margin-block: 4px 8px; }
     .dwg-rd-elevate__media-bottle { max-width: min(480px, 88vw); }
-    .dwg-rd-elevate__features { max-width: none; }
+    .dwg-rd-elevate__features { max-width: none; align-items: center; }
+    .dwg-rd-elevate__btn { justify-self: center; }
   }
 
   /* ── Drop-in motion (scroll-scrubbed; JS sets --drop 1→0 as it settles) ── */
@@ -316,7 +318,7 @@
       "settings": [
         { "type": "image_picker", "id": "icon", "label": "Icon" },
         { "type": "text", "id": "title", "label": "Title", "default": "Tasty Oil" },
-        { "type": "textarea", "id": "description", "label": "Description", "default": "Infused in high-quality oils for a rich, smooth finish." }
+        { "type": "textarea", "id": "description", "label": "Description", "default": "Infused in high quality oils for a rich, smooth finish." }
       ]
     }
   ],
@@ -325,7 +327,7 @@
     {
       "name": "DWG RD: Elevate",
       "blocks": [
-        { "type": "feature", "settings": { "title": "Tasty Oil", "description": "Infused in high-quality oils for a rich, smooth finish." } },
+        { "type": "feature", "settings": { "title": "Tasty Oil", "description": "Infused in high quality oils for a rich, smooth finish." } },
         { "type": "feature", "settings": { "title": "African Seasoning", "description": "Bold, authentic spice blends rooted in tradition." } }
       ]
     }

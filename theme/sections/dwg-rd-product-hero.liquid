@@ -89,7 +89,7 @@
               {% if p3 != empty %}
                 <a class="dwg-rd-phero__pack{% if product.handle == p3.handle %} is-active{% endif %}" href="{{ p3.url }}"{% if product.handle == p3.handle %} aria-current="true"{% endif %}>
                   {% if section.settings.popular_badge != blank %}<span class="dwg-rd-phero__pack-badge">{{ section.settings.popular_badge }}</span>{% endif %}
-                  <span class="dwg-rd-phero__pack-name">3-Pack</span>
+                  <span class="dwg-rd-phero__pack-name">3 Pack</span>
                   <span class="dwg-rd-phero__pack-price">{{ p3.price | money }}</span>
                   <span class="dwg-rd-phero__pack-each">{{ p3.price | divided_by: 3 | money }} each</span>
                 </a>
@@ -639,11 +639,11 @@
     { "type": "image_picker", "id": "image", "label": "Image (blank = design/product image)" },
     { "type": "checkbox", "id": "use_design_images", "label": "Use design product image", "info": "Show the Figma bottle/jar (mapped by product title) instead of the product's own photo.", "default": true },
     { "type": "header", "content": "Pack chooser" },
-    { "type": "checkbox", "id": "show_packs", "label": "Show pack chooser (Single / Double / 3-Pack)", "default": true },
-    { "type": "text", "id": "popular_badge", "label": "3-Pack badge", "default": "MOST POPULAR" },
+    { "type": "checkbox", "id": "show_packs", "label": "Show pack chooser (Single / Double / 3 Pack)", "default": true },
+    { "type": "text", "id": "popular_badge", "label": "3 Pack badge", "default": "MOST POPULAR" },
     { "type": "text", "id": "pack_single_handle", "label": "Single pack product handle", "default": "dwg-travel-chilli-oil" },
     { "type": "text", "id": "pack_double_handle", "label": "Double pack product handle", "default": "dwg-travel-chilli-oil-2-pack" },
-    { "type": "text", "id": "pack_triple_handle", "label": "3-Pack product handle", "default": "dwg-travel-chilli-oil-3-pack" },
+    { "type": "text", "id": "pack_triple_handle", "label": "3 Pack product handle", "default": "dwg-travel-chilli-oil-3-pack" },
     { "type": "header", "content": "Ingredients accordion" },
     { "type": "text", "id": "ingredients_title", "label": "Accordion title", "default": "Ingredients" },
     { "type": "richtext", "id": "ingredients", "label": "Ingredients content", "info": "Leave blank to hide.", "default": "<p>Three chillies. Salt. Seasoning. Vegetable oil. Simple ingredients — heat with flavour.</p>" },
@@ -658,7 +658,7 @@
     { "type": "checkbox", "id": "show_promo", "label": "Show bundle promo card", "default": true },
     { "type": "text", "id": "promo_heading", "label": "Promo heading", "default": "The Full Flavour Bundle" },
     { "type": "textarea", "id": "promo_subtext", "label": "Promo subtext", "default": "Stock up on the No.1 African Chilli Oil." },
-    { "type": "product", "id": "promo_product", "label": "Promo product (Add to Cart)", "info": "e.g. the 3-Pack. Leave blank to use a link." },
+    { "type": "product", "id": "promo_product", "label": "Promo product (Add to Cart)", "info": "e.g. the 3 Pack. Leave blank to use a link." },
     { "type": "url", "id": "promo_link", "label": "Promo link (used when no product set)" },
     { "type": "text", "id": "promo_price_text", "label": "Promo price text (used when no product set)" },
     { "type": "image_picker", "id": "promo_image", "label": "Promo image (blank = fanned bottles)" },

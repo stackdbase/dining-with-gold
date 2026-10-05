@@ -1,7 +1,6 @@
 {%- comment -%}
-  DWG global floating promo — Travel Chilli Oil.
-  Renders bottom-right on every page EXCEPT the cart page (Shopify's hosted
-  checkout uses its own layout, so it's naturally excluded).
+  DWG floating promo — Travel Chilli Oil.
+  Renders bottom-right on the HOMEPAGE ONLY (request.page_type == 'index').
   Dismissible via the close button — dismissal is page-scoped only: the
   card returns on every reload / navigation. No persistence.
   Auto-hides while cart/menu drawers are open (avoids visual overlap).
@@ -10,7 +9,7 @@
 {%- assign promo_handle = 'dwg-travel-chilli-oil' -%}
 {%- assign promo_product = all_products[promo_handle] -%}
 
-{%- if promo_product != blank and request.page_type != 'cart' and request.page_type != 'checkout' -%}
+{%- if promo_product != blank and request.page_type == 'index' -%}
   <aside class="dwg-floating-promo" id="dwg-floating-promo">
     <button
       type="button"

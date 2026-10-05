@@ -38,7 +38,6 @@
     <div class="dwg-pop__panel">
       <div class="dwg-pop__top">
         <span class="dwg-pop__brand">Dining With Gold</span>
-        <button type="button" class="dwg-pop__x" data-dwg-close aria-label="Close">&times;</button>
       </div>
 
       {%- if just_submitted -%}
@@ -163,20 +162,22 @@
 
   .dwg-pop__never {
     display: block;
-    margin: 16px auto 0;
-    padding: 4px 6px;
+    margin: 22px auto 0;
+    padding: 6px 8px;
     background: none;
     border: 0;
     cursor: pointer;
-    font-family: 'Manjari', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.01em;
-    color: rgba(28, 28, 28, 0.5);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    color: #1c1c1c;
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 2px;
     transition: color 0.2s ease;
   }
-  .dwg-pop__never:hover { color: rgba(28, 28, 28, 0.85); }
+  .dwg-pop__never:hover { color: #A67C1E; }
 
   .dwg-pop__input {
     width: 100%;
@@ -234,9 +235,27 @@
   .dwg-pop__vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
   @media screen and (max-width: 749px) {
-    .dwg-pop__dialog { grid-template-columns: 1fr; width: min(440px, 100%); }
-    .dwg-pop__media { min-height: 180px; }
-    .dwg-pop__top { margin-bottom: 18px; }
+    .dwg-pop { padding: 12px; }
+    .dwg-pop__dialog {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+      width: min(420px, 100%);
+      max-height: 94svh;
+      overflow-y: auto;
+    }
+    .dwg-pop__media {
+      min-height: 0;
+      height: clamp(200px, 38svh, 300px);
+      background-position: center top;
+    }
+    .dwg-pop__panel { padding: 22px 22px 26px; overflow: visible; }
+    .dwg-pop__top { margin-bottom: 12px; }
+    .dwg-pop__title { font-size: clamp(1.5rem, 7.5vw, 2rem); margin-bottom: 10px; }
+    .dwg-pop__sub { font-size: 1rem; margin-bottom: 14px; }
+    .dwg-pop__legal { font-size: 0.8rem; line-height: 1.45; margin-bottom: 16px; }
+    .dwg-pop__input { padding: 14px 16px; margin-bottom: 14px; }
+    .dwg-pop__submit { padding: 13px 30px; }
+    .dwg-pop__never { margin-top: 16px; }
   }
 {% endstylesheet %}
 

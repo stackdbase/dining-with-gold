@@ -38,8 +38,10 @@
                   assign rank = 'double'
                 endif
                 assign disp_title = product.title
-                if rank == 'single' and t contains 'single' == false
-                  assign disp_title = product.title | append: ' - Single'
+                if rank == 'single'
+                  unless t contains 'single'
+                    assign disp_title = product.title | append: ' - Single'
+                  endunless
                 endif
                 assign design_img = ''
                 if section.settings.use_design_images

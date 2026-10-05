@@ -218,6 +218,16 @@
   .dwg-rd-shop__buy:hover { filter: brightness(1.08); }
   .dwg-rd-shop__buy:disabled { opacity: 0.5; cursor: not-allowed; }
 
+  /* Mobile 2-up cards: scale text + button down so everything balances */
+  @media screen and (max-width: 749px) {
+    .dwg-rd-shop__eyebrow { font-size: 0.6rem; margin: 0 0 4px; }
+    .dwg-rd-shop__name { font-size: 0.9rem; line-height: 1.15; margin: 0 0 8px; }
+    .dwg-rd-shop__price-label { font-size: 0.68rem; margin: 0 0 2px; }
+    .dwg-rd-shop__buyrow { gap: 6px 10px; }
+    .dwg-rd-shop__price { font-size: 1.05rem; }
+    .dwg-rd-shop__buy { font-size: 0.72rem; padding: 8px 20px; letter-spacing: 0.05em; }
+  }
+
   .dwg-rd-shop__pagination {
     display: flex;
     justify-content: center;

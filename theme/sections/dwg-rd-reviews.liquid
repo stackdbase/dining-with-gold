@@ -37,7 +37,7 @@
           <blockquote class="dwg-rd-rev__card" {{ block.shopify_attributes }}>
             <span class="dwg-rd-rev__cardstars" aria-hidden="true">★★★★★</span>
             {% if block.settings.quote != blank %}<p class="dwg-rd-rev__quote">{{ block.settings.quote }}</p>{% endif %}
-            {% if block.settings.author != blank %}<cite class="dwg-rd-rev__author">— {{ block.settings.author }}</cite>{% endif %}
+            {% if block.settings.author != blank %}<cite class="dwg-rd-rev__author">{{ block.settings.author }}</cite>{% endif %}
           </blockquote>
         {% endfor %}
       </div>

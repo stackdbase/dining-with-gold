@@ -49,7 +49,7 @@
             "customer_name": "@spicequeen",
             "location": "Birmingham, UK",
             "rating": 5,
-            "quote": "I carry it everywhere — small bottle, huge upgrade.",
+            "quote": "I carry it everywhere, small bottle, huge upgrade.",
             "product": "",
             "cta_label": "",
             "cta_link": ""
@@ -158,7 +158,7 @@
       "settings": {
         "eyebrow": "LOVED BY YOU",
         "heading": "Real flavour, real people.",
-        "subheading": "<p>From kitchens, cafes and tables around the world — see how the DWG community brings the heat. Tap any video to play with sound.</p>",
+        "subheading": "<p>From kitchens, cafes and tables around the world, see how the DWG community brings the heat. Tap any video to play with sound.</p>",
         "columns_desktop": "4",
         "cta_label": "SHOP THE COLLECTION",
         "cta_link": "/collections/all",
@@ -172,7 +172,7 @@
       "settings": {
         "eyebrow": "ADD YOURS",
         "heading": "Want to be featured?",
-        "subheading": "<p>Show us how you DWG. Tag us on Instagram or send us your clip — we feature new community videos every week.</p>",
+        "subheading": "<p>Show us how you DWG. Tag us on Instagram or send us your clip, we feature new community videos every week.</p>",
         "instagram_url": "https://www.instagram.com/diningwithgold/",
         "instagram_label": "TAG @DININGWITHGOLD",
         "email_address": "diningwithgold@outlook.com",

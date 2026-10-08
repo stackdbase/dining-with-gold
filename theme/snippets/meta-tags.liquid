@@ -37,14 +37,10 @@
   endif
 
   # DWG: branded social card + title fallback.
-  # Product pages keep their own photo; everything else (homepage, the
-  # generic "Products" collection, pages) uses the branded chilli-oil card
-  # so shared links show current brand imagery, not an old collection image.
+  # Every shared link uses the branded chilli-oil card so no old product or
+  # collection render can leak into a preview.
   assign dwg_share = 'dwg-og-share.png' | asset_url
   assign dwg_use_brand_image = true
-  if request.page_type == 'product' and page_image != blank
-    assign dwg_use_brand_image = false
-  endif
 
   # Replace a bare "Products" collection title with the brand name so the
   # shared root link doesn't read as "Products".

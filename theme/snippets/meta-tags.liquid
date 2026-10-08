@@ -35,6 +35,22 @@
   elsif request.page_type == 'password'
     assign og_url = request.origin
   endif
+
+  # DWG: branded social card + title fallback.
+  # Product pages keep their own photo; everything else (homepage, the
+  # generic "Products" collection, pages) uses the branded chilli-oil card
+  # so shared links show current brand imagery, not an old collection image.
+  assign dwg_share = 'dwg-og-share.png' | asset_url
+  assign dwg_use_brand_image = true
+  if request.page_type == 'product' and page_image != blank
+    assign dwg_use_brand_image = false
+  endif
+
+  # Replace a bare "Products" collection title with the brand name so the
+  # shared root link doesn't read as "Products".
+  if request.page_type == 'index' or og_title == 'Products' or og_title == blank
+    assign og_title = shop.name
+  endif
 %}
 
 <meta
@@ -58,7 +74,28 @@
   content="{{ og_description | escape }}"
 >
 
-{%- if page_image -%}
+{%- if dwg_use_brand_image -%}
+  <meta
+    property="og:image"
+    content="http:{{ dwg_share }}"
+  >
+  <meta
+    property="og:image:secure_url"
+    content="https:{{ dwg_share }}"
+  >
+  <meta
+    property="og:image:width"
+    content="1200"
+  >
+  <meta
+    property="og:image:height"
+    content="630"
+  >
+  <meta
+    name="twitter:image"
+    content="https:{{ dwg_share }}"
+  >
+{%- elsif page_image -%}
   <meta
     property="og:image"
     content="http:{{ page_image | image_url }}"
@@ -74,6 +111,10 @@
   <meta
     property="og:image:height"
     content="{{ page_image.height }}"
+  >
+  <meta
+    name="twitter:image"
+    content="https:{{ page_image | image_url }}"
   >
 {%- endif -%}
 

@@ -10,7 +10,7 @@
         "link2_label": "Shop",
         "link3_label": "About",
         "link3_url": "/pages/about",
-        "show_announcement": false,
+        "show_announcement": true,
         "announcement_text": "TASTE THE GOLD · 15% OFF YOUR ORDER WITH CODE TASTETHEGOLD15 · FREE UK SHIPPING OVER £50",
         "background": "#FFFFFF"
       }

@@ -12,6 +12,8 @@
         "link3_url": "/pages/about",
         "show_announcement": true,
         "announcement_text": "BLACK FRIDAY HEAT · AT LEAST 15% OFF WITH CODE BLACK15 · FREE UK SHIPPING OVER £50",
+        "announcement_background": "#000000",
+        "announcement_color": "#FFFFFF",
         "background": "#FFFFFF"
       }
     }

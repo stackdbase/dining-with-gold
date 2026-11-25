@@ -193,22 +193,28 @@
   .dwg-rd-hero__tag {
     position: absolute;
     z-index: 60;
-    top: clamp(-185px, -12vw, -150px);
-    left: 41%;
-    width: clamp(205px, 22vw, 315px);
+    top: calc(-16vw + 62px);
+    left: 57%;
+    width: clamp(260px, 32vw, 640px);
     height: auto;
-    transform: translateX(-50%) rotate(9deg);
+    transform: translateX(-50%) rotate(28deg);
     transform-origin: top center;
     pointer-events: none;
     filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.32));
   }
   @media screen and (max-width: 899px) {
     .dwg-rd-hero__tag {
-      left: auto;
-      right: 6%;
-      width: clamp(132px, 34vw, 180px);
-      top: clamp(-120px, -24vw, -84px);
-      transform: rotate(9deg);
+      left: 54%;
+      right: auto;
+      width: clamp(190px, 60vw, 340px);
+      top: -160px;
+      transform: translateX(-50%) rotate(28deg);
+      transition: opacity 0.2s ease;
+    }
+    /* Tag would sit over the open mobile menu links, so fade it out then */
+    body:has(.menu-drawer-container[open]) .dwg-rd-hero__tag {
+      opacity: 0;
+      visibility: hidden;
     }
   }
 

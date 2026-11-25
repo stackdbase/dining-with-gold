@@ -187,26 +187,28 @@
   .dwg-rd-hero__heading--bf .dwg-bf-sale   { color: #BD8900; }
   .dwg-rd-hero__subhead--bf { color: #B28100; }
 
+  /* Tag z-index 60 beats the sticky header (z 50) so the rope shows from the
+     very top, above the nav. Negative top lifts the rope above the header;
+     the tag hangs down to touch the orange panel. */
   .dwg-rd-hero__tag {
     position: absolute;
-    z-index: 5;
-    top: clamp(-26px, -1.6vw, -10px);
-    /* Hang at the panel's top-right corner, in the gap just left of the heading. */
-    left: 43%;
-    width: clamp(140px, 16vw, 215px);
+    z-index: 60;
+    top: clamp(-185px, -12vw, -150px);
+    left: 41%;
+    width: clamp(205px, 22vw, 315px);
     height: auto;
-    transform: translateX(-50%) rotate(12deg);
+    transform: translateX(-50%) rotate(-9deg);
     transform-origin: top center;
     pointer-events: none;
-    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.28));
+    filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.32));
   }
   @media screen and (max-width: 899px) {
     .dwg-rd-hero__tag {
       left: auto;
-      right: 4%;
-      width: clamp(120px, 34vw, 176px);
-      top: -8px;
-      transform: rotate(10deg);
+      right: 5%;
+      width: clamp(150px, 40vw, 210px);
+      top: clamp(-130px, -26vw, -96px);
+      transform: rotate(-8deg);
     }
   }
 

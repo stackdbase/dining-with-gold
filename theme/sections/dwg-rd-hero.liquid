@@ -190,11 +190,12 @@
   .dwg-rd-hero__tag {
     position: absolute;
     z-index: 5;
-    top: clamp(-20px, -1.2vw, -6px);
-    left: 46%;
-    width: clamp(190px, 23vw, 300px);
+    top: clamp(-26px, -1.6vw, -10px);
+    /* Hang at the panel's top-right corner, in the gap just left of the heading. */
+    left: 43%;
+    width: clamp(140px, 16vw, 215px);
     height: auto;
-    transform: rotate(14deg);
+    transform: translateX(-50%) rotate(12deg);
     transform-origin: top center;
     pointer-events: none;
     filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.28));
@@ -202,10 +203,10 @@
   @media screen and (max-width: 899px) {
     .dwg-rd-hero__tag {
       left: auto;
-      right: 3%;
-      width: clamp(128px, 38vw, 188px);
-      top: -10px;
-      transform: rotate(12deg);
+      right: 4%;
+      width: clamp(120px, 34vw, 176px);
+      top: -8px;
+      transform: rotate(10deg);
     }
   }
 

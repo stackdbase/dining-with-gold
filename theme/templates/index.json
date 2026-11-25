@@ -3,6 +3,7 @@
     "rd_hero": {
       "type": "dwg-rd-hero",
       "settings": {
+        "bf_enabled": true,
         "heading": "No 1 African Chilli Oil",
         "subheading": "Bold Flavor for the Modern Palate.",
         "body": "<p>The ultimate blend of bold spice and rich flavor to elevate every meal.</p>",

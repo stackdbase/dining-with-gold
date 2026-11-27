@@ -50,13 +50,12 @@
         "review_4": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/2127cb2a23ae428b83f9adcbf16160c6.mov", "customer_name": "@spicequeen", "location": "Birmingham, UK", "rating": 5, "quote": "I carry it everywhere, small bottle, huge upgrade." } },
         "review_5": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/a3306f7e61c440f69f4e200b1be84348.mov", "customer_name": "@chefonthego", "location": "Bristol, UK", "rating": 5, "quote": "Hands down the best chilli oil I've ever tasted." } },
         "review_6": { "type": "review", "settings": { "video_url": "https://cdn.shopify.com/videos/c/o/v/9f52da1ba51e42b49cb65b188ba21c34.mov", "customer_name": "@flavourhouse", "location": "Edinburgh, UK", "rating": 5, "quote": "Bold, balanced, addictive. The DWG hype is real." } },
-        "review_7": { "type": "review", "settings": { "video_asset": "dwg-ugc-v1.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "The DWG chilli oil in action." } },
         "review_8": { "type": "review", "settings": { "video_asset": "dwg-ugc-v2.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Real flavour, real people." } },
         "review_9": { "type": "review", "settings": { "video_asset": "dwg-ugc-v3.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Heat with flavour." } },
         "review_10": { "type": "review", "settings": { "video_asset": "dwg-ugc-v4.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Gold on every plate." } },
         "review_11": { "type": "review", "settings": { "video_asset": "dwg-ugc-v5.mov", "customer_name": "@diningwithgold", "rating": 5, "quote": "Dining with gold." } }
       },
-      "block_order": ["review_7", "review_8", "review_9", "review_10", "review_11", "review_1", "review_2", "review_3", "review_4", "review_5", "review_6"],
+      "block_order": ["review_1", "review_2", "review_8", "review_9", "review_10", "review_11", "review_3", "review_4", "review_5", "review_6"],
       "settings": {
         "eyebrow": "LOVED BY YOU",
         "heading": "Real flavour, real people.",
